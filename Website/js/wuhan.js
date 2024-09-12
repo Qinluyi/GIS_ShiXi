@@ -60,6 +60,7 @@ $(function () {
                     show: true,
                     map: 'wuhan',
                     mapType: 'wuhan',
+                    zoom: 1.2,
                     label: {
                         emphasis: {
                             textStyle: {
@@ -78,8 +79,10 @@ $(function () {
                                 y: 0.5,
                                 r: 0.8,
                                 colorStops: [
-                                    { offset: 0, color: 'rgba(175,238,238, 0)' },
-                                    { offset: 1, color: 'rgba(47,79,79, .1)' }
+                                    // { offset: 0, color: 'rgba(175,238,238, 0)' },
+                                    // { offset: 1, color: 'rgba(47,79,79, .1)' }
+                                    { offset: 0, color: 'rgba(34, 45, 67, 0)' }, // 调整区域颜色
+                                    { offset: 1, color: 'rgba(47, 79, 79, .5)' }
                                 ],
                                 globalCoord: false
                             },
