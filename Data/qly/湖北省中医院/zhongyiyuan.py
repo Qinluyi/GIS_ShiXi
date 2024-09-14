@@ -11,19 +11,17 @@ import pandas as pd
 
 
 def search_keywords_in_urls(url_list, keywords, driver):   
-    
     # 初始化计数器
     keyword_count = {tuple(kw): 0 for kw in keywords}  # 使用元组作为字典的键
     urls_with_keywords = {tuple(kw): set() for kw in keywords}
     time_with_keywords = {tuple(kw): set() for kw in keywords}
     keyword_occurrences = {tuple(kw): 0 for kw in keywords}
-
     try:
         for url in url_list:
             driver.get(url)
             time.sleep(3)
             
-            article_elements = driver.find_elements(By.CLASS_NAME, "news_detail_article")
+            article_elements = driver.find_elements(By.CLASS_NAME, "psgCont")
             if article_elements:
                 # 统计每个关键词类别的出现次数
                 for keyword_group in keywords:
@@ -37,22 +35,23 @@ def search_keywords_in_urls(url_list, keywords, driver):
                         if any(keyword in text for keyword in keyword_lower_group):
                             found_in_article = True
                             keyword_total_occurrences += sum(text.count(keyword) for keyword in keyword_lower_group)
-                            
+
                     if found_in_article:
                         # 定位到 class 为 news_detailMsg clearFix 的 div 元素
-                        div_element = driver.find_element(By.CSS_SELECTOR, "div.news_detailMsg.clearFix")
+                        div_element = driver.find_element(By.CSS_SELECTOR, "div.info")
 
-                        # 定位到第三个 p 元素
-                        third_p_element = div_element.find_elements(By.TAG_NAME, "p")[2]
+                        # 定位到第三个 span 元素
+                        third_span_element = div_element.find_elements(By.TAG_NAME, "span")[2]
 
                         # 获取文本并提取日期
-                        text = third_p_element.text
+                        text = third_span_element.text
                         time_value = text.split('：')[1].strip()
                         
                         keyword_count[tuple(keyword_group)] += 1  # 关键词组出现在多少页面中
                         urls_with_keywords[tuple(keyword_group)].add(url)
                         time_with_keywords[tuple(keyword_group)].add(time_value)
                         keyword_occurrences[tuple(keyword_group)] += keyword_total_occurrences  # 记录关键词组的总出现次数
+                
             else:
                 continue
     
@@ -67,92 +66,76 @@ def search_keywords_in_urls(url_list, keywords, driver):
 
 def search_hospital_articles_v3(hospital_name,keywords,driver=None):
     # # 设置 ChromeDriver 的路径
-    chrome_service = Service('C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe')
-    # 设置 ChromeOptions
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")  # 无头模式，不弹出浏览器窗口
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--ignore-certificate-errors")
-    chrome_options.add_argument("--incognito")
+    # chrome_service = Service('C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe')
+    # # 设置 ChromeOptions
+    # chrome_options = Options()
+    # chrome_options.add_argument("--headless")  # 无头模式，不弹出浏览器窗口
+    # chrome_options.add_argument("--no-sandbox")
+    # chrome_options.add_argument("--disable-dev-shm-usage")
+    # chrome_options.add_argument("--ignore-certificate-errors")
+    # chrome_options.add_argument("--incognito")
 
     # 启动浏览器
-    driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
-
+    # driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+    # keywords = ["合作", "沟通","进修"]
     try:
         # 构造搜索 URL
-        search_url = f"https://www.tjh.com.cn/search.html?word={hospital_name}"
+        search_url = f"https://www.hbhtcm.com/index/search.html?keyword={hospital_name}"
         driver.get(search_url)
         time.sleep(4)  # 等待页面加载
         href_list = []
         print("当前搜索的医院链接:{}".format(search_url))
-        # 查找 id 为 hidecount 的所有元素（即使预期只有一个）
-        elements = driver.find_elements(By.CSS_SELECTOR, "div.displaycount")
-        page_value = 1
-        if elements:
-            # 如果找到元素
-            # page_value = element.text.strip()  # 去除前后空白字符
-            number = elements[0].text.split("共")[1].split("页")[0]
-            print(f"一共有: {number}页")
-            page_value = int(number)
-        else:
-            print("只有一页")
-        # 获取p元素内span元素的文本值
-        # 定位到class为fr的p元素
-        span_text = 0
-        div_element = driver.find_element(By.CSS_SELECTOR, "div.search_keyword.clearFix")
-        p_fr_elements = div_element.find_elements(By.CSS_SELECTOR, "p.fr")
-        if p_fr_elements:
-            p_fr_element = p_fr_elements[0]
-            p_fr_element = div_element.find_element(By.CSS_SELECTOR, "p.fr")
-            span_text = p_fr_element.find_element(By.TAG_NAME, "span").text
-            print("一共搜索到{}篇文章".format(span_text))
-        else:
+
+        # 定位到class为page的div元素
+        page_div = driver.find_element(By.CLASS_NAME, "page")
+
+        # 在page_div元素下找到所有a标签
+        a_elements = page_div.find_elements(By.TAG_NAME, "a")
+
+        # 获取a标签的数量
+        a_count = len(a_elements)
+        if a_count == 2:
             keyword_count = {tuple(kw): 0 for kw in keywords}  # 使用元组作为字典的键
             urls_with_keywords = {tuple(kw): set() for kw in keywords}
             time_with_keywords = {tuple(kw): set() for kw in keywords}
+            
             print("一共搜索到0篇文章")
             return time_with_keywords,urls_with_keywords,0,keyword_count
-            
-        
-        # 先搜第一页
-        # 定位到ul元素
-        href_list = []
-        ul_element = driver.find_element(By.CSS_SELECTOR, "ul.main_content")
-        # 获取所有li子元素
-        li_elements = ul_element.find_elements(By.TAG_NAME, "li")
-
-        # 获取每个li中a标签的href属性值
-        for li in li_elements:
-            a_element = li.find_element(By.TAG_NAME, "a")
-            href = a_element.get_attribute("href")
-            href_list.append(href)
-            
-        # 如果有第二页就搜第二页
-        for page in range(2,page_value+1):
-            url = search_url + "&page=" + str(page)
-            driver.get(url)
-            time.sleep(2)
-            ul_element = driver.find_element(By.CSS_SELECTOR, "ul.main_content")
-            # 获取所有li子元素
-            li_elements = ul_element.find_elements(By.TAG_NAME, "li")
-            div_element = driver.find_element(By.CSS_SELECTOR, "div.search_keyword.clearFix")
-            # 定位到class为fr的p元素
-            p_fr_element = div_element.find_element(By.CSS_SELECTOR, "p.fr")
-
-            # 获取每个li中a标签的href属性值
-            for li in li_elements:
-                a_element = li.find_element(By.TAG_NAME, "a")
+        else:
+            for page in range(1,a_count-1):#从第二个a标签到倒数第二个a标签
+                a_element = a_elements[page]
                 href = a_element.get_attribute("href")
-                href_list.append(href)
-           
+                driver.get(href)
+                time.sleep(2)
+                # 定位到class为noticeList的元素
+                notice_list = driver.find_element(By.CLASS_NAME, "noticeList")
+
+                # 在noticeList元素下找到ul
+                ul_element = notice_list.find_element(By.TAG_NAME, "ul")
+
+                # 找到ul中的所有li标签
+                li_elements = ul_element.find_elements(By.TAG_NAME, "li")
+                if li_elements:
+                    for li in li_elements:
+                        a_tag = li.find_element(By.TAG_NAME, "a")
+                        href = a_tag.get_attribute("href")
+                        href_list.append(href)
                 
-        
+                #重新定位回第一页
+                driver.get(search_url)
+                time.sleep(2)  # 等待页面加载
+                # 定位到class为page的div元素
+                page_div = driver.find_element(By.CLASS_NAME, "page")
+
+                # 在page_div元素下找到所有a标签
+                a_elements = page_div.find_elements(By.TAG_NAME, "a")
+                
+                        
         keyword_counts, urls_with_keywords,time_with_keywords = search_keywords_in_urls(href_list, keywords, driver)
         
         # 返回元素的数量
-        return time_with_keywords,urls_with_keywords,int(span_text),keyword_counts
-            
+        return time_with_keywords,urls_with_keywords,len(href_list),keyword_counts
+                    
     except Exception as e:
         print(f"发生错误: {e}")
 
@@ -210,14 +193,11 @@ def count_hospitals_from_file(file_path,output_excel_path,output_excel_path1):
 
 if __name__ == "__main__":
     # 调用函数并传入文件路径
-    # 搜索每个url查找关键词
-    keywords = [["合作","协作"],["沟通","交流"],["进修","研讨","坐诊"]]
-      
-    file_path = 'E:\Dasishang\GISshixi\Data\同济.txt'
-    output_excel_path = 'E:\Dasishang\GISshixi\Data\同济医院搜索结果.xlsx'
-    output_excel_path1 = 'E:\Dasishang\GISshixi\Data\同济医院交互强度表.xlsx'
+    file_path = 'E:\Dasishang\GISshixi\Data\湖北省中医院高校医联体.txt'
+    output_excel_path = 'E:\Dasishang\GISshixi\Data\湖北省中医院高校医联体搜索结果.xlsx'
+    output_excel_path1 = 'E:\Dasishang\GISshixi\Data\湖北省中医院高校医联体交互强度表.xlsx'
     count_hospitals_from_file(file_path,output_excel_path,output_excel_path1)
     
     # name = "玉田县中医医院"
-    # search_hospital_articles_v3(name,keywords)
+    # search_hospital_articles_v3(name)
     
