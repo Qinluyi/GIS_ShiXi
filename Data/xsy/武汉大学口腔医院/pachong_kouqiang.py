@@ -292,8 +292,8 @@ def count_hospitals_from_file(file_path,output_excel_path):
 
 if __name__ == "__main__":
     # 调用函数并传入文件路径
-    file_path = r"D:\pycharm file\pachong\hospital_kouqiang.xlsx"
-    output_excel_path = 'hospital_article_count_kouqiang.xlsx'
+    file_path = r"Data\xsy\武汉大学口腔医院\hospital_kouqiang.xlsx"
+    output_excel_path = r"Data\xsy\武汉大学口腔医院\武汉大学口腔医院交互强度表.xlsx"
     total_count = count_hospitals_from_file(file_path,output_excel_path)
     print(f"总计搜索结果数量: {total_count}")
     # name = "武汉大学中南医院嘉鱼医院"

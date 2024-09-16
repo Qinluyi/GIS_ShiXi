@@ -214,9 +214,9 @@ def count_hospitals_from_file(file_path, output_detail, output_count):
 
 if __name__ == "__main__":
     # 调用函数并传入文件路径
-    file_path = r".\Data\xsy\同济.txt"
-    output_detail = 'hospital_tongji_article_details.xlsx'
-    output_count = 'hospital_article_count_tongji.xlsx'
+    file_path = r"Data\xsy\同济医院\同济.txt"
+    output_detail = r"Data\xsy\同济医院\同济医院交互明细.xlsx"
+    output_count = r"Data\xsy\同济医院\同济医院交互强度表.xlsx"
 
     total_count = count_hospitals_from_file(file_path,output_detail,output_count)
     print(f"总计搜索结果数量: {total_count}")

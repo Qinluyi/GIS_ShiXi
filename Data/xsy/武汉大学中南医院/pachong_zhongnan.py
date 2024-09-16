@@ -275,9 +275,9 @@ def count_hospitals_from_file(file_path,output_detail, output_count):
 
 if __name__ == "__main__":
     # 调用函数并传入文件路径
-    file_path = r".\Data\xsy\中南.txt"
-    output_detail = 'hospital_zhongnan_article_details.xlsx'
-    output_count = 'hospital_article_count_zhongnan.xlsx'
+    file_path = r"Data\xsy\武汉大学中南医院\中南.txt"
+    output_detail = r"Data\xsy\武汉大学中南医院\武汉大学中南医院交互明细.xlsx"
+    output_count = r"Data\xsy\武汉大学中南医院\武汉大学中南医院交互强度表.xlsx"
 
     total_count = count_hospitals_from_file(file_path,output_detail,output_count)
     print(f"总计搜索结果数量: {total_count}")
