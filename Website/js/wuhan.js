@@ -207,6 +207,54 @@ $(function () {
                 ]
             });
 
+            // 加载并处理JSON数据
+            $.getJSON('http://localhost:3000/hospitals', function (hospitalData) {
+                var promises = hospitalData.map(function (hospital) {
+                    return new Promise(function (resolve) {
+                        getCoordinates(hospital.医院地址, function (coords) {
+                            if (coords) {
+                                resolve({
+                                    name: hospital.医院名称,
+                                    value: coords.concat([100])
+                                });
+                            } else {
+                                console.error('无法获取坐标，跳过医院:', hospital.医院名称);
+                                resolve(null);
+                            }
+                        });
+                    });
+                });
+            
+                Promise.all(promises).then(function (hospitalCoordinates) {
+                    // 过滤掉null值
+                    hospitalCoordinates = hospitalCoordinates.filter(function (coord) {
+                        return coord !== null;
+                    });
+            
+                    // 设置 ECharts 选项
+                    myChart.setOption({
+                        series: [
+                            {
+                                name: '新医院',
+                                type: 'scatter',
+                                coordinateSystem: 'geo',
+                                symbol: 'diamond',
+                                data: hospitalCoordinates,
+                                symbolSize: 10,
+                                itemStyle: {
+                                    normal: {
+                                        color: '#FF0000'
+                                    }
+                                }
+                            }
+                        ]
+                    });
+                });
+            });
+            
+
+
+
             myChart.on('click', function (params) {
                 var hospitalName = params.name;
                 switch (hospitalName) {
@@ -220,6 +268,26 @@ $(function () {
                         window.location.href = 'https://www.whdxkqyy.com';
                         break;
                 }
+
+                var info = hospitalData.find(hospital => hospital.医院名称 === hospitalName);
+
+                if (info) {
+                    var infoContent = `
+                <div>
+                    <h3>${info.医院名称}</h3>
+                    <p><strong>地址:</strong> ${info.医院地址 || 'N/A'}</p>
+                    <p><strong>联系电话:</strong> ${info.联系电话 || 'N/A'}</p>
+                    <p><strong>医院等级:</strong> ${info.医院等级 || 'N/A'}</p>
+                    <p><strong>重点科室:</strong> ${info.重点科室 || 'N/A'}</p>
+                    <p><strong>经营方式:</strong> ${info.经营方式 || 'N/A'}</p>
+                    <p><strong>传真号码:</strong> ${info.传真号码 || 'N/A'}</p>
+                    <p><strong>电子邮箱:</strong> ${info.电子邮箱 || 'N/A'}</p>
+                    <p><strong>医院网站:</strong> <a href="${info.医院网站}" target="_blank">${info.医院网站}</a></p>
+                </div>`;
+
+                    // 假设你有一个元素用于显示这些信息
+                    document.getElementById('hospitalInfo').innerHTML = infoContent;
+                }
             });
         }
 
@@ -229,4 +297,36 @@ $(function () {
             myChart.resize();
         });
     }
+    // 定义getCoordinates函数，使用百度地图API进行地址转换
+    function getCoordinates(address, callback) {
+        var apiKey = 'EreKpUz1LmAv8BAEPzw4BQNuTDrnpGlW';  // 请替换为你自己的API密钥
+        var geocodeURL = 'https://api.map.baidu.com/geocoding/v3/';
+
+        $.ajax({
+            url: geocodeURL,
+            type: 'GET',
+            dataType: 'jsonp',
+            data: {
+                address: address,
+                output: 'json',
+                ak: apiKey
+            },
+            success: function (response) {
+                console.log('API响应:', response);  // 打印API响应
+                if (response.status === 0) {
+                    var coords = [response.result.location.lng, response.result.location.lat];
+                    callback(coords);
+                } else {
+                    console.error('地址转换失败:', response.status, response.message);
+                    callback(null);
+                }
+            },
+            error: function (error) {
+                console.error('请求出错:', error);
+                callback(null);
+            }
+        });
+    }
+
+
 });
