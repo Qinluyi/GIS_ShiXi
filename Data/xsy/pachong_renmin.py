@@ -10,7 +10,7 @@ hospitals_df = pd.read_excel(file_path)
 hospital_names = hospitals_df['医院名称'].tolist()
 
 # 统计文章中关键词出现的次数
-keywords = ['合作', '沟通', '进修']
+keywords = ['合作', '沟通', '技术']
 
 def search_hospital_articles(hospital_name):
     search_url = f"https://www.rmhospital.com/search.html?sKey={hospital_name}"
@@ -42,13 +42,22 @@ def count_keywords_in_article(article_url):
     }
     response = requests.get(article_url, headers=headers)
     keyword_found = {keyword: False for keyword in keywords}
+    # 关键词映射：将多个关键词映射到同一个类别
+    keyword_mapping = {
+        "合作": ["合作", "协作"],
+        "沟通": ["沟通", "交流"],
+        "技术": ["研讨", "进修", "坐诊"]
+    }
+
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
         article_text = soup.get_text()
         # 检查每个关键词是否存在于文章中
-        for keyword in keywords:
-            if keyword in article_text:
-                keyword_found[keyword] = True
+        for main_keyword, sub_keywords in keyword_mapping.items():
+            for sub_keyword in sub_keywords:
+                sub_keyword_lower = sub_keyword.lower()
+                if sub_keyword_lower in article_text:
+                    keyword_found[main_keyword] = True
     return keyword_found
 
 # 为每家医院统计文章数量和关键词统计
@@ -76,5 +85,5 @@ for hospital in hospital_names:
 # 保存结果到 Excel 文件
 result_df = pd.DataFrame.from_dict(hospital_article_count, orient='index')
 result_df.reset_index(inplace=True)
-result_df.columns = ['医院', '文章数量', '合作', '沟通', '进修']
+result_df.columns = ['医院', '文章数量', '合作', '沟通', '技术']
 result_df.to_excel('hospital_article_count_remnin.xlsx', index=False)

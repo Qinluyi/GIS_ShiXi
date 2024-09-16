@@ -13,11 +13,20 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 
 
-def search_keywords_in_urls(url_list, keywords, driver):
+
+def search_keywords_in_urls(url_list, keywords, keywords_count, driver):
     
-    keyword_count = {keyword: 0 for keyword in keywords}
-    urls_with_keywords = {keyword: set() for keyword in keywords}
-    keyword_occurrences = {keyword: 0 for keyword in keywords}  # 记录每个关键词的出现次数
+    # 初始化关键词出现次数和出现的URL集合
+    keyword_count = {keyword: 0 for keyword in keywords_count}
+    urls_with_keywords = {keyword: set() for keyword in keywords_count}
+    keyword_occurrences = {keyword: 0 for keyword in keywords_count}  # 记录每个keywords_count的关键词总出现次数
+
+    # 关键词映射：将多个关键词映射到同一个类别
+    keyword_mapping = {
+        "合作": ["合作", "协作"],
+        "沟通": ["沟通", "交流"],
+        "技术": ["研讨", "进修", "坐诊"]
+    }
 
     try:
         for url in url_list:
@@ -26,29 +35,29 @@ def search_keywords_in_urls(url_list, keywords, driver):
 
             article_elements = driver.find_elements(By.CLASS_NAME, "content")
             if article_elements:
-                # 统计每个关键词的出现次数
-                for keyword in keywords:
-                    keyword_lower = keyword.lower()
-                    keyword_total_occurrences = 0
-                    
+                # 遍历每个 keywords_count 中的关键词类别
+                for main_keyword, sub_keywords in keyword_mapping.items():
+                    total_occurrences = 0  # 总出现次数
+
                     for article in article_elements:
                         text = article.text.lower()
-                        occurrences = text.count(keyword_lower)
-                        if occurrences > 0:
-                            keyword_total_occurrences += occurrences
+                        
+                        # 统计每个类别下所有子关键词的总出现次数
+                        for sub_keyword in sub_keywords:
+                            sub_keyword_lower = sub_keyword.lower()
+                            occurrences = text.count(sub_keyword_lower)
+                            if occurrences > 0:
+                                total_occurrences += occurrences
                     
-                    if keyword_total_occurrences > 0:
-                        keyword_count[keyword] += 1  # 关键词出现在多少页面中
-                        urls_with_keywords[keyword].add(url)
-                        keyword_occurrences[keyword] += keyword_total_occurrences  # 记录关键词的总出现次数
+                    if total_occurrences > 0:
+                        keyword_count[main_keyword] += 1  # 主关键词出现在多少页面中
+                        urls_with_keywords[main_keyword].add(url)
+                        keyword_occurrences[main_keyword] += total_occurrences  # 记录总出现次数
             else:
                 continue
     
     except Exception as e:
         print(f"发生错误: {e}")
-
-    # for keyword, count in keyword_count.items():
-    #     print(f"关键词 '{keyword}' 出现在 {count} 个页面")
 
     return keyword_count, urls_with_keywords
 
@@ -97,11 +106,12 @@ def search_hospital_articles_v4(hospital_name):
                 # time.sleep(3)  # 等待页面加载
 
         # 搜索每个url查找关键词
-        keywords = ["合作", "沟通", "进修"]
-        keyword_counts, urls_with_keywords = search_keywords_in_urls(href_list, keywords, driver)
+        keywords = ["合作", "协作","沟通","交流","研讨","进修","坐诊"]
+        keywords_count=["合作","沟通","技术"]
+        keyword_counts, urls_with_keywords = search_keywords_in_urls(href_list, keywords, keywords_count, driver)
 
         # 返回元素的数量
-        return len(href_list), keyword_counts[keywords[0]], keyword_counts[keywords[1]], keyword_counts[keywords[2]]
+        return len(href_list), keyword_counts[keywords_count[0]], keyword_counts[keywords_count[1]], keyword_counts[keywords_count[2]]
 
     except Exception as e:
         print(f"发生错误: {e}")
@@ -161,8 +171,9 @@ def search_hospital_articles_v3(hospital_name):
         # else:
         #     print("{}:一共1页:".format(hospital_name))
         # 搜索每个url查找关键词
-        keywords = ["合作", "沟通","进修"]
-        keyword_counts, urls_with_keywords = search_keywords_in_urls(href_list, keywords, driver)
+        keywords = ["合作", "协作","沟通","交流","研讨","进修","坐诊"]
+        keywords_count=["合作","沟通","技术"]
+        keyword_counts, urls_with_keywords = search_keywords_in_urls(href_list, keywords, keywords_count, driver)
         
         # 返回元素的数量
         return len(href_list),keyword_counts[keywords[0]],keyword_counts[keywords[1]],keyword_counts[keywords[2]]
@@ -219,7 +230,7 @@ def search_hospital_articles_v2(hospital_name):
                     href_links.append(href)
                     
         # 搜索每个url查找关键词
-        keywords = ["合作", "沟通","进修"]
+        keywords = ["合作", "协作","沟通","交流","研讨","进修","坐诊"]
         keyword_counts, urls_with_keywords = search_keywords_in_urls(href_links, keywords, driver)
         
         # 返回元素的数量
@@ -266,9 +277,9 @@ def count_hospitals_from_file(file_path,output_excel_path):
         # 对每个医院名称进行搜索并统计
         total_count = 0
         for name in hospital_names:
-            count,hezuo,goutong,jinxiu = search_hospital_articles_v4(name)
-            results.append({"医院名称": name, "文章数量": count, "合作": hezuo, "沟通":goutong, "进修":jinxiu})
-            print("{},文章数量:{},合作:{},沟通:{},进修:{}".format(name,count,hezuo,goutong,jinxiu))
+            count,hezuo,goutong,jishu = search_hospital_articles_v4(name)
+            results.append({"医院名称": name, "文章数量": count, "合作": hezuo, "沟通":goutong, "技术":jishu})
+            print("{},文章数量:{},合作:{},沟通:{},进修:{}".format(name,count,hezuo,goutong,jishu))
         # 创建 DataFrame 并保存为 Excel 文件
         df = pd.DataFrame(results)
         df.to_excel(output_excel_path, index=False, engine='openpyxl')

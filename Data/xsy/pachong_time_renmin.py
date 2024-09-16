@@ -10,7 +10,7 @@ hospitals_df = pd.read_excel(file_path)
 hospital_names = hospitals_df['医院名称'].tolist()
 
 # 统计文章中关键词出现的次数
-keywords = ['合作', '沟通', '进修']
+keywords = ["合作", "协作","沟通","交流","研讨","进修","坐诊"]
 
 def search_hospital_articles(hospital_name):
     search_url = f"https://www.rmhospital.com/search.html?sKey={hospital_name}"
@@ -74,25 +74,29 @@ hospital_article_details = []
 for hospital in hospital_names:
     article_links = search_hospital_articles(hospital)
     if not article_links:  # 如果没有文章链接，则设置文章数量为0
-        # hospital_article_details.append({
-        #     '医院名称': hospital,
-        #     '交互类型': '无',
-        #     '时间': '',
-        #     '链接': ''
-        # })
         continue
     else:
         for article_link in article_links:
             article_details = get_article_details(article_link)
-            for keyword, found in article_details['keywords'].items():
-                if found:
+            
+            # Determine the interaction type based on keywords found
+            interaction_types = []
+            if article_details['keywords'].get("合作", False) or article_details['keywords'].get("协作", False):
+                interaction_types.append("合作")
+            if article_details['keywords'].get("沟通", False) or article_details['keywords'].get("交流", False):
+                interaction_types.append("沟通")
+            if article_details['keywords'].get("研讨", False) or article_details['keywords'].get("坐诊", False) or article_details['keywords'].get("进修", False):
+                interaction_types.append("技术")
+            
+            # Append only once per article, even if multiple interaction types are found
+            if interaction_types:
+                for interaction_type in interaction_types:
                     hospital_article_details.append({
                         '医院名称': hospital,
-                        '交互类型': keyword,
+                        '交互类型': interaction_type,
                         '时间': article_details['date'],
                         '链接': article_link
                     })
-                    break  # Stop after finding the first relevant keyword
 
 # 保存结果到 Excel 文件
 result_df = pd.DataFrame(hospital_article_details)
