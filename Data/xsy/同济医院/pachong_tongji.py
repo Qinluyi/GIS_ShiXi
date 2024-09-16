@@ -157,7 +157,11 @@ def search_hospital_articles_v3(hospital_name,keyword_mapping,driver=None):
 def count_hospitals_from_file(file_path, output_detail, output_count):
     # 设置 ChromeDriver 的路径
     # 设置 ChromeDriver 的路径
-    chrome_service = Service(r'C:\Users\LENOVO\Downloads\chromedriver-win64\chromedriver-win64\chromedriver.exe')
+    try:
+        chrome_service = Service(r'C:\Users\LENOVO\Downloads\chromedriver-win64\chromedriver-win64\chromedriver.exe')
+    except Exception as e:
+        print(f"Error occurred: {e}. Switching to backup path.")
+        chrome_service = Service('C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe')    
     # 设置 ChromeOptions
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # 无头模式，不弹出浏览器窗口
@@ -214,9 +218,9 @@ def count_hospitals_from_file(file_path, output_detail, output_count):
 
 if __name__ == "__main__":
     # 调用函数并传入文件路径
-    file_path = r".\Data\xsy\同济.txt"
-    output_detail = 'hospital_tongji_article_details.xlsx'
-    output_count = 'hospital_article_count_tongji.xlsx'
+    file_path = r"Data\xsy\同济医院\同济.txt"
+    output_detail = r"Data\xsy\同济医院\同济医院交互明细.xlsx"
+    output_count = r"Data\xsy\同济医院\同济医院交互强度表.xlsx"
 
     total_count = count_hospitals_from_file(file_path,output_detail,output_count)
     print(f"总计搜索结果数量: {total_count}")

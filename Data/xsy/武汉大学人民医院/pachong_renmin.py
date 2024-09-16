@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # 读取 Excel 文件
-file_path = r"D:\pycharm file\pachong\hospital_renmin.xlsx"
+file_path = r"Data\xsy\武汉大学人民医院\hospital_renmin.xlsx"
 hospitals_df = pd.read_excel(file_path)
 
 # 获取所有医院的名称列表
@@ -86,4 +86,4 @@ for hospital in hospital_names:
 result_df = pd.DataFrame.from_dict(hospital_article_count, orient='index')
 result_df.reset_index(inplace=True)
 result_df.columns = ['医院', '文章数量', '合作', '沟通', '技术']
-result_df.to_excel('hospital_article_count_remnin.xlsx', index=False)
+result_df.to_excel(r"Data\xsy\武汉大学人民医院\武汉大学人民医院交互强度表.xlsx", index=False)

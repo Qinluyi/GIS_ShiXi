@@ -44,7 +44,11 @@ def search_keywords_in_urls(articles_info, keywords):
     urls_with_keywords = {keyword: set() for keyword in keywords}
     keyword_occurrences = {keyword: 0 for keyword in keywords}  # 记录每个关键词的出现次数
 
-    chrome_service = Service(r'C:\Users\LENOVO\Downloads\chromedriver-win64\chromedriver-win64\chromedriver.exe')
+    try:
+        chrome_service = Service(r'C:\Users\LENOVO\Downloads\chromedriver-win64\chromedriver-win64\chromedriver.exe')
+    except Exception as e:
+        print(f"Error occurred: {e}. Switching to backup path.")
+        chrome_service = Service('C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe')    
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
@@ -132,7 +136,7 @@ def search_keywords_in_urls(articles_info, keywords):
     return keyword_count, urls_with_keywords, articles_info
 
 # Step 1: 读取 Excel 文件，获取医院名称
-df = pd.read_excel(r"D:\xsy\GIS_ShiXi\Data\xsy\hospital_xiehe.xlsx")
+df = pd.read_excel(r"Data/xsy/协和医院/hospital_xiehe.xlsx")
 hospital_names = df['医院名称'].tolist()
 
 
@@ -265,7 +269,7 @@ if results_count:
 else:
     results_count_df = pd.DataFrame(columns=["医院名称", "文章数量", "合作", "沟通", "技术"])
 
-results_detail_df.to_excel('hospital_xiehe_article_detail.xlsx', index=False)
-results_count_df.to_excel('hospital_article_count_xiehe.xlsx', index=False)
+results_detail_df.to_excel(r"Data\xsy\协和医院\协和医院交互明细.xlsx', index=False")
+results_count_df.to_excel(r"Data\xsy\协和医院\协和医院交互强度表.xlsx', index=False")
 
 print("统计结果已保存至 hospital_xiehe_article_detail.xlsx 和 hospital_article_count_xiehe.xlsx")

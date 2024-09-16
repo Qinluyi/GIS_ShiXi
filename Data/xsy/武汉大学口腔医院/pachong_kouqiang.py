@@ -64,7 +64,11 @@ def search_keywords_in_urls(url_list, keywords, keywords_count, driver):
 
 def search_hospital_articles_v4(hospital_name):
     # 设置 ChromeDriver 的路径
-    chrome_service = Service(r'C:\Users\LENOVO\Downloads\chromedriver-win64\chromedriver-win64\chromedriver.exe')
+    try:
+        chrome_service = Service(r'C:\Users\LENOVO\Downloads\chromedriver-win64\chromedriver-win64\chromedriver.exe')
+    except Exception as e:
+        print(f"Error occurred: {e}. Switching to backup path.")
+        chrome_service = Service('C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe')    
     # 设置 ChromeOptions
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # 无头模式，不弹出浏览器窗口
@@ -292,8 +296,8 @@ def count_hospitals_from_file(file_path,output_excel_path):
 
 if __name__ == "__main__":
     # 调用函数并传入文件路径
-    file_path = r"D:\pycharm file\pachong\hospital_kouqiang.xlsx"
-    output_excel_path = 'hospital_article_count_kouqiang.xlsx'
+    file_path = r"Data\xsy\武汉大学口腔医院\hospital_kouqiang.xlsx"
+    output_excel_path = r"Data\xsy\武汉大学口腔医院\武汉大学口腔医院交互强度表.xlsx"
     total_count = count_hospitals_from_file(file_path,output_excel_path)
     print(f"总计搜索结果数量: {total_count}")
     # name = "武汉大学中南医院嘉鱼医院"
