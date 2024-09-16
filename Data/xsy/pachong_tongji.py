@@ -107,7 +107,7 @@ def search_hospital_articles_v3(hospital_name,keyword_mapping,driver=None):
             urls_with_keywords = {keyword: set() for keyword in keywords}
             time_with_keywords = {keyword: set() for keyword in keywords}
             print("一共搜索到0篇文章")
-            return time_with_keywords,urls_with_keywords
+            return time_with_keywords,urls_with_keywords, len(href_list), keyword_counts
             
         
         # 先搜第一页
@@ -183,6 +183,7 @@ def count_hospitals_from_file(file_path, output_detail, output_count):
         # 对每个医院名称进行搜索并统计
         total_count = 0
         for name in hospital_names:
+            
             time_jiaohu,urls_with_keywords,article_num, keyword_counts = search_hospital_articles_v3(name,keyword_mapping,driver)
             for keyword in keywords:
                 time_set = time_jiaohu.get(keyword,set())
