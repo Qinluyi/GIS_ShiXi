@@ -109,6 +109,7 @@ def search_hospital_articles_v3(hospital_name,keyword_mapping,driver=None):
             time_with_keywords = {keyword: set() for keyword in keywords}
             print("一共搜索到0篇文章")
             return time_with_keywords,urls_with_keywords, len(href_list), keyword_count
+        
             
         
         # 先搜第一页
