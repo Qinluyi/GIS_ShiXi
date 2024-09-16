@@ -157,7 +157,11 @@ def search_hospital_articles_v3(hospital_name,keyword_mapping,driver=None):
 def count_hospitals_from_file(file_path, output_detail, output_count):
     # 设置 ChromeDriver 的路径
     # 设置 ChromeDriver 的路径
-    chrome_service = Service(r'C:\Users\LENOVO\Downloads\chromedriver-win64\chromedriver-win64\chromedriver.exe')
+    try:
+        chrome_service = Service(r'C:\Users\LENOVO\Downloads\chromedriver-win64\chromedriver-win64\chromedriver.exe')
+    except Exception as e:
+        print(f"Error occurred: {e}. Switching to backup path.")
+        chrome_service = Service('C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe')    
     # 设置 ChromeOptions
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # 无头模式，不弹出浏览器窗口

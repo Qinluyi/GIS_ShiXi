@@ -193,9 +193,9 @@ def count_hospitals_from_file(file_path,output_excel_path,output_excel_path1):
 
 if __name__ == "__main__":
     # 调用函数并传入文件路径
-    file_path = 'E:\Dasishang\GISshixi\Data\湖北省中医院高校医联体.txt'
-    output_excel_path = 'E:\Dasishang\GISshixi\Data\湖北省中医院高校医联体搜索结果.xlsx'
-    output_excel_path1 = 'E:\Dasishang\GISshixi\Data\湖北省中医院高校医联体交互强度表.xlsx'
+    file_path = r"Data\qly\湖北省中医院\湖北省中医院高校医联体.txt"
+    output_excel_path = r"Data\qly\湖北省中医院\湖北省中医院交互明细.xlsx"
+    output_excel_path1 = r"Data\qly\湖北省中医院\湖北省中医院交互强度表.xlsx"
     count_hospitals_from_file(file_path,output_excel_path,output_excel_path1)
     
     # name = "玉田县中医医院"

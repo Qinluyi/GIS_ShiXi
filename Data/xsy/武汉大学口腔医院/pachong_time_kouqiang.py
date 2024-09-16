@@ -67,7 +67,11 @@ def clean_date(date):
 
 
 def search_hospital_articles_v4(hospital_name):
-    chrome_service = Service(r'C:\Users\LENOVO\Downloads\chromedriver-win64\chromedriver-win64\chromedriver.exe')
+    try:
+        chrome_service = Service(r'C:\Users\LENOVO\Downloads\chromedriver-win64\chromedriver-win64\chromedriver.exe')
+    except Exception as e:
+        print(f"Error occurred: {e}. Switching to backup path.")
+        chrome_service = Service('C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe')    
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
