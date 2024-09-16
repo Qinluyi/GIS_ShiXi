@@ -4,9 +4,9 @@ from tqdm import tqdm
 import time  # 用于模拟爬虫的执行时间
 
 # 定义要运行的 Python 文件列表
-python_files = ['D:\\学习资料\\大四\\Data\\医联体爬虫\\pachong_xiehe.py', 'D:\\学习资料\\大四\\Data\\医联体爬虫\\pachong_renmin.py',
-                'D:\\学习资料\\大四\\Data\\医联体爬虫\\pachong_kouqiang.py','D:\\学习资料\\大四\\Data\\医联体爬虫\\tongji.py',
-                'D:\\学习资料\\大四\\Data\\医联体爬虫\\zhongnan.py','D:\\学习资料\\大四\\Data\\医联体爬虫\\zhongyiyuan.py']
+python_files = ['xsy/协和医院/pachong_xiehe.py', 'xsy/武汉大学人民医院/pachong_renmin.py','xsy/武汉大学人民医院/pachong_time_renmin.py',
+                'xsy/武汉大学口腔医院/pachong_kouqiang.py','xsy/武汉大学口腔医院/pachong_time_kouqiang.py','xsy/同济医院/pachong_tongji.py',
+                'xsy/武汉大学中南医院/pachong_zhongnan.py','qly/湖北省中医院/zhongyiyuan.py']
 
 def run_script(file):
     print('正在运行{file}爬虫。')
