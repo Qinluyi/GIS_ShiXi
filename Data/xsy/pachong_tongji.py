@@ -76,6 +76,7 @@ def search_hospital_articles_v3(hospital_name,keyword_mapping,driver=None):
     # 启动浏览器
     # driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
     keywords = ["合作", "沟通","技术"]
+    keyword_count = {keyword: 0 for keyword in keywords}
     try:
         # 构造搜索 URL
         search_url = f"https://www.tjh.com.cn/search.html?word={hospital_name}"
@@ -107,7 +108,7 @@ def search_hospital_articles_v3(hospital_name,keyword_mapping,driver=None):
             urls_with_keywords = {keyword: set() for keyword in keywords}
             time_with_keywords = {keyword: set() for keyword in keywords}
             print("一共搜索到0篇文章")
-            return time_with_keywords,urls_with_keywords, len(href_list), keyword_counts
+            return time_with_keywords,urls_with_keywords, len(href_list), keyword_count
             
         
         # 先搜第一页
