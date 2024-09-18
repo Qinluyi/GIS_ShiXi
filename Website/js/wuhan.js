@@ -10,8 +10,8 @@ $(function () {
                 '武汉大学人民医院': [114.2916252, 30.48001008],
                 '武汉大学口腔医院': [114.1712836, 30.51229195],
                 '武汉协和医院': [114.281196, 30.590103],
-                '武汉同济医院': [114.267453,30.58682492],
-                '湖北省中医院': [114.3172654,30.5530686]
+                '武汉同济医院': [114.267453, 30.58682492],
+                '湖北省中医院': [114.3172654, 30.5530686]
             };
 
             var data = [
@@ -250,6 +250,30 @@ $(function () {
                 //         });
                 //     });
                 // });
+                // 默认显示“武汉大学人民医院”的信息
+                var defaultHospital = hospitalData.find(hospital => hospital.医院名称 === '武汉大学人民医院');
+                if (defaultHospital) {
+                    var defaultInfoContent = `
+             <div">
+                <h3 style="color: white; font-size: 18px; font-weight: bold;margin-bottom: 8px;">${defaultHospital.医院名称}</h3>
+                <p><strong style="color: white;margin-bottom: 6px">医院地址:</strong> <span style="color: white;">${defaultHospital.医院地址 || 'N/A'}</span></p>
+                <p><strong style="color: white;margin-bottom: 6px">联系电话:</strong> <span style="color: white;">${defaultHospital.联系电话 || 'N/A'}</span></p>
+                <p><strong style="color: white;margin-bottom: 6px">医院等级:</strong> <span style="color: white;">${defaultHospital.医院等级 || 'N/A'}</span></p>
+                <p><strong style="color: white;margin-bottom: 6px">重点科室:</strong> <span style="color: white;">${defaultHospital.重点科室 || 'N/A'}</span></p>
+                <p><strong style="color: white;margin-bottom: 6px">经营方式:</strong> <span style="color: white;">${defaultHospital.经营方式 || 'N/A'}</span></p>
+                <p><strong style="color: white;margin-bottom: 6px">传真号码:</strong> <span style="color: white;">${defaultHospital.传真号码 || 'N/A'}</span></p>
+                <p><strong style="color: white;margin-bottom: 6px">电子邮箱:</strong> <span style="color: white;">${defaultHospital.电子邮箱 || 'N/A'}</span></p>
+                <p><strong style="color: white;margin-bottom: 6px">医院网站:</strong> <a href="${defaultHospital.医院网站}" target="_blank">${defaultHospital.医院网站}</a></p>
+             `;
+                    // 仅当点击特定的医院时，才显示“查看详细信息”按钮
+                    defaultInfoContent += `
+             <button id="viewDetails_wh" style="margin-top: 10px; padding: 8px 12px; background-color: #0E5A78; color: white; border: none; border-radius: 5px;cursor: pointer;transition: background-color 0.3s;">查看医联体</button>
+             `;
+                    defaultInfoContent += `</div>`;
+                    // 假设你有一个元素用于显示这些信息
+                    document.getElementById('hospitalInfo').innerHTML = defaultInfoContent;
+                }
+
                 // 根据不同医院等级分配不同的颜色和符号
                 function getHospitalStyle(grade) {
                     switch (grade) {
