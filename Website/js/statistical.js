@@ -6,7 +6,7 @@ $(function () {
 // echarts_31();
 // echarts_32();
 // echarts_33();
-echarts_5();
+// echarts_5();
 echarts_6();
 function echarts_1() {
         // 基于准备好的dom，初始化echarts实例
