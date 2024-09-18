@@ -1,4 +1,5 @@
 $(function () {
+    var hospitalData = [];
     map();
     function map() {
         var myChart = echarts.init(document.getElementById('map_1'));
@@ -60,7 +61,7 @@ $(function () {
                     show: true,
                     map: 'wuhan',
                     mapType: 'wuhan',
-                    zoom: 1.2,
+                    zoom: 2,
                     label: {
                         emphasis: {
                             textStyle: {
@@ -208,30 +209,41 @@ $(function () {
             });
 
             // 加载并处理JSON数据
-            $.getJSON('http://localhost:3000/hospitals', function (hospitalData) {
-                var promises = hospitalData.map(function (hospital) {
-                    return new Promise(function (resolve) {
-                        getCoordinates(hospital.医院地址, function (coords) {
-                            if (coords) {
-                                resolve({
-                                    name: hospital.医院名称,
-                                    value: coords.concat([100])
-                                });
-                            } else {
-                                console.error('无法获取坐标，跳过医院:', hospital.医院名称);
-                                resolve(null);
-                            }
-                        });
-                    });
+            $.getJSON('http://localhost:3000/hospitals_c', function (hospitalDataFromServer) {
+                hospitalData = hospitalDataFromServer;
+                // var promises = hospitalData.map(function (hospital) {
+                //     return new Promise(function (resolve) {
+                //         getCoordinates(hospital.医院地址, function (coords) {
+                //             if (coords) {
+                //                 resolve({
+                //                     name: hospital.医院名称,
+                //                     value: coords.concat([100])
+                //                 });
+                //             } else {
+                //                 console.error('无法获取坐标，跳过医院:', hospital.医院名称);
+                //                 resolve(null);
+                //             }
+                //         });
+                //     });
+                // });
+                var hospitalCoordinates = hospitalData.map(function (hospital) {
+                    if (hospital.经度 && hospital.纬度) {
+                        return {
+                            name: hospital.医院名称,
+                            value: [hospital.经度, hospital.纬度, 100] // 经纬度和权重
+                        };
+                    } else {
+                        console.error('缺少经纬度数据，跳过医院:', hospital.医院名称);
+                        return null;
+                    }
                 });
-            
-                Promise.all(promises).then(function (hospitalCoordinates) {
+
+                // Promise.all(promises).then(function (hospitalCoordinates) {
                     // 过滤掉null值
                     hospitalCoordinates = hospitalCoordinates.filter(function (coord) {
                         return coord !== null;
                     });
-            
-                    // 设置 ECharts 选项
+
                     myChart.setOption({
                         series: [
                             {
@@ -245,15 +257,28 @@ $(function () {
                                     normal: {
                                         color: '#FF0000'
                                     }
+                                },
+                                label: {
+                                    show: false // 默认不显示标签
+                                },
+                                emphasis: {
+                                    label: {
+                                        show: true, // 鼠标悬停时显示标签
+                                        formatter: '{b}', // 显示医院名称
+                                        position: 'right', // 标签显示在点的右侧
+                                        textStyle: {
+                                            color: '#fff',
+                                            fontSize: 12
+                                        }
+                                    }
                                 }
                             }
                         ]
                     });
-                });
+
+
+                ;
             });
-            
-
-
 
             myChart.on('click', function (params) {
                 var hospitalName = params.name;
@@ -273,16 +298,16 @@ $(function () {
 
                 if (info) {
                     var infoContent = `
-                <div>
-                    <h3>${info.医院名称}</h3>
-                    <p><strong>地址:</strong> ${info.医院地址 || 'N/A'}</p>
-                    <p><strong>联系电话:</strong> ${info.联系电话 || 'N/A'}</p>
-                    <p><strong>医院等级:</strong> ${info.医院等级 || 'N/A'}</p>
-                    <p><strong>重点科室:</strong> ${info.重点科室 || 'N/A'}</p>
-                    <p><strong>经营方式:</strong> ${info.经营方式 || 'N/A'}</p>
-                    <p><strong>传真号码:</strong> ${info.传真号码 || 'N/A'}</p>
-                    <p><strong>电子邮箱:</strong> ${info.电子邮箱 || 'N/A'}</p>
-                    <p><strong>医院网站:</strong> <a href="${info.医院网站}" target="_blank">${info.医院网站}</a></p>
+                <div style="padding=2px">
+                    <h3 style="color: white; font-size: 18px; font-weight: bold;margin-bottom: 8px;">${info.医院名称}</h3>
+                    <p><strong style="color: white;margin-bottom: 6px">医院地址:</strong> <span style="color: white;">${info.医院地址 || 'N/A'}</span></p>
+                    <p><strong style="color: white;margin-bottom: 6px">联系电话:</strong> <span style="color: white;">${info.联系电话 || 'N/A'}</span></p>
+                    <p><strong style="color: white;margin-bottom: 6px">医院等级:</strong> <span style="color: white;">${info.医院等级 || 'N/A'}</span></p>
+                    <p><strong style="color: white;margin-bottom: 6px">重点科室:</strong> <span style="color: white;">${info.重点科室 || 'N/A'}</span></p>
+                    <p><strong style="color: white;margin-bottom: 6px">经营方式:</strong> <span style="color: white;">${info.经营方式 || 'N/A'}</span></p>
+                    <p><strong style="color: white;margin-bottom: 6px">传真号码:</strong> <span style="color: white;">${info.传真号码 || 'N/A'}</span></p>
+                    <p><strong style="color: white;margin-bottom: 6px">电子邮箱:</strong> <span style="color: white;">${info.电子邮箱 || 'N/A'}</span></p>
+                    <p><strong style="color: white;margin-bottom: 6px">医院网站:</strong> <a href="${info.医院网站}" target="_blank">${info.医院网站}</a></p>
                 </div>`;
 
                     // 假设你有一个元素用于显示这些信息
@@ -312,17 +337,14 @@ $(function () {
                 ak: apiKey
             },
             success: function (response) {
-                console.log('API响应:', response);  // 打印API响应
                 if (response.status === 0) {
                     var coords = [response.result.location.lng, response.result.location.lat];
                     callback(coords);
                 } else {
-                    console.error('地址转换失败:', response.status, response.message);
                     callback(null);
                 }
             },
             error: function (error) {
-                console.error('请求出错:', error);
                 callback(null);
             }
         });

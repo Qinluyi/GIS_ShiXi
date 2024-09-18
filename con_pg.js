@@ -9,7 +9,7 @@ const port = 3000;
 const pool = new Pool({
   user: 'postgres',       // PostgreSQL 用户名
   host: 'localhost',      // 数据库服务器地址
-  database: 'hospitals',  // 数据库名称
+  database: 'hospitals_c',  // 数据库名称
   password: '20030509',   // 数据库密码
   port: 5432,             // PostgreSQL 默认端口
 });
@@ -18,9 +18,9 @@ const pool = new Pool({
 app.use(express.static(path.join(__dirname, 'Website')));
 
 // 创建 API 路由来获取医院信息
-app.get('/hospitals', async (req, res) => {
+app.get('/hospitals_c', async (req, res) => {
   try {
-    const result = await pool.query('SELECT 医院名称, 医院地址, 联系电话, 医院等级, 重点科室, 经营方式, 传真号码, 电子邮箱, 医院网站 FROM hospitals');
+    const result = await pool.query('SELECT 医院名称, 医院地址, 联系电话, 医院等级, 重点科室, 经营方式, 传真号码, 电子邮箱, 医院网站,经度, 纬度 FROM hospitals_c');
     res.json(result.rows);
   } catch (err) {
     console.error('数据库查询错误:', err);

@@ -1,11 +1,11 @@
 ﻿
 $(function () {
-echarts_1();
-echarts_2();
+// echarts_1();
+// echarts_2();
 // echarts_4();
-echarts_31();
-echarts_32();
-echarts_33();
+// echarts_31();
+// echarts_32();
+// echarts_33();
 echarts_5();
 echarts_6();
 function echarts_1() {
