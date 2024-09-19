@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>医联体数据展示</title>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/comon1.css">
+    <link rel="stylesheet" href="css/comon0.css">
+
+</head>
+<script>
+    $(window).load(function () {
+        $(".loading").fadeOut()
+    })
+
+    /****/
+    $(document).ready(function () {
+        var whei = $(window).width()
+        $("html").css({ fontSize: whei / 20 })
+        $(window).resize(function () {
+            var whei = $(window).width()
+            $("html").css({ fontSize: whei / 20 })
+        });
+    });
+</script>
+<script type="text/javascript" src="js/echarts.min.js"></script>
+<script language="JavaScript" src="js/statistical.js"></script>
+
+<body>
+    <div class="canvas" style="opacity: .2">
+        <iframe frameborder="0" src="js/index.html" style="width: 100%; height: 100%"></iframe>
+    </div>
+    <div class="loading">
+        <div class="loadbox"> <img src="picture/loading.gif"> 页面加载中... </div>
+    </div>
+    <div class="head">
+        <h1><a href="https://gitee.com/iGaoWei/big-data-view" style="color: white">区域医联体交互评价系统</a></h1>
+        <div class="weather"><img src="picture/weather.png"><span>多云转小雨</span><span id="showTime"></span></div>
+    </div>
+
+    <!-- 下面是数据表部分 -->
+    <div id="datatable">
+        <div id="chooser">
+            <label for="hospitalSelect" style="font-size:x-large;color:azure;">选择医联体:</label>
+            <select id="hospitalSelect" onchange="hospitalChanged()" style="font-size:x-large;">
+                <option value="zhongnanyiyuan">武汉大学中南医院医联体</option>
+                <option value="renminyiyuan">武汉大学人民医院医联体</option>
+                <option value="kouqiangyiyuan">武汉大学口腔医院医联体</option>
+                <option value="tongjiyiyuan">同济医院医联体</option>
+                <option value="xieheyiyuan">协和医院医联体</option>
+                <option value="zhongyiyuan">湖北省中医院医联体</option>
+            </select>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <div class="header">
+                    <h1 id="interactionHeader" style="width: 600px; font-weight: bold;">
+                        武汉大学中南医院医联体交互情况
+                    </h1>
+                </div>
+                <div>
+                    <table id="table1" summary="Most Favorite Movies" position：absolute>
+                        <colgroup>
+                            <col class="vzebra-odd" />
+                            <col class="vzebra-even" />
+                            <col class="vzebra-odd" />
+                            <col class="vzebra-even" />
+                        </colgroup>
+                        <thead>
+                            <tr style="font-size: 15px;background-color: white;">
+                                <th scope="col" id="vzebra-comedy">医院名称</th>
+                                <th scope="col" id="vzebra-adventure">交互类型</th>
+                                <th scope="col" id="vzebra-action">时间</th>
+                                <th scope="col" id="vzebra-children">链接</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" align="center" style="color: black;">
+                                    <strong>
+                                        第 <span id="currentPage">1</span> 页&nbsp;
+                                        <span>共 <span id="totalPages">0</span> 页</span>
+                                    </strong>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <!-- 分页控件 -->
+                    <div id="pagination">
+                        <button onclick="changePage(currentPage - 1 > 0 ? currentPage - 1 : 1)">上一页</button>
+                        <button
+                            onclick="changePage(currentPage + 1 <= totalPages ? currentPage + 1 : totalPages)">下一页</button>
+                        <input type="number" id="pageInput" min="1"
+                            onkeypress="if(this.value.length==1) return event.keyCode!=13;">
+                        <button onclick="changePage(parseInt(document.getElementById('pageInput').value))">跳转</button>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <button id="viewDetails"
+                    style="margin-left: 150px;margin-top: 15px;margin-bottom: 15px;width: 300px;height: 60px; background-color: #0E5A78; color: white; border: none; border-radius: 5px;cursor: pointer;transition: background-color 0.3s;font-weight: bold;font-size:30px;">下载该医联体数据</button>
+                <button id="runPythonScript"
+                    style=" margin-left: 150px;margin-top: 15px;margin-bottom: 15px;width: 300px;height: 60px; background-color: #0E5A78; color: white; border: none; border-radius: 5px;cursor: pointer;transition: background-color 0.3s;font-weight: bold;font-size:30px;">更新数据</button>
+            </div>
+
+        </div>
+
+        <div class="header">
+            <h1 id="intensityHeader" style="width: 600px; font-weight: bold;">
+                武汉大学中南医院医联体交互强度
+            </h1>
+        </div>
+        <div>
+            <table id="table2" summary="2007 Major IT Companies' Profit" position：absolute>
+                <thead>
+                    <tr style="font-size: 15px;background-color: white;">
+                        <th scope="col">医院名称</th>
+                        <th scope="col">文章数量</th>
+                        <th scope="col">合作次数</th>
+                        <th scope="col">沟通次数</th>
+                        <th scope="col">技术交流次数</th>
+                    </tr>
+                </thead>
+                <tfoot>
+
+                    <tr style="background-color: white;">
+                        <td colspan="5" align="center" style="color: black;">
+                            <strong>
+                                第 <span id="currentPageTable2">1</span> 页&nbsp;
+                                <span>共 <span id="totalPagesTable2">0</span> 页</span>
+                            </strong>
+                        </td>
+                    </tr>
+
+                </tfoot>
+                <tbody>
+                </tbody>
+            </table>
+            <div id="pagination2">
+                <button onclick="changePageTable2(currentPageTable2 - 1 > 0 ? currentPageTable2 - 1 : 1)">上一页</button>
+                <button
+                    onclick="changePageTable2(currentPageTable2 + 1 <= totalPagesTable2 ? currentPageTable2 + 1 : totalPagesTable2)">下一页</button>
+                <input type="number" id="pageInputTable2" min="1"
+                    onkeypress="if(this.value.length==1) return event.keyCode!=13;">
+                <button
+                    onclick="changePageTable2(parseInt(document.getElementById('pageInputTable2').value))">跳转</button>
+            </div>
+        </div>
+    </div>
+    <div class="back"></div>
+
+</body>
+<script>
+    var t = null;
+    t = setTimeout(time, 1000);//開始运行
+    function time() {
+        clearTimeout(t);//清除定时器
+        dt = new Date();
+        var y = dt.getFullYear();
+        var mt = dt.getMonth() + 1;
+        var day = dt.getDate();
+        var h = dt.getHours();//获取时
+        var m = dt.getMinutes();//获取分
+        var s = dt.getSeconds();//获取秒
+        document.getElementById("showTime").innerHTML = y + "年" + mt + "月" + day + "-" + h + "时" + m + "分" + s + "秒";
+        t = setTimeout(time, 1000); //设定定时器，循环运行     
+    }
+</script>
+<script>
+
+    let data = [];
+    let itemsPerPage = 8; // 每页显示8项
+    let currentPage = 1;
+    let totalPages;
+
+    async function fetchData_detail(hospitalName = 'zhongnanyiyuan') {
+        console.log(hospitalName)
+        try {
+            const response = await fetch(`/api/data_detail/${hospitalName}`); // 根据医联体名称选择 API
+            data = await response.json();
+            totalPages = Math.ceil(data.length / itemsPerPage);
+            renderTable(currentPage);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    function renderTable(page) {
+        const tableBody = document.querySelector('#table1 tbody');
+        tableBody.innerHTML = ''; // 清空表格
+        const start = (page - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const pageData = data.slice(start, end);
+
+        pageData.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+            <td>${row.医院名称}</td>
+            <td>${row.交互类型}</td>
+            <td>${row.时间}</td>
+            <td>${row.链接}</td>
+        `;
+            tableBody.appendChild(tr);
+        });
+
+        // 更新分页控件
+        document.getElementById('currentPage').textContent = page;
+        document.getElementById('totalPages').textContent = totalPages;
+    }
+    function changePage(page) {
+        if (page < 1 || page > totalPages) return;
+        currentPage = page;
+        renderTable(currentPage);
+    }
+
+    let dataTable2 = [];
+    let itemsPerPageTable2 = 6; // 每页显示6项
+    let currentPageTable2 = 1;
+    let totalPagesTable2;
+
+    async function fetchData_general(hospitalName = 'zhongnanyiyuan') {
+        try {
+            const response = await fetch(`/api/data_general/${hospitalName}`); // 根据医联体名称选择 API
+            dataTable2 = await response.json();
+            totalPagesTable2 = Math.ceil(dataTable2.length / itemsPerPageTable2);
+            renderTable2(currentPageTable2);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+
+    function renderTable2(page) {
+        const tableBody = document.querySelector('#table2 tbody');
+        tableBody.innerHTML = ''; // 清空表格
+        const start = (page - 1) * itemsPerPageTable2;
+        const end = start + itemsPerPageTable2;
+        const pageData = dataTable2.slice(start, end);
+
+        pageData.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+            <td>${row.医院名称}</td>
+            <td>${row.文章数量}</td>
+            <td>${row.合作}</td>
+            <td>${row.沟通}</td>
+            <td>${row.技术}</td>
+        `;
+            tableBody.appendChild(tr);
+        });
+
+        // 更新分页控件
+        document.getElementById('currentPageTable2').textContent = page;
+        document.getElementById('totalPagesTable2').textContent = totalPagesTable2;
+    }
+
+    function changePageTable2(page) {
+        if (page < 1 || page > totalPagesTable2) return;
+        currentPageTable2 = page;
+        renderTable2(currentPageTable2);
+    }
+
+    function hospitalChanged() {
+        const hospitalName = document.getElementById('hospitalSelect').value;
+        let chinese = '';
+        console.log(hospitalName)
+        // 根据选择的值设置中文名称
+        if (hospitalName === 'zhongnanyiyuan') {
+            chinese = '武汉大学中南医院医联体';
+        } else if (hospitalName === 'renminyiyuan') {
+            chinese = '武汉大学人民医院医联体';
+        } else if (hospitalName === 'xieheyiyuan') {
+            chinese = '协和医院医联体';
+        } else if (hospitalName === 'tongjiyiyuan') {
+            chinese = '同济医院医联体';
+        } else if (hospitalName === 'kouqiangyiyuan') {
+            chinese = '武汉大学口腔医院医联体'
+        } else if (hospitalName === 'zhongyiyuan') {
+            chinese === '湖北省中医院医联体'
+        }
+
+        // 更新表格标题
+        document.getElementById('interactionHeader').textContent = `${chinese}交互情况`;
+        document.getElementById('intensityHeader').textContent = `${chinese}交互强度`;
+
+        // 根据选择的医联体名称，调用不同的 API
+        fetchData_detail(hospitalName);  // 拼音名称传递到函数
+        fetchData_general(hospitalName);  // 同上
+    }
+
+    //实现点击按钮下载数据
+    document.getElementById('viewDetails').addEventListener('click', async () => {
+        const hospitalSelect = document.getElementById('hospitalSelect');
+        const hospitalName = hospitalSelect.value;
+        try {
+            // 获取交互明细数据
+            const detailResponse = await fetch(`/api/data_detail/${hospitalName}`);
+            const details = await detailResponse.json();
+
+            // 获取交互强度数据
+            const intensityResponse = await fetch(`/api/data_general/${hospitalName}`);
+            const intensity = await intensityResponse.json();
+
+            // 将数据转换为CSV格式
+            const detailCsv = convertToCSV(details, ['医院名称', '交互类型', '时间', '链接']);
+            const intensityCsv = convertToCSV(intensity, ['医院名称', '文章数量', '合作', '技术', '沟通']);
+
+            // 分别触发两个文件的下载
+            downloadCSV(detailCsv, `${hospitalName}_details.csv`);
+            downloadCSV(intensityCsv, `${hospitalName}_intensity.csv`);
+
+        } catch (error) {
+            console.error('下载数据时出错:', error);
+        }
+    });
+
+    // 将JSON数据转换为CSV格式
+    function convertToCSV(data, headers) {
+        const rows = data.map(row => headers.map(header => row[header]).join(','));
+        return `${headers.join(',')}\n${rows.join('\n')}`;
+    }
+
+    // 下载CSV文件
+    function downloadCSV(csv, filename) {
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    document.getElementById('runPythonScript').addEventListener('click', function () {
+        fetch('/run_script')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('progress').innerText = data;
+            })
+            .catch(error => {
+                console.error('发生错误:', error);
+            });
+    });
+
+
+    // 页面加载时获取数据
+    function loadData() {
+        const defaultHospital = 'zhongnanyiyuan';
+        fetchData_detail(defaultHospital);
+        fetchData_general(defaultHospital);
+    }
+
+    window.onload = loadData;
+
+</script>
+
+</html>

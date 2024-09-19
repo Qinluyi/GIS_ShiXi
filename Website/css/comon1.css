@@ -1,0 +1,384 @@
+body {
+    line-height: 1.6em;
+}
+
+
+
+#table1 {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 20px;
+    width: 700px;
+    text-align: left;
+    border-collapse: separate;
+    /* 更改为 separate */
+    border-spacing: 0;
+    /* 取消单元格间距 */
+    border-radius: 10px;
+    overflow: hidden;
+    /* 确保圆角有效 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+#table1 th {
+    font-size: 14px;
+    font-weight: normal;
+    padding: 12px 15px;
+    border-bottom: 2px solid #ddd;
+    color: #039;
+    background-color: #e9ecef;
+}
+
+#table1 td {
+    padding: 8px 15px;
+    border-bottom: 1px solid #ddd;
+    color: #669;
+}
+
+.vzebra-odd {
+    background: #eff2ff;
+}
+
+.vzebra-even {
+    background: #e8edff;
+}
+
+#table1 #vzebra-adventure,
+#table1 #vzebra-children {
+    background: #d0dafd;
+    border-bottom: 1px solid #c8d4fd;
+}
+
+#table1 #vzebra-comedy,
+#table1 #vzebra-action {
+    background: #dce4ff;
+    border-bottom: 1px solid #d6dfff;
+}
+
+#table1 tr:hover {
+    background-color: #f1f1f1;
+}
+
+#table2 {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 20px;
+    width: 700px;
+    text-align: left;
+    border-collapse: collapse;
+    border: 1px solid #69c;
+}
+
+#table2 th {
+    padding: 15px 10px 10px 10px;
+    font-weight: normal;
+    font-size: 14px;
+    color: #039;
+}
+
+#table2 tbody {
+    background: #e8edff;
+}
+
+#table2 td {
+    padding: 10px;
+    color: #669;
+    border-top: 1px dashed #fff;
+}
+
+#table2 tbody tr:hover td {
+    color: #339;
+    background: #d0dafd;
+}
+
+
+
+
+#background-image {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 12px;
+    margin: 45px;
+    width: 480px;
+    text-align: left;
+    border-collapse: collapse;
+    background: url('table-images/blurry.jpg') 330px 59px no-repeat;
+}
+
+#background-image th {
+    padding: 12px;
+    font-weight: normal;
+    font-size: 14px;
+    color: #339;
+}
+
+#background-image td {
+    padding: 9px 12px;
+    color: #669;
+    border-top: 1px solid #fff;
+}
+
+#background-image tfoot td {
+    font-size: 11px;
+}
+
+#background-image tbody td {
+    background: url('table-images/back.png');
+}
+
+* html #background-image tbody td {
+    /* 
+	   ----------------------------
+		PUT THIS ON IE6 ONLY STYLE 
+		AS THE RULE INVALIDATES
+		YOUR STYLESHEET
+	   ----------------------------
+	*/
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='table-images/back.png', sizingMethod='crop');
+    background: none;
+}
+
+#background-image tbody tr:hover td {
+    color: #339;
+    background: none;
+}
+
+
+#gradient-style {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 12px;
+    margin: 45px;
+    width: 480px;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+#gradient-style th {
+    font-size: 13px;
+    font-weight: normal;
+    padding: 8px;
+    background: #b9c9fe url('table-images/gradhead.png') repeat-x;
+    border-top: 2px solid #d3ddff;
+    border-bottom: 1px solid #fff;
+    color: #039;
+}
+
+#gradient-style td {
+    padding: 8px;
+    border-bottom: 1px solid #fff;
+    color: #669;
+    border-top: 1px solid #fff;
+    background: #e8edff url('table-images/gradback.png') repeat-x;
+}
+
+#gradient-style tfoot tr td {
+    background: #e8edff;
+    font-size: 12px;
+    color: #99c;
+}
+
+#gradient-style tbody tr:hover td {
+    background: #d0dafd url('table-images/gradhover.png') repeat-x;
+    color: #339;
+}
+
+
+#pattern-style-a {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 12px;
+    margin: 45px;
+    width: 480px;
+    text-align: left;
+    border-collapse: collapse;
+    background: url('table-images/pattern.png');
+}
+
+#pattern-style-a thead tr {
+    background: url('table-images/pattern-head.png');
+}
+
+#pattern-style-a th {
+    font-size: 13px;
+    font-weight: normal;
+    padding: 8px;
+    border-bottom: 1px solid #fff;
+    color: #039;
+}
+
+#pattern-style-a td {
+    padding: 8px;
+    border-bottom: 1px solid #fff;
+    color: #669;
+    border-top: 1px solid transparent;
+}
+
+#pattern-style-a tbody tr:hover td {
+    color: #339;
+    background: #fff;
+}
+
+
+#pattern-style-b {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 12px;
+    margin: 45px;
+    width: 480px;
+    text-align: left;
+    border-collapse: collapse;
+    background: url('table-images/patternb.png');
+}
+
+#pattern-style-b thead tr {
+    background: url('table-images/patternb-head.png');
+}
+
+#pattern-style-b th {
+    font-size: 13px;
+    font-weight: normal;
+    padding: 8px;
+    border-bottom: 1px solid #fff;
+    color: #039;
+}
+
+#pattern-style-b td {
+    padding: 8px;
+    border-bottom: 1px solid #fff;
+    color: #669;
+    border-top: 1px solid transparent;
+}
+
+#pattern-style-b tbody tr:hover td {
+    color: #339;
+    background: #cdcdee;
+}
+
+/* 分页器的样式 */
+/* 分页控件的容器样式 */
+#pagination {
+    text-align: center;
+    width: 600px;
+    margin-top: 20px;
+}
+
+/* 分页按钮的通用样式 */
+#pagination button {
+    padding: 5px 10px;
+    margin: 0 5px;
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+/* 分页按钮悬停时的样式 */
+#pagination button:hover {
+    background-color: #e9e9e9;
+}
+
+/* 激活的当前页码按钮样式 */
+#pagination button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+/* 输入框样式 */
+#pagination input[type="number"] {
+    padding: 4px;
+    margin: 0 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+    width: 50px;
+    /* 根据需要调整宽度 */
+}
+
+/* 分页信息样式 */
+#pagination span {
+    margin: 0 10px;
+    font-size: 14px;
+}
+
+#pagination2 {
+    text-align: center;
+    width: 600px;
+    margin-top: 20px;
+}
+
+/* 分页按钮的通用样式 */
+#pagination2 button {
+    padding: 5px 10px;
+    margin: 0 5px;
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+/* 分页按钮悬停时的样式 */
+#pagination2 button:hover {
+    background-color: #e9e9e9;
+}
+
+/* 激活的当前页码按钮样式 */
+#pagination2 button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+/* 输入框样式 */
+#pagination2 input[type="number"] {
+    padding: 4px;
+    margin: 0 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+    width: 50px;
+    /* 根据需要调整宽度 */
+}
+
+/* 分页信息样式 */
+#pagination2 span {
+    margin: 0 10px;
+    font-size: 14px;
+}
+
+
+
+#viewDetails:hover {
+    background-color: #0078A8;
+    /* 鼠标悬停时的颜色 */
+}
+
+#datatable {
+    margin-top: 20px;
+    position: relative;
+    left: 250px;
+    width: 1300px;
+}
+
+.header {
+    margin-top: 20px;
+    position: relative;
+    width: 600px;
+    text-align: left;
+    text-indent: 2em;
+    /* 设置缩进为两个汉字宽度 */
+    color: white;
+
+}
+
+.chooser {
+    font-size: larger;
+    font-weight: bold;
+    color: white;
+}
