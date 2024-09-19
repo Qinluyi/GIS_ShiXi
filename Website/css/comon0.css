@@ -33,7 +33,7 @@ a:hover{ color:#06c; text-decoration: none!important}
   ::-webkit-scrollbar-track {background-color:#ddd}
 
 /***/
-.canvas{position: absolute; width:100%; left: 0; top: 0; height: 99%; z-index: 1;}
+.canvas{position: absolute; width:100%; left: 0; top: 0; height: 99%; z-index: 1;pointer-events: none;}
 
 .allnav{height: calc(100% - 30px);}
 .hospitalInfo{height: calc(100% - 30px);margin-left: 20px;line-height: 1.7;color:'#FF0000'}
