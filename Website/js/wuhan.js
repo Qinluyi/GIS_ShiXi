@@ -236,7 +236,7 @@ $(function () {
             // 加载并处理JSON数据
             $.getJSON('http://localhost:3000/hospitals_with_district', function (hospitalDataFromServer) {
                 hospitalData = hospitalDataFromServer;
-                console.log('检查区县',hospitalData)
+                console.log('检查区县', hospitalData)
                 // 根据经纬度范围过滤点位
                 function filterCoordinates(coords) {
                     const minLongitude = 113.6833;
@@ -289,6 +289,67 @@ $(function () {
                     $('#viewDetails_wh').click(function () {
                         window.location.href = 'wuhandaxue_renmin.html'; // 替换为实际页面路径
                     });
+                }
+                // 默认显示武昌区的医院列表
+                const defaultDistrict = "武昌区";
+                var filteredHospitals = hospitalData.filter(hospital => hospital.区县 === defaultDistrict);
+
+                // 生成医院列表HTML
+                var hospitalListContent = `<table style="width: 100%; border-collapse: collapse;">`;
+                filteredHospitals.forEach(function (hospital) {
+                    hospitalListContent += `
+        <tr>
+            <td style="padding: 8px; border: 1px solid transparent; color: white;">${hospital.医院名称}</td>
+            <td style="padding: 8px; border: 1px solid transparent; color: white;">${hospital.医院等级 || 'N/A'}</td>
+            <td style="padding: 8px; border: 1px solid transparent;">
+                <a href="${hospital.医院网站}" target="_blank" style="color: #0E5A78;">查看详情</a>
+            </td>
+        </tr>`;
+                });
+                hospitalListContent += `</table>`;
+
+                // 将生成的内容插入到指定的div中
+                var hospitalListDiv = document.getElementById('hospitalList');
+                hospitalListDiv.innerHTML = hospitalListContent;
+
+                // 设置滚动样式
+                hospitalListDiv.style.overflow = 'hidden';  // 隐藏滚动条
+                hospitalListDiv.style.maxHeight = '8.4rem';  // 限制显示行数（约等于8行）
+
+                // 获取表格的总行数
+                var table = hospitalListDiv.querySelector('table');
+                var rows = table.querySelectorAll('tr');
+                var rowCount = rows.length;
+                var visibleRows = 8;  // 设定可见行数为8
+
+                // 设置表格容器的高度（确保显示8行）
+                hospitalListDiv.style.position = 'relative';
+                hospitalListDiv.style.height = `${8 * rows[0].offsetHeight}px`;
+
+                // 如果医院数超过可见行数，则启用滚动
+                if (rowCount > visibleRows) {
+                    let currentIndex = 0;  // 当前滚动的起始行的索引
+
+                    // 克隆前8行并添加到表格末尾，以实现循环效果
+                    for (let i = 0; i < visibleRows; i++) {
+                        table.appendChild(rows[i].cloneNode(true));
+                    }
+
+                    // 设置定时器实现平滑循环滚动（每0.5秒）
+                    var scrollInterval = setInterval(function () {
+                        currentIndex++;
+                        table.style.transform = `translateY(-${currentIndex * rows[0].offsetHeight}px)`;
+                        table.style.transition = 'transform 0.5s ease';
+
+                        // 当滚动到克隆行时，立即跳转回原始第一行（无动画）
+                        if (currentIndex >= rowCount) {
+                            setTimeout(() => {
+                                table.style.transition = 'none';  // 取消动画
+                                table.style.transform = 'translateY(0)';
+                                currentIndex = 0;  // 重置索引
+                            }, 500);  // 等待动画完成后重置
+                        }
+                    }, 1000);  // 每秒滚动一次
                 }
 
                 // 根据不同医院等级分配不同的颜色和符号
@@ -498,6 +559,7 @@ $(function () {
                     }
                 }
 
+                // 显示区域医院列表
                 const districts = ["江岸区", "江汉区", "硚口区", "汉阳区", "武昌区", "青山区", "洪山区", "东西湖区", "汉南区", "蔡甸区", "江夏区", "黄陂区", "新洲区"];
                 var selectedDistrict = districts.find(district => params.name.includes(district));
                 if (selectedDistrict) {
@@ -508,30 +570,60 @@ $(function () {
                     var hospitalListContent = `<table style="width: 100%; border-collapse: collapse;">`;
                     filteredHospitals.forEach(function (hospital) {
                         hospitalListContent += `
-                <tr>
-                    <td style="padding: 8px; border: 1px solid #ccc;">${hospital.医院名称}</td>
-                    <td style="padding: 8px; border: 1px solid #ccc;">${hospital.医院等级 || 'N/A'}</td>
-                    <td style="padding: 8px; border: 1px solid #ccc;">
-                        <a href="${hospital.医院网站}" target="_blank" style="color: #0E5A78;">查看详情</a>
-                    </td>
-                </tr>`;
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid transparent; color: white;">${hospital.医院名称}</td>
+                            <td style="padding: 8px; border: 1px solid transparent; color: white;">${hospital.医院等级 || 'N/A'}</td>
+                            <td style="padding: 8px; border: 1px solid transparent;">
+                                <a href="${hospital.医院网站}" target="_blank" style="color: #0E5A78;">查看详情</a>
+                            </td>
+                        </tr>`;
                     });
                     hospitalListContent += `</table>`;
 
-                    // 将生成的内容插入到指定的div中，并实现滚动功能
+                    // 将生成的内容插入到指定的div中
                     var hospitalListDiv = document.getElementById('hospitalList');
                     hospitalListDiv.innerHTML = hospitalListContent;
 
-                    // 如果列表过长，启用滚动
-                    hospitalListDiv.style.overflowY = 'auto';
-                    hospitalListDiv.style.maxHeight = '4.2rem';  // 设置最大高度以启用滚动
-                }
-                // for (let district of districts) {
-                //     if (params.name.includes(district)) {
-                //         // alert('点击了：' + params.name); 
+                    // 设置滚动样式
+                    hospitalListDiv.style.overflow = 'hidden';  // 隐藏滚动条
+                    hospitalListDiv.style.maxHeight = '8.4rem';  // 限制显示行数（约等于8行）
 
-                //     }
-                // }
+                    // 获取表格的总行数
+                    var table = hospitalListDiv.querySelector('table');
+                    var rows = table.querySelectorAll('tr');
+                    var rowCount = rows.length;
+                    var visibleRows = 8;  // 设定可见行数为8
+
+                    // 设置表格容器的高度（确保显示8行）
+                    hospitalListDiv.style.position = 'relative';
+                    hospitalListDiv.style.height = `${8 * rows[0].offsetHeight}px`;
+
+                    // 如果医院数超过可见行数，则启用滚动
+                    if (rowCount > visibleRows) {
+                        let currentIndex = 0;  // 当前滚动的起始行的索引
+
+                        // 克隆前8行并添加到表格末尾，以实现循环效果
+                        for (let i = 0; i < visibleRows; i++) {
+                            table.appendChild(rows[i].cloneNode(true));
+                        }
+
+                        // 设置定时器实现平滑循环滚动（每0.5秒）
+                        var scrollInterval = setInterval(function () {
+                            currentIndex++;
+                            table.style.transform = `translateY(-${currentIndex * rows[0].offsetHeight}px)`;
+                            table.style.transition = 'transform 0.5s ease';
+
+                            // 当滚动到克隆行时，立即跳转回原始第一行（无动画）
+                            if (currentIndex >= rowCount) {
+                                setTimeout(() => {
+                                    table.style.transition = 'none';  // 取消动画
+                                    table.style.transform = 'translateY(0)';
+                                    currentIndex = 0;  // 重置索引
+                                }, 500);  // 等待动画完成后重置
+                            }
+                        }, 1000);  // 每秒滚动一次
+                    }
+                }
 
             });
         }
