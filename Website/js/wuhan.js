@@ -234,8 +234,9 @@ $(function () {
 
 
             // 加载并处理JSON数据
-            $.getJSON('http://localhost:3000/hospitals_c', function (hospitalDataFromServer) {
+            $.getJSON('http://localhost:3000/hospitals_with_district', function (hospitalDataFromServer) {
                 hospitalData = hospitalDataFromServer;
+                console.log('检查区县',hospitalData)
                 // 根据经纬度范围过滤点位
                 function filterCoordinates(coords) {
                     const minLongitude = 113.6833;
@@ -370,7 +371,61 @@ $(function () {
                     ]
                 });
                 ;
+
+                // // 直接使用经纬度数据来获取区县信息
+                // function addDistrictToHospitals() {
+                //     const promises = hospitalData.map(function (hospital) {
+                //         return new Promise(function (resolve) {
+                //             var coords = [hospital.经度, hospital.纬度];
+                //             getDistrictFromCoordinates(coords, function (district) {
+                //                 if (district) {
+                //                     hospital.区县 = district;
+                //                 } else {
+                //                     console.error('无法获取区县，跳过医院:', hospital.医院名称);
+                //                 }
+                //                 resolve();
+                //             });
+                //         });
+                //     });
+
+                //     Promise.all(promises).then(function () {
+                //         console.log('检查区县', hospitalData);
+                //     });
+                // }
+
+                // // 使用百度地图API获取区县信息
+                // function getDistrictFromCoordinates(coords, callback) {
+                //     var apiKey = 'EreKpUz1LmAv8BAEPzw4BQNuTDrnpGlW'; // 替换为实际的API密钥
+                //     var reverseGeocodeURL = 'https://api.map.baidu.com/reverse_geocoding/v3/';
+
+                //     $.ajax({
+                //         url: reverseGeocodeURL,
+                //         type: 'GET',
+                //         dataType: 'jsonp',
+                //         data: {
+                //             location: coords[1] + ',' + coords[0], // 使用纬度和经度
+                //             output: 'json',
+                //             ak: apiKey
+                //         },
+                //         success: function (response) {
+                //             if (response.status === 0) {
+                //                 var district = response.result.addressComponent.district;
+                //                 callback(district);
+                //             } else {
+                //                 callback(null);
+                //             }
+                //         },
+                //         error: function (error) {
+                //             callback(null);
+                //             console.log('无法获取区县');
+                //         }
+                //     });
+                // }
+
+                // // 在获取 hospitalData 后调用 addDistrictToHospitals
+                // addDistrictToHospitals();
             });
+
 
             myChart.on('click', function (params) {
                 var hospitalName = params.name;
@@ -444,12 +499,39 @@ $(function () {
                 }
 
                 const districts = ["江岸区", "江汉区", "硚口区", "汉阳区", "武昌区", "青山区", "洪山区", "东西湖区", "汉南区", "蔡甸区", "江夏区", "黄陂区", "新洲区"];
-                for (let district of districts) {
-                    if (params.name.includes(district)) {
-                        // alert('点击了：' + params.name); 
+                var selectedDistrict = districts.find(district => params.name.includes(district));
+                if (selectedDistrict) {
+                    // 筛选区县内的医院
+                    var filteredHospitals = hospitalData.filter(hospital => hospital.区县 === selectedDistrict);
 
-                    }
+                    // 生成医院列表HTML
+                    var hospitalListContent = `<table style="width: 100%; border-collapse: collapse;">`;
+                    filteredHospitals.forEach(function (hospital) {
+                        hospitalListContent += `
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ccc;">${hospital.医院名称}</td>
+                    <td style="padding: 8px; border: 1px solid #ccc;">${hospital.医院等级 || 'N/A'}</td>
+                    <td style="padding: 8px; border: 1px solid #ccc;">
+                        <a href="${hospital.医院网站}" target="_blank" style="color: #0E5A78;">查看详情</a>
+                    </td>
+                </tr>`;
+                    });
+                    hospitalListContent += `</table>`;
+
+                    // 将生成的内容插入到指定的div中，并实现滚动功能
+                    var hospitalListDiv = document.getElementById('hospitalList');
+                    hospitalListDiv.innerHTML = hospitalListContent;
+
+                    // 如果列表过长，启用滚动
+                    hospitalListDiv.style.overflowY = 'auto';
+                    hospitalListDiv.style.maxHeight = '4.2rem';  // 设置最大高度以启用滚动
                 }
+                // for (let district of districts) {
+                //     if (params.name.includes(district)) {
+                //         // alert('点击了：' + params.name); 
+
+                //     }
+                // }
 
             });
         }
@@ -461,32 +543,31 @@ $(function () {
         });
     }
     // 定义getCoordinates函数，使用百度地图API进行地址转换
-    function getCoordinates(address, callback) {
-        var apiKey = 'EreKpUz1LmAv8BAEPzw4BQNuTDrnpGlW';  // 请替换为你自己的API密钥
-        var geocodeURL = 'https://api.map.baidu.com/geocoding/v3/';
+    // function getCoordinates(address, callback) {
+    //     var apiKey = 'EreKpUz1LmAv8BAEPzw4BQNuTDrnpGlW';  // 请替换为你自己的API密钥
+    //     var geocodeURL = 'https://api.map.baidu.com/geocoding/v3/';
 
-        $.ajax({
-            url: geocodeURL,
-            type: 'GET',
-            dataType: 'jsonp',
-            data: {
-                address: address,
-                output: 'json',
-                ak: apiKey
-            },
-            success: function (response) {
-                if (response.status === 0) {
-                    var coords = [response.result.location.lng, response.result.location.lat];
-                    callback(coords);
-                } else {
-                    callback(null);
-                }
-            },
-            error: function (error) {
-                callback(null);
-            }
-        });
-    }
-
+    //     $.ajax({
+    //         url: geocodeURL,
+    //         type: 'GET',
+    //         dataType: 'jsonp',
+    //         data: {
+    //             address: address,
+    //             output: 'json',
+    //             ak: apiKey
+    //         },
+    //         success: function (response) {
+    //             if (response.status === 0) {
+    //                 var coords = [response.result.location.lng, response.result.location.lat];
+    //                 callback(coords);
+    //             } else {
+    //                 callback(null);
+    //             }
+    //         },
+    //         error: function (error) {
+    //             callback(null);
+    //         }
+    //     });
+    // }
 
 });
