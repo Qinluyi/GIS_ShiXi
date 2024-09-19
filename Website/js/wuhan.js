@@ -232,9 +232,21 @@ $(function () {
                 ]
             });
 
+
             // 加载并处理JSON数据
             $.getJSON('http://localhost:3000/hospitals_c', function (hospitalDataFromServer) {
                 hospitalData = hospitalDataFromServer;
+                // 根据经纬度范围过滤点位
+                function filterCoordinates(coords) {
+                    const minLongitude = 113.6833;
+                    const maxLongitude = 115.0833;
+                    const minLatitude = 29.9667;
+                    const maxLatitude = 31.3667;
+
+                    const [longitude, latitude] = coords;
+                    return longitude >= minLongitude && longitude <= maxLongitude &&
+                        latitude >= minLatitude && latitude <= maxLatitude;
+                }
                 // var promises = hospitalData.map(function (hospital) {
                 //     return new Promise(function (resolve) {
                 //         getCoordinates(hospital.医院地址, function (coords) {
@@ -272,6 +284,10 @@ $(function () {
                     defaultInfoContent += `</div>`;
                     // 假设你有一个元素用于显示这些信息
                     document.getElementById('hospitalInfo').innerHTML = defaultInfoContent;
+                    // 为默认按钮绑定点击事件
+                    $('#viewDetails_wh').click(function () {
+                        window.location.href = 'wuhandaxue_renmin.html'; // 替换为实际页面路径
+                    });
                 }
 
                 // 根据不同医院等级分配不同的颜色和符号
@@ -296,15 +312,20 @@ $(function () {
                 var hospitalCoordinates = hospitalData.map(function (hospital) {
                     if (hospital.经度 && hospital.纬度) {
                         var style = getHospitalStyle(hospital.医院等级); // 获取样式
-                        return {
-                            name: hospital.医院名称,
-                            value: [hospital.经度, hospital.纬度, 100], // 经纬度和权重
-                            symbol: style.symbol, // 符号
-                            itemStyle: {
-                                color: style.color // 颜色
-                            },
-                            symbolSize: style.symbolSize
-                        };
+                        // 筛选坐标
+                        var coords = [hospital.经度, hospital.纬度];
+                        if (filterCoordinates(coords)) {
+                            return {
+                                name: hospital.医院名称,
+                                value: [hospital.经度, hospital.纬度, 100], // 经纬度和权重
+                                symbol: style.symbol, // 符号
+                                itemStyle: {
+                                    color: style.color // 颜色
+                                },
+                                symbolSize: style.symbolSize
+                            };
+                        }
+
                     } else {
                         console.error('缺少经纬度数据，跳过医院:', hospital.医院名称);
                         return null;
@@ -421,6 +442,15 @@ $(function () {
                         };
                     }
                 }
+
+                const districts = ["江岸区", "江汉区", "硚口区", "汉阳区", "武昌区", "青山区", "洪山区", "东西湖区", "汉南区", "蔡甸区", "江夏区", "黄陂区", "新洲区"];
+                for (let district of districts) {
+                    if (params.name.includes(district)) {
+                        // alert('点击了：' + params.name); 
+
+                    }
+                }
+
             });
         }
 
