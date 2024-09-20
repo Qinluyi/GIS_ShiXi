@@ -63,6 +63,7 @@ a:hover{ color:#06c; text-decoration: none!important}
 .boxall:before,.boxfoot:before{border-left: 2px solid #02a6b5;left: 0;}
 .boxall:after,.boxfoot:after{border-right: 2px solid #02a6b5; right: 0;}
 .alltitle{ font-size:.2rem; color:#40B1C8; text-align: center; line-height: .5rem;font-weight: bold}
+.alltitle1{ font-size:.2rem; color:#40B1C8; text-align: center; line-height: .5rem;font-weight: bold}
 
 .boxfoot{ position:absolute; bottom: 0; width: 100%; left: 0;}
 .boxfoot:before,
