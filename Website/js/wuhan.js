@@ -585,10 +585,7 @@ $(function () {
                     hospitalListDiv.innerHTML = hospitalListContent;
                     // 修改显示区县名称的div文本
                     var districtTitleDiv = document.getElementById('changequxian');
-                    if (districtTitleDiv) {
-                        districtTitleDiv.innerHTML = `<span class="alltitle1" >区域医院列表 <${selectedDistrict}></span>`;
-                    }
-
+                    districtTitleDiv.innerHTML = `<span class="alltitle" >区域医院列表 <${selectedDistrict}></span>`;
 
                     // 设置滚动样式
                     hospitalListDiv.style.overflow = 'hidden';  // 隐藏滚动条
