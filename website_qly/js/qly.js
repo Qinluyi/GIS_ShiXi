@@ -55,7 +55,7 @@ init_option = {
         trigger: 'item',
         formatter: function (params) {
             // params包含当前数据项的信息
-            return "结算等级" + ': ' + params.value[1]; // 显示名称和第4个值
+            return params.name + "<br>结算等级" + ': ' + params.value[3]; // 显示名称和第4个值
         }
     },
     geo: {
@@ -105,16 +105,28 @@ function updateCheckboxStates() {
 var convertData = function (data) {
     var res = [];
     for (var i = 0; i < data.length; i++) {
-        var geoCoord = mygeoCoordMap[data[i].name];
+        var geoCoord = mygeoCoordMap[data[i].name][0];
         if (geoCoord) {
             res.push({
                 name: data[i].name,
-                value: geoCoord.concat(data[i].value)
+                value: geoCoord.concat(data[i].value,mygeoCoordMap[data[i].name][1])
             });
         }
     }
     return res;
  };
+
+function get_sanjia(data){
+    sanjia = [];
+    data.forEach(item => {
+        const { 医院名称,医院等级 } = item;
+        const levelValue = levelValues[医院等级];
+        if (医院等级 == "三级甲等"){
+            sanjia.push({ name: 医院名称, value: levelValue });
+        }
+    });
+    return sanjia;
+}
 
 function put_scatter(key,data){
     map_data = [];
@@ -123,7 +135,7 @@ function put_scatter(key,data){
         data.forEach(item => {
             const { 医院名称, 经度, 纬度, 医院等级 } = item;
 
-            mygeoCoordMap[医院名称] = [经度, 纬度]; // 存储经纬度
+            mygeoCoordMap[医院名称] = [[经度, 纬度],医院等级]; // 存储经纬度
             // 使用医院等级作为键查找字典值
             const levelValue = levelValues[医院等级] || 50; // 如果等级不存在则默认为 0
             map_data.push({ name: 医院名称, value: levelValue }); // 存储医院名称和对应的值
@@ -161,7 +173,42 @@ function put_scatter(key,data){
                     show: true
                 }
             }
-        });
+        }
+        );
+    sanjia = get_sanjia(data);
+    if (sanjia.length > 0){
+        current_option['series'].push(
+            {   
+                id: key+"1",
+                name: nameDict[key],
+                type: 'effectScatter',
+                coordinateSystem: 'geo',
+                data: convertData(sanjia),
+                encode: {
+                    value: 2
+                },
+                symbolSize: function (val) {
+                    return val[2] / 10;
+                },
+                showEffectOn: 'emphasis',
+                rippleEffect: {
+                    brushType: 'stroke'
+                },
+                hoverAnimation: true,
+                label: {
+                    formatter: '{b}',
+                    position: 'right',
+                    show: true
+                },
+                itemStyle: {
+                    color: colorDict[key],
+                    shadowBlur: 10,
+                    shadowColor: '#333'
+                },
+                zlevel: 1
+            }
+        )
+    }
 
         // 初始化图例
     if (first_legend) {
@@ -242,11 +289,19 @@ function show_fanwei(){
         // 找到目标 id 对应的元素索引
         current_option = myecharts.getOption();
         series = current_option['series'];
-        const index = series.findIndex(item => item.id === change_key);
-        // 如果找到了该元素，则删除它
-        if (index !== -1) {
-            series.splice(index, 1);
+        index = []
+        //const index = series.findIndex(item => item.name === nameDict[change_key]);
+        for (let i = 0; i <series.length; i++) {
+            if (series[i].name === nameDict[change_key]){
+                index.push(i);
+            }
+        };
+
+        // 按降序删除元素
+        for (let i = index.length - 1; i >= 0; i--) {
+            series.splice(index[i], 1);
         }
+        
         current_option['series'] = series;
         myecharts.setOption(current_option,true);
     }else{
