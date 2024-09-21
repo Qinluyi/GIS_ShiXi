@@ -1,6 +1,6 @@
 const express = require('express');
 const { Client } = require('pg');    //引入express和pg框架
-const connectionString = 'postgres://postgres:Xxsht123@localhost:5858/ylt1'
+const connectionString = 'postgres://postgres:Xxsht123@localhost:5858/ylt'
 const client = new Client({
     connectionString: connectionString
 });
@@ -44,10 +44,10 @@ app.get('/get_hospital_count', function (req, res, next) {
                 tableName = '武汉大学口腔医院交互强度表';
                 break;
             case 'tongji':
-                tableName = '同济医院交互强度表';
+                tableName = '华中科技大学同济医学院附属同济医院交互强';
                 break;
             case 'xiehe':
-                tableName = '协和医院交互强度表';
+                tableName = '华中科技大学同济医学院附属协和医院交互强';
                 break;
             case 'hubei_tcm':
                 tableName = '湖北省中医院交互强度表';
@@ -125,12 +125,14 @@ app.get('/total_hospital_number', function (req, res, next) {
     }
 
     // Construct query to find all rows where "医院名称" is part of the selected hospital names
+    // Construct query to find all rows where "医院名称" is part of the selected hospital names
     const query = `
-        SELECT "所在市", COUNT(*) as count 
-        FROM "医联体医院坐标表"
-        WHERE "所属医联体" = ANY($1::text[])
-        GROUP BY "所在市";
-    `;
+    SELECT "所在市", COUNT(*) as count 
+    FROM "医联体医院坐标表"
+    WHERE "所属医联体" = ANY($1::text[])
+    AND "所在市" NOT IN ('湖北省', '海南省')
+    GROUP BY "所在市";
+`;
 
     // Query the database with the selected hospital names
     client.query(query, [hospitalNames])

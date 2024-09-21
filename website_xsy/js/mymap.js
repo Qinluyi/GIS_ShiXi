@@ -1199,63 +1199,10 @@ var option1 = {
                         areaColor: '#111111',
                         shadowColor: '#000',
                         shadowBlur: 10
-                    },
+                    }
                 }
-            }],
-        },
-
-        series: [{
-            name: '热图',
-            type: 'heatmap',
-            coordinateSystem: 'geo',
-            data: convertedData[0]
-        },
-            {
-                name: '散点',
-                type: 'scatter',
-                coordinateSystem: 'geo',
-                data: convertedData[0],
-                symbolSize: function(val) {
-                    return (5 + Math.log2(val[2]));
-                },
-                label: {
-                    normal: {
-                        formatter: '{b}',
-                        position: 'right',
-                        show: false
-                    },
-                    emphasis: {
-                        show: true
-                    }
-                },
-                itemStyle: {
-                    normal: {
-                        color: '#ddb926'
-                    }
-                },
-                tooltip: {
-                    trigger: 'item',
-                    formatter: function(params) {
-                        return params.name + ' : ' + params.value[2];
-                    }
-                },
-            },
-            {
-                id: 'bar',
-                zlevel: 2,
-                type: 'bar',
-                symbol: 'none',
-                itemStyle: {
-                    color: '#ddd',
-                },
-                emphasis: {
-                    color: '#fff',
-                    shadowColor: 'rgba(255, 0, 0, 0.5)',
-                    shadowBlur: 10
-                },
-                data: []
-            }
-        ]
+            }]
+        }
     },
     options: []
 }

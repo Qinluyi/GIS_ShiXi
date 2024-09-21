@@ -105,6 +105,20 @@
 
 })();
 // 用户
+
+// 预处理城市数据函数
+function processCityNames(data) {
+    return data.map(city => {
+        if (city === "恩施土家族苗族自治州") {
+            return "恩施"; // 特殊处理恩施土家族苗族自治州
+        } else if (city.endsWith("市")) {
+            return city.slice(0, -1); // 去掉以“市”结尾的城市名称
+        } else {
+            return city; // 其他城市名称保持不变
+        }
+    });
+}
+
 (function () {
     // 中间省略的数据  准备三项
     var item = {
@@ -125,7 +139,7 @@
             extraCssText: 'opacity:0'
         }
     };
-    option = {
+    option_bar = {
         // 工具提示
         tooltip: {
             // 触发类型  经过轴触发axis  经过轴触发item
@@ -156,17 +170,23 @@
                 // 使用类目，必须有data属性
                 type: 'category',
                 // 使用 data 中的数据设为刻度文字
-                data: ['上海', '广州', '北京', '深圳', '合肥',  '杭州', '厦门', '济南', '成都', '重庆'],
+                data: [],
                 // 刻度设置
                 axisTick: {
                     // true意思：图形在刻度中间
                     // false意思：图形在刻度之间
-                    alignWithLabel: false,
-                    show: false
+                    alignWithLabel: true,  // 确保柱子和标签对齐
+                    show: true  // 显示刻度
                 },
                 //文字
                 axisLabel: {
-                    color: '#4c9bfd'
+                    color: '#4c9bfd',
+                    // 标签旋转 45 度
+                    rotate: 45,
+                    // 标签位置微调
+                    margin: 10,
+                    align: 'right',
+                    verticalAlign: 'middle'
                 }
             }
         ],
@@ -194,7 +214,6 @@
         ],
         // 控制x轴
         series: [
-
             {
                 // series配置
                 // 颜色
@@ -216,12 +235,14 @@
                 // 柱子宽度
                 barWidth: '60%',
                 // 数据
-                data: [2100, 1900, 1700, 1560, 1400,  900, 750, 600, 480, 240]
+                data: []
             }
         ]
     };
+    
+    
     var myechart = echarts.init($('.users .bar')[0]);
-    myechart.setOption(option);
+    myechart.setOption(option_bar);
     myechart.on('click',  function(param) {
         alert("更多模板，关注公众号【DreamCoders】\n回复'BigDataView'即可获取\n或前往Gitee下载 https://gitee.com/iGaoWei/big-data-view")
         setTimeout(function(){

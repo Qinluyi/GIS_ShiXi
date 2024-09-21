@@ -344,7 +344,7 @@ a{
 }
 /* 订单 */
 .order {
-  height: 6.167rem;
+  height: 6.4rem;
 }
 .order .filter {
   display: flex;
@@ -366,7 +366,7 @@ a{
 }
 .order .filter a.active {
   color: #fff;
-  font-size: 0.833rem;
+  font-size: 1.3rem;
 }
 .order .data {
   display: flex;
@@ -385,6 +385,54 @@ a{
   color: #4c9bfd;
   font-size: 0.667rem;
 }
+.button-container1 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.button-row1 {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: -4px; /* Reduces spacing between two rows */
+}
+
+.custom-btn1 {
+  background-color: #3b82d492;
+  color: #fff;
+  border: none;
+  padding: 2px 15px; /* Reduces padding */
+  cursor: pointer;
+  flex: 1;
+  margin: 0 2px; /* Reduces margin */
+  font-size: 10px; /* Reduces font size slightly */
+  transition: background-color 0.3s;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 添加阴影 */
+}
+
+.custom-btn1:hover {
+  background-color: #3b82d4; /* 悬浮时变深的颜色 */
+}
+
+.custom-btn1:first-child {
+  margin-left: 0; /* 第一个按钮左侧对齐 */
+}
+
+.custom-btn1:last-child {
+  margin-right: 0; /* 最后一个按钮右侧对齐 */
+}
+
+
+
+
+
+
+
+
+
+
 /* 销售区域 */
 .sales {
   height: 10.333rem;

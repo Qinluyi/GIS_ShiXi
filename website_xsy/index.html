@@ -251,17 +251,17 @@
                         <div class="bar"></div>
                         <div class="data">
                             <div class="item">
-                                <h4>120,899</h4>
+                                <h4>1,120,899</h4>
                                 <span>
                                     <i class="icon-dot" style="color: #ed3f35"></i>
-                                    用户总量
+                                    交互总次数
                                 </span>
                             </div>
                             <div class="item">
-                                <h4>248</h4>
+                                <h4>229</h4>
                                 <span>
                                     <i class="icon-dot" style="color: #eacf19"></i>
-                                    本月新增
+                                    医院总数
                                 </span>
                             </div>
                         </div>
@@ -274,26 +274,19 @@
                 <div class="inner">
                     <!-- 筛选 -->
                     <div class="filter">
-                        <a href="javascript:;" data-key="day365" class="active">365天</a>
-                        <a href="javascript:;" data-key="day90">90天</a>
-                        <a href="javascript:;" data-key="day30">30天</a>
-                        <a href="javascript:;" data-key="day1">24小时</a>
+                        <a data-key="day365" class="active">功能切换</a>
                     </div>
-                    <!-- 数据 -->
-                    <div class="data">
-                        <div class="item">
-                            <h4>20,301,987</h4>
-                            <span>
-                                <i class="icon-dot" style="color: #ed3f35;"></i>
-                                订单量
-                            </span>
+                    
+                    <!-- 按钮区域 -->
+                    <div class="button-container1">
+                        <div class="button-row1">
+                            <button id="btn-fushefanwei" class="custom-btn1">辐射范围</button>
+                            <button id="btn-fushenengli" class="custom-btn1">辐射能力</button>
+                            <button id="btn-jiaohuqiangdu" class="custom-btn1">交互强度</button>
                         </div>
-                        <div class="item">
-                            <h4>99834</h4>
-                            <span>
-                                <i class="icon-dot" style="color: #eacf19;"></i>
-                                销售额(万元)
-                            </span>
+                        <div class="button-row1">
+                            <button id="btn-jiaohurelitu" class="custom-btn1">交互强度热力图</button>
+                            <button id="btn-shuliangrelitu" class="custom-btn1">医联体数量散点/热力图</button>
                         </div>
                     </div>
                 </div>
@@ -462,8 +455,7 @@
     var data = [];
     var geoCoordMap = {};
     var currentInteractionType = '文章数量'; // 初始交互类型为文章数量
-    var function_type = '交互热力图';
-    
+    // var function_type = '数量热力图';
     // 函数：更新选中的医院
     function updateSelectedHospitals_jiaohu() {
         // 获取所有被选中的复选框
@@ -474,9 +466,19 @@
         checkboxes.forEach(function(checkbox) {
             selectedHospitals.push(checkbox.value);
         });
-        
-        // 将选中的医院传递到后端
-        fetch('http://localhost:5500/get_hospital_count?hospitals=' + encodeURIComponent(selectedHospitals.join(',')))
+
+        if (selectedHospitals.length === 0) {
+            data = [];
+            geoCoordMap = {};
+            myecharts.setOption(option1, true); // 更新地图
+
+            console.log('Updated data:', data);
+            console.log('Updated geoCoordMap:', geoCoordMap);
+        }
+        else
+        {
+            // 将选中的医院传递到后端
+            fetch('http://localhost:5500/get_hospital_count?hospitals=' + encodeURIComponent(selectedHospitals.join(',')))
             .then(response => response.json())
             .then(hospitalData  => {
                 console.log('Selected hospital data:', data);
@@ -484,7 +486,7 @@
                 // 清空之前的数据
                 data = [];
                 geoCoordMap = {};
-    
+
                 hospitalData.forEach(item => {
                     const hospitalName = item['医院'] || item['医院名称'];
                     if (hospitalName) {
@@ -499,19 +501,34 @@
                         geoCoordMap[hospitalName] = [parseFloat(item['经度']), parseFloat(item['纬度'])];
                     }
                 });
-    
+
                 var newConvertedData = convertData(data);
-    
+
                 // 更新地图数据
                 option.baseOption.series[0].data = newConvertedData;
                 myecharts.setOption(option, true); // 更新地图
-    
+
                 console.log('Updated data:', data);
                 console.log('Updated geoCoordMap:', geoCoordMap);
             })
             .catch(error => console.error('Error:', error));
+        }
+        
+        
     }
-
+    
+    // 预处理城市数据函数
+    function processCityNames(data) {
+        return data.map(city => {
+            if (city === "恩施土家族苗族自治州") {
+                return "恩施"; // 特殊处理恩施土家族苗族自治州
+            } else if (city.endsWith("市")) {
+                return city.slice(0, -1); // 去掉以“市”结尾的城市名称
+            } else {
+                return city; // 其他城市名称保持不变
+            }
+        });
+    }
 
     function updateSelectedHospitals_shuliang() {
         // Get all selected checkboxes
@@ -523,12 +540,45 @@
             selectedHospitals.push(checkbox.value);
         });
         
-        // Send selected hospitals to the backend
-        fetch('http://localhost:5500/total_hospital_number?hospitals=' + encodeURIComponent(selectedHospitals.join(',')))
+        if (selectedHospitals.length === 0) {
+            data = [];
+            geoCoordMap = {};
+            myecharts.setOption(option1, true); // 更新地图
+            option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
+            option_bar.series[0].data = []; // Update the series with corresponding city values
+
+            var myechart1 = echarts.init($('.users .bar')[0]);
+            myechart1.setOption(option_bar);
+
+            console.log('Updated data:', data);
+            console.log('Updated geoCoordMap:', geoCoordMap);
+        }
+
+        else
+        {
+            // Send selected hospitals to the backend
+            fetch('http://localhost:5500/total_hospital_number?hospitals=' + encodeURIComponent(selectedHospitals.join(',')))
             .then(response => response.json())
             .then(cityData => {
                 console.log('City data:', cityData);
-                
+                // Sort the city data by value (user count) in descending order and get the top 10
+                var top10Cities = cityData.sort(function(a, b) {
+                    return b.value - a.value;
+                }).slice(0, 10);
+
+                // Extract city names and values for the bar chart
+                var cityNames = top10Cities.map(item => item.name);
+                var cityValues = top10Cities.map(item => item.value);
+
+                cityNames_new=processCityNames(cityNames)
+                // Update the bar chart data
+                option_bar.xAxis[0].data = cityNames_new; // Update the x-axis with top 10 city names
+                option_bar.series[0].data = cityValues; // Update the series with corresponding city values
+
+                var myechart1 = echarts.init($('.users .bar')[0]);
+                myechart1.setOption(option_bar);
+
+
                 // Clear previous data
                 data = [];
                 
@@ -536,8 +586,8 @@
                     console.log(item)
                     var cityName = item['name'];
                     var count = item['value'];
-                     // Check if city exists in geoCoordMap
-                     geoCoordMap =geoCoordMap_china
+                    // Check if city exists in geoCoordMap
+                    geoCoordMap =geoCoordMap_china
                     if (geoCoordMap[cityName]) {
                         data.push({
                             name: cityName,
@@ -556,116 +606,147 @@
                 option2.baseOption.series[0].data = newConvertedData;
                 option2.baseOption.series[1].data = newConvertedData;
                 myecharts.setOption(option2, true); // Update the map
-    
+
                 
             })
             .catch(error => console.error('Error:', error));
-    }
-    
-
-
-    
-    // 添加按钮点击事件
-    function setupButtonListeners() {
-        document.getElementById('btn-total-intensity').addEventListener('click', function() {
-            currentInteractionType = '文章数量'; // 设置为总强度
-            if(function_type=='交互热力图')
-            {
-                updateSelectedHospitals_jiaohu(); // 更新图表   
-            }
-        });
-    
-        document.getElementById('btn-cooperation').addEventListener('click', function() {
-            currentInteractionType = '合作'; // 设置为合作
-            if(function_type=='交互热力图')
-            {
-                updateSelectedHospitals_jiaohu(); // 更新图表   
-            }
-        });
-    
-        document.getElementById('btn-communication').addEventListener('click', function() {
-            currentInteractionType = '沟通'; // 设置为沟通
-            if(function_type=='交互热力图')
-            {
-                updateSelectedHospitals_jiaohu(); // 更新图表   
-            }
-       });
-    
-        document.getElementById('btn-technology').addEventListener('click', function() {
-            currentInteractionType = '技术'; // 设置为技术
-            if(function_type=='交互热力图')
-            {
-                updateSelectedHospitals_jiaohu(); // 更新图表   
-            }      
-        });
+        }
         
-
     }
     
+
+
     
+let function_type = ''; // Ensure this is defined globally
+
+// 添加按钮点击事件
+function setupButtonListeners() {
+    document.getElementById('btn-fushefanwei').addEventListener('click', function() {
+        function_type = '辐射范围';
+        myecharts.setOption(option1, true); // 更新地图
+        option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
+        option_bar.series[0].data = []; // Update the series with corresponding city values
+
+        var myechart1 = echarts.init($('.users .bar')[0]);
+        myechart1.setOption(option_bar);
+
+        document.querySelector('.button-container').style.visibility = 'hidden';
+        console.log('Function Type:', function_type); // Debugging line
+    });
+
+    document.getElementById('btn-fushenengli').addEventListener('click', function() {
+        function_type = '辐射能力';
+        myecharts.setOption(option1, true); // 更新地图
+        option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
+        option_bar.series[0].data = []; // Update the series with corresponding city values
+
+        var myechart1 = echarts.init($('.users .bar')[0]);
+        myechart1.setOption(option_bar);
+
+        document.querySelector('.button-container').style.visibility = 'hidden';
+        console.log('Function Type:', function_type); // Debugging line
+    });
+
+    document.getElementById('btn-jiaohuqiangdu').addEventListener('click', function() {
+        function_type = '交互强度';
+        myecharts.setOption(option1, true); // 更新地图
+        option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
+        option_bar.series[0].data = []; // Update the series with corresponding city values
+
+        var myechart1 = echarts.init($('.users .bar')[0]);
+        myechart1.setOption(option_bar);
+
+        document.querySelector('.button-container').style.visibility = 'hidden';
+        console.log('Function Type:', function_type); // Debugging line
+    });
+
+    document.getElementById('btn-jiaohurelitu').addEventListener('click', function() {
+        function_type = '交互热力图';
+         // 显示按钮容器
+        option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
+        option_bar.series[0].data = []; // Update the series with corresponding city values
+
+        var myechart1 = echarts.init($('.users .bar')[0]);
+        myechart1.setOption(option_bar);
+        // 显示按钮
+        document.querySelector('.button-container').style.visibility = 'visible';
+        document.querySelector('.map h3').innerHTML = `
+        <span class="icon-cube"></span>
+        医联体数量分布图
+        `;
+        // 修改标题内容
+        document.querySelector('.users.panel h3').innerText = '各省医院数量柱状图（前10）';
+        console.log('Function Type:', function_type); // Debugging line
+        updateSelectedHospitals_jiaohu(); // Ensure the update function is called here
+    });
+
+    document.getElementById('btn-shuliangrelitu').addEventListener('click', function() {
+        function_type = '数量热力图';
+        document.querySelector('.button-container').style.visibility = 'hidden';
+        // 修改地图标题
+        document.querySelector('.map h3').innerHTML = `
+        <span class="icon-cube"></span>
+        医联体数量分布图
+        `;
+        // 修改标题内容
+        document.querySelector('.users.panel h3').innerText = '各省医院数量柱状图（前10）';
+        console.log('Function Type:', function_type); // Debugging line
+        updateSelectedHospitals_shuliang(); // Ensure the update function is called here
+    });
 
 
 
-
-    // 监听复选框的状态变化
-    document.querySelectorAll('input[name="hospital"]').forEach(function(checkbox) {
+    // 下面是点击“沟通”“总数量“等改变
+    document.getElementById('btn-total-intensity').addEventListener('click', function() {
+        currentInteractionType = '文章数量'; // 设置为总强度
         if(function_type=='交互热力图')
         {
-            checkbox.addEventListener('change', updateSelectedHospitals_jiaohu);  
-        }
-        if(function_type=='数量热力图')
-        {
-            checkbox.addEventListener('change', updateSelectedHospitals_shuliang);
+            updateSelectedHospitals_jiaohu(); // 更新图表   
         }
     });
-    
-    if(function_type=='交互热力图')
-    {
-       
-        // 设置按钮的监听事件
-        setupButtonListeners();
-        
-    }
-
-    window.onload = function() {
-        function updateButtonVisibility(function_type) {
-            var buttonContainer = document.getElementById('button-container');
-    
-            if (buttonContainer) {  // 确保元素存在
-                if (function_type == '交互热力图') {
-                    buttonContainer.style.display = 'block'; // 显示按钮
-                } else {
-                    buttonContainer.style.display = 'none'; // 隐藏按钮
-                }
-            } else {
-                console.error('Element with id "button-container" not found.');
-            }
+    document.getElementById('btn-cooperation').addEventListener('click', function() {
+        currentInteractionType = '合作'; // 设置为合作
+        if(function_type=='交互热力图')
+        {
+            updateSelectedHospitals_jiaohu(); // 更新图表   
         }
-    
-        // 示例调用
-        var function_type = '交互热力图'; // 设置你的 function_type
-        updateButtonVisibility(function_type); // 调用函数控制按钮显示/隐藏
-    };
+    });
 
-    window.onload = function() {
-        function updateHeadingText(function_type) {
-            var heading = document.querySelector('h3');  // 选择 h3 标签
-    
-            if (function_type == '数量热力图') {
-                heading.innerHTML = `
-                    <span class="icon-cube"></span>
-                    医联体中议医院数目的热力图和散点图
-                `;  // 修改 h3 的内容
-
-            }
+    document.getElementById('btn-communication').addEventListener('click', function() {
+        currentInteractionType = '沟通'; // 设置为沟通
+        if(function_type=='交互热力图')
+        {
+            updateSelectedHospitals_jiaohu(); // 更新图表   
         }
-    
-        // 示例调用
-        updateHeadingText(function_type);  // 调用函数修改 h3 内容
-    };
-    
+   });
 
-    </script>
+    document.getElementById('btn-technology').addEventListener('click', function() {
+        currentInteractionType = '技术'; // 设置为技术
+        if(function_type=='交互热力图')
+        {
+            updateSelectedHospitals_jiaohu(); // 更新图表   
+        }      
+    });
+
+
+}
+
+// 监听复选框的状态变化
+document.querySelectorAll('input[name="hospital"]').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        if (function_type === '交互热力图') {
+            updateSelectedHospitals_jiaohu();
+        } else if (function_type === '数量热力图') {
+            updateSelectedHospitals_shuliang();
+        }
+    });
+});
+
+// 设置按钮的监听事件
+setupButtonListeners();
+
+
+</script>
     
 
 
