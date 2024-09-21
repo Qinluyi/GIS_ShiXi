@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <button onclick="Load_yilianti('武汉大学中南医院')">查询</button>
+    
     <div class="viewport">
         <div class="column">
             <div class="overview panel">
@@ -57,8 +57,8 @@
                     <div class="content" style="display: block;">
                         <div class="head">
                             <span class="col">排名</span>
-                            <span class="col">覆盖范围</span>
-                            <span class="col">三甲医院数量</span>
+                            <span class="col">医联体</span>
+                            <span class="col">三甲医院数</span>
                         </div>
                         <div class="marquee-view">
                             <div class="marquee">
@@ -127,8 +127,8 @@
                     </div>
                     <div class="content">
                         <div class="head">
-                            <span class="col">异常时间</span>
-                            <span class="col">设备地址</span>
+                            <span class="col">排名</span>
+                            <span class="col">医联体</span>
                             <span class="col">异常代码</span>
                         </div>
                         <div class="marquee-view">
@@ -294,15 +294,27 @@
             <div class="sales panel">
                 <div class="inner">
                     <div class="caption">
-                        <h3>销售额统计</h3>
-                        <a href="javascript:;" class="active" data-type="year">年</a>
+                        <h3>医联体选择（可多选）</h3>
+                        <!-- <a href="javascript:;" class="active" data-type="year">年</a>
                         <a href="javascript:;" data-type="quarter">季</a>
                         <a href="javascript:;" data-type="month">月</a>
-                        <a href="javascript:;" data-type="week">周</a>
+                        <a href="javascript:;" data-type="week">周</a> -->
                     </div>
-                    <div class="chart">
+                    <!-- <div class="chart">
                         <div class="label">单位:万</div>
                         <div class="line"></div>
+                    </div> -->
+                    <div class="checkboxes">
+                        <div class="left-column">
+                            <label><input type="checkbox" name="hospital" value="wuhan_people">武汉大学人民医院</label>
+                            <label><input type="checkbox" name="hospital" value="wuhan_zn">武汉大学中南医院</label>
+                            <label><input type="checkbox" name="hospital" value="wuhan_dental">武汉大学口腔医院</label>
+                        </div>
+                        <div class="right-column">
+                            <label><input type="checkbox" name="hospital" value="tongji">同济医院</label>
+                            <label><input type="checkbox" name="hospital" value="xiehe">协和医院</label>
+                            <label><input type="checkbox" name="hospital" value="hubei_tcm">湖北省中医院</label>
+                        </div>
                     </div>
                 </div>
             </div>
