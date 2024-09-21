@@ -350,9 +350,10 @@ a{
   line-height: 1;
 }
 .sales h3 {
-  height: 0.75rem;
+  height: 1.31rem;
   padding-right: 0.75rem;
   border-right: 0.083rem solid #00f2f1;
+  font-size: 1.3rem; /* 设置标题文字的大小 */
 }
 .sales a {
   padding: 0.167rem;
@@ -384,6 +385,9 @@ a{
 .sales .line {
   width: 100%;
   height: 100%;
+}
+.caption h3 {
+  margin-bottom: 20px; /* 增加标题栏下的空档 */
 }
 /* 渠道区块 */
 .wrap {
@@ -592,4 +596,29 @@ a{
   .quarter span {
     transform: scale(0.9);
   }
+}
+
+.checkboxes {
+  display: flex; /* 使用flex布局 */
+  justify-content: space-between; /* 左右对齐 */
+  gap: 20px; /* 设置左右间距 */
+  color: #fff; /* 设置文字颜色为白色 */
+}
+
+.checkboxes label {
+  display: inline-flex;
+  align-items: center; /* 让复选框和文字垂直居中 */
+  margin-bottom: 15px; /* 增加复选框之间的垂直间距 */
+  font-size: 12px; 
+}
+
+.checkboxes input[type="checkbox"] {
+  border: 2px solid #4c9bfd; /* 设置复选框的边框颜色 */
+  margin-right: 10px; /* 增加复选框与文字之间的间距 */
+}
+
+.left-column, .right-column {
+  display: flex;
+  flex-direction: column; /* 每个列内的复选框垂直排列 */
+  width: 45%; /* 左右两列宽度为45% */
 }

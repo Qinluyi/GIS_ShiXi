@@ -32,6 +32,36 @@ app.get('/search_yilianti', function (req, res, next) {
     });
 });
 
+app.get('/search_hospitals', function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    var names = req.query.names; // 假设传入的是一个数组
+
+    if (!Array.isArray(names) || names.length === 0) {
+        return res.status(400).send('Invalid names parameter');
+    }
+
+    const promises = names.map(name => {
+        return new Promise((resolve, reject) => {
+            client.query('SELECT * FROM 医联体医院坐标表 WHERE 所属医联体 = \$1;', [name], function (err, result) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve({ [name]: result.rows });
+            });
+        });
+    });
+
+    Promise.all(promises)
+        .then(results => {
+            const resultDict = Object.assign({}, ...results);
+            res.status(200).json(resultDict);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(400).send(err);
+        });
+});
+
 
 //查询语句 单个商品信息查询
 app.get('/search_id', function (req, res, next) {
