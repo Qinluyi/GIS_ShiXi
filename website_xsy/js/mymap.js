@@ -820,9 +820,7 @@ var option = {
             data: [{
                     name: 'Top5',
                 },
-                {
-                    name: '散点',
-                },
+
                 {
                     name: '热图',
                 }
@@ -1061,6 +1059,462 @@ var option = {
 }
 
 
+var option1 = {
+    baseOption: {
+        backgroundColor: '#080a20',
+        animationDurationUpdate: 1000,
+
+       
+        // title: {
+        //     padding: 20,
+        //     text: '虚构疫情状况',
+        //     subtext: '国家卫健委测',
+        //     sublink: 'http://www.nhc.gov.cn',
+        //     x: 'left',
+        //     textStyle: {
+        //         color: '#fff'
+        //     },
+        //     subtextStyle: {
+        //         fontStyle: 'italic'
+        //     }
+        // },
+
+        // legend: {
+        //     icon: 'circle',
+        //     orient: 'vertical',
+        //     top: '10%',
+        //     left: 'right',
+        //     data: [{
+        //             name: 'Top5',
+        //         },
+        //         {
+        //             name: '散点',
+        //         },
+        //         {
+        //             name: '热图',
+        //         }
+        //     ],
+        //     textStyle: {
+        //         color: '#fff'
+        //     }
+        // },
+
+        toolbox: {
+            iconStyle: {
+                normal: {
+                    borderColor: '#fff'
+                },
+                emphasis: {
+                    borderColor: '#abc'
+                }
+            },
+            feature: {
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+
+        tooltip: {
+            trigger: 'item'
+        },
+
+        grid: {
+            right: '2%',
+            top: '20%',
+            bottom: '15%',
+            width: '15%'
+        },
+
+        xAxis: {
+            type: 'value',
+            scale: true,
+            position: 'top',
+            boundaryGap: false,
+            splitNumber: 4,
+            splitLine: {
+                show: false
+            },
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            axisLabel: {
+                margin: 2,
+                textStyle: {
+                    color: '#aaa'
+                }
+            },
+        },
+
+        yAxis: {
+            type: 'category',
+            nameGap: 95,
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            axisLabel: {
+                interval: 0,
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            data: []
+        },
+
+
+        geo: {
+            center:[112.998572, 30.584355],//视角的中心点为湖北
+            roam: true, //缩放平移
+            zoom: 7,
+
+            map: 'china',
+            itemStyle: {
+                areaColor: '#333333',
+                borderColor: '#000',
+            },
+
+            emphasis: {
+                itemStyle: {
+                    areaColor: '#123555',
+                    shadowColor: '#000',
+                    shadowBlur: 10
+                },
+                label: {
+                    show: false
+                }
+            },
+
+            regions: [{
+                name: '湖北',
+                itemStyle: {
+                    areaColor: '#222222'
+                },
+                emphasis: {
+                    itemStyle: {
+                        areaColor: '#111111',
+                        shadowColor: '#000',
+                        shadowBlur: 10
+                    },
+                }
+            }],
+        },
+
+        series: [{
+            name: '热图',
+            type: 'heatmap',
+            coordinateSystem: 'geo',
+            data: convertedData[0]
+        },
+            {
+                name: '散点',
+                type: 'scatter',
+                coordinateSystem: 'geo',
+                data: convertedData[0],
+                symbolSize: function(val) {
+                    return (5 + Math.log2(val[2]));
+                },
+                label: {
+                    normal: {
+                        formatter: '{b}',
+                        position: 'right',
+                        show: false
+                    },
+                    emphasis: {
+                        show: true
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        color: '#ddb926'
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function(params) {
+                        return params.name + ' : ' + params.value[2];
+                    }
+                },
+            },
+            {
+                id: 'bar',
+                zlevel: 2,
+                type: 'bar',
+                symbol: 'none',
+                itemStyle: {
+                    color: '#ddd',
+                },
+                emphasis: {
+                    color: '#fff',
+                    shadowColor: 'rgba(255, 0, 0, 0.5)',
+                    shadowBlur: 10
+                },
+                data: []
+            }
+        ]
+    },
+    options: []
+}
+
+
+var option2 = {
+    baseOption: {
+        backgroundColor: '#080a20',
+        animationDurationUpdate: 1000,
+
+       
+        legend: {
+            icon: 'circle',
+            orient: 'vertical',
+            top: '10%',
+            left: 'right',
+            data: [{
+                    name: 'Top5',
+                },
+                {
+                    name: '散点',
+                },
+                {
+                    name: '热图',
+                }
+            ],
+            textStyle: {
+                color: '#fff'
+            }
+        },
+
+        toolbox: {
+            iconStyle: {
+                normal: {
+                    borderColor: '#fff'
+                },
+                emphasis: {
+                    borderColor: '#abc'
+                }
+            },
+            feature: {
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+
+        tooltip: {
+            trigger: 'item'
+        },
+
+        grid: {
+            right: '2%',
+            top: '20%',
+            bottom: '15%',
+            width: '15%'
+        },
+
+        xAxis: {
+            type: 'value',
+            scale: true,
+            position: 'top',
+            boundaryGap: false,
+            splitNumber: 4,
+            splitLine: {
+                show: false
+            },
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            axisLabel: {
+                margin: 2,
+                textStyle: {
+                    color: '#aaa'
+                }
+            },
+        },
+
+        yAxis: {
+            type: 'category',
+            nameGap: 95,
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            axisLabel: {
+                interval: 0,
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            data: []
+        },
+
+        visualMap: {
+            min: 0,
+            max: 40000,
+            precision: 0,  // 设置精度为1位小数
+            pieces: [
+                { min: 7 },
+                { min: 6, max: 7 },
+                { min: 5, max: 6 },
+                { min: 4, max: 5 },
+                { min: 3, max: 4 },
+                { min: 2, max: 3 },
+                { min: 1, max: 2 },
+                { max: 1 }
+            ],
+            inRange: {
+                color: ['#50a3ba', '#eac736', '#d94e5d']
+            },
+            textStyle: {
+                color: '#fff'
+            }
+        },
+
+        geo: {
+            center:[112.998572, 30.584355],//视角的中心点为湖北
+            roam: true, //缩放平移
+            zoom: 7,
+
+            map: 'china',
+            /*
+            scaleLimit：{
+                min:1
+            },
+            
+            nameMap: {
+                selectedMode:single
+            },
+            */
+            itemStyle: {
+                areaColor: '#333333',
+                borderColor: '#000',
+            },
+
+            emphasis: {
+                itemStyle: {
+                    areaColor: '#123555',
+                    shadowColor: '#000',
+                    shadowBlur: 10
+                },
+                label: {
+                    show: false
+                }
+            },
+
+            regions: [{
+                name: '湖北',
+                itemStyle: {
+                    areaColor: '#222222'
+                },
+                emphasis: {
+                    itemStyle: {
+                        areaColor: '#111111',
+                        shadowColor: '#000',
+                        shadowBlur: 10
+                    },
+                }
+            }],
+        },
+
+        series: [{
+            name: '热图',
+            type: 'heatmap',
+            coordinateSystem: 'geo',
+            data: convertedData[0]
+        },
+            {
+                name: '散点',
+                type: 'scatter',
+                coordinateSystem: 'geo',
+                data: convertedData[0],
+                symbolSize: function(val) {
+                    return (5 + Math.log2(val[2]));
+                },
+                label: {
+                    normal: {
+                        formatter: '{b}',
+                        position: 'right',
+                        show: false
+                    },
+                    emphasis: {
+                        show: true
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        color: '#ddb926'
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function(params) {
+                        return params.name + ' : ' + params.value[2];
+                    }
+                },
+            },
+            // {
+            //     name: 'Top5',
+            //     type: 'effectScatter',
+            //     coordinateSystem: 'geo',
+            //     data: convertData(data.sort(function(a, b) {
+            //         return b.value - a.value;
+            //     }).slice(0, 5)),
+            //     symbolSize: function(val) {
+            //         return (6 + Math.log2(val[2]));
+            //     },
+            //     showEffectOn: 'render',
+            //     rippleEffect: {
+            //         brushType: 'stroke'
+            //     },
+            //     hoverAnimation: true,
+            //     label: {
+            //         normal: {
+            //             formatter: '{b}',
+            //             position: 'right',
+            //             show: true
+            //         }
+            //     },
+            //     itemStyle: {
+            //         normal: {
+            //             color: '#f4e925',
+            //             shadowBlur: 10,
+            //             shadowColor: '#333'
+            //         }
+            //     },
+            //     tooltip: {
+            //         trigger: 'item',
+            //         formatter: function(params) {
+            //             return params.name + ' : ' + params.value[2];
+            //         }
+            //     },
+            //     zlevel: 1
+            // },
+            {
+                id: 'bar',
+                zlevel: 2,
+                type: 'bar',
+                symbol: 'none',
+                itemStyle: {
+                    color: '#ddd',
+                },
+                emphasis: {
+                    color: '#fff',
+                    shadowColor: 'rgba(255, 0, 0, 0.5)',
+                    shadowBlur: 10
+                },
+                data: []
+            }
+        ]
+    },
+    options: []
+}
+
 
 // if (option && typeof option === "object") {
 //     myChart.setOption(option, true);
@@ -1069,4 +1523,4 @@ var option = {
 
 var myecharts = echarts.init($('.map .geo')[0])
 myecharts.hideLoading();
-myecharts.setOption(option)
+myecharts.setOption(option1)

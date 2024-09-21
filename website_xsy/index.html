@@ -462,7 +462,7 @@
     var data = [];
     var geoCoordMap = {};
     var currentInteractionType = '文章数量'; // 初始交互类型为文章数量
-    var function_type = '数量热力图';
+    var function_type = '交互热力图';
     
     // 函数：更新选中的医院
     function updateSelectedHospitals_jiaohu() {
@@ -553,9 +553,9 @@
 
                 console.log('Updated data:', data);
                 // Update the map data
-                option.baseOption.series[0].data = newConvertedData;
-                option.baseOption.series[1].data = newConvertedData;
-                myecharts.setOption(option, true); // Update the map
+                option2.baseOption.series[0].data = newConvertedData;
+                option2.baseOption.series[1].data = newConvertedData;
+                myecharts.setOption(option2, true); // Update the map
     
                 
             })
@@ -569,7 +569,7 @@
     function setupButtonListeners() {
         document.getElementById('btn-total-intensity').addEventListener('click', function() {
             currentInteractionType = '文章数量'; // 设置为总强度
-            if(function_type=='数量热力图')
+            if(function_type=='交互热力图')
             {
                 updateSelectedHospitals_jiaohu(); // 更新图表   
             }
@@ -656,6 +656,7 @@
                     <span class="icon-cube"></span>
                     医联体中议医院数目的热力图和散点图
                 `;  // 修改 h3 的内容
+
             }
         }
     
