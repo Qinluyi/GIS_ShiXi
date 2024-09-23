@@ -10,7 +10,7 @@ client.connect();
 
 var app = express();
 
-port = 5500
+port = 5600
 app.set('port', process.env.PORT || port);
 
 
