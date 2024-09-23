@@ -491,12 +491,12 @@
             data = [];
             geoCoordMap = {};
             myecharts.setOption(option1, true); // 更新地图
-            option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
-            option_bar.series[0].data = []; // Update the series with corresponding city values
+            option_bar1.xAxis[0].data = []; // Update the x-axis with top 10 city names
+            option_bar1.series[0].data = []; // Update the series with corresponding city values
             option_pie.series[0].data = []; // Update the series with corresponding city values
 
-            var myechart1 = echarts.init($('.users .bar')[0]);
-            myechart1.setOption(option_bar);
+            var myechart3 = echarts.init($('.users .bar')[0]);
+            myechart3.setOption(option_bar1);
             var myechart2 = echarts.init($('.point .pie')[0]);
             myechart2.setOption(option_pie);
 
@@ -545,13 +545,13 @@
                 var processedValues = processValues(hopitalValues);
 
                 // Update the bar chart data
-                option_bar.xAxis[0].data = processedNames; // Update the x-axis with top 10 city names
-                option_bar.series[0].data = processedValues; // Update the series with corresponding city values
+                option_bar1.xAxis[0].data = processedNames; // Update the x-axis with top 10 city names
+                option_bar1.series[0].data = processedValues; // Update the series with corresponding city values
                 transformedTop5Hospital = transformValues(top5Hospital);
                 option_pie.series[0].data = transformedTop5Hospital; // Update the series with corresponding city values
 
-                var myechart1 = echarts.init($('.users .bar')[0]);
-                myechart1.setOption(option_bar);
+                var myechart3 = echarts.init($('.users .bar')[0]);
+                myechart3.setOption(option_bar1);
                 var myechart2 = echarts.init($('.point .pie')[0]);
                 myechart2.setOption(option_pie);
 
@@ -626,11 +626,11 @@
                 }).slice(0, 5);
 
                 // Extract city names and values for the bar chart
-                var cityNames = top10Cities.map(item => item.name);
+                cityNames = top10Cities.map(item => item.name);
                 var cityValues = top10Cities.map(item => item.value);
 
 
-                cityNames_new=processCityNames(cityNames)
+                var cityNames_new=processCityNames(cityNames)
                 // Update the bar chart data
                 option_bar.xAxis[0].data = cityNames_new; // Update the x-axis with top 10 city names
                 option_bar.series[0].data = cityValues; // Update the series with corresponding city values
@@ -721,11 +721,10 @@ function setupButtonListeners() {
     document.getElementById('btn-jiaohurelitu').addEventListener('click', function() {
         function_type = '交互热力图';
          // 显示按钮容器
-        option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
-        option_bar.series[0].data = []; // Update the series with corresponding city values
+        option_bar1.xAxis[0].data = []; // Update the x-axis with top 10 city names
+        option_bar1.series[0].data = []; // Update the series with corresponding city values
 
-        var myechart1 = echarts.init($('.users .bar')[0]);
-        myechart1.setOption(option_bar);
+
         // 显示按钮
         document.querySelector('.button-container').style.visibility = 'visible';
         document.querySelector('.map h3').innerHTML = `
@@ -742,6 +741,9 @@ function setupButtonListeners() {
 
     document.getElementById('btn-shuliangrelitu').addEventListener('click', function() {
         function_type = '数量热力图';
+        option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
+        option_bar.series[0].data = []; // Update the series with corresponding city values
+
         document.querySelector('.button-container').style.visibility = 'hidden';
         // 修改地图标题
         document.querySelector('.map h3').innerHTML = `
