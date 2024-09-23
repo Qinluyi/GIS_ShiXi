@@ -1174,8 +1174,8 @@ var option1 = {
 
             map: 'china',
             itemStyle: {
-                areaColor: '#333333',
-                borderColor: '#000',
+                areaColor: '#142957',
+                borderColor: '#0692a4',
             },
 
             emphasis: {
@@ -1339,8 +1339,8 @@ var option2 = {
             },
             */
             itemStyle: {
-                areaColor: '#333333',
-                borderColor: '#000',
+                areaColor: '#142957',
+                borderColor: '#0692a4',
             },
 
             emphasis: {
