@@ -688,14 +688,14 @@ function setupButtonListeners() {
     document.getElementById('btn-fushefanwei').addEventListener('click', function() {
         function_type = '辐射范围';
         myecharts.setOption(option1, true); // 更新地图
-        option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
-        option_bar.series[0].data = []; // Update the series with corresponding city values
-        option_pie.series[0].data = []; // Update the series with corresponding city values
+       // option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
+       // option_bar.series[0].data = []; // Update the series with corresponding city values
+       // option_pie.series[0].data = []; // Update the series with corresponding city values
 
-        var myechart1 = echarts.init($('.users .bar')[0]);
-        myechart1.setOption(option_bar);
-        var myechart2 = echarts.init($('.point .pie')[0]);
-        myechart2.setOption(option_pie);
+        //var myechart1 = echarts.init($('.users .bar')[0]);
+        //myechart1.setOption(option_bar);
+        //var myechart2 = echarts.init($('.point .pie')[0]);
+        //myechart2.setOption(option_pie);
         
         document.querySelector('.button-container').style.visibility = 'hidden';
         console.log('Function Type:', function_type); // Debugging line
@@ -704,14 +704,14 @@ function setupButtonListeners() {
     document.getElementById('btn-fushenengli').addEventListener('click', function() {
         function_type = '辐射能力';
         myecharts.setOption(option1, true); // 更新地图
-        option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
-        option_bar.series[0].data = []; // Update the series with corresponding city values
-        option_pie.series[0].data = []; // Update the series with corresponding city values
+        //option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
+        //option_bar.series[0].data = []; // Update the series with corresponding city values
+        //option_pie.series[0].data = []; // Update the series with corresponding city values
 
-        var myechart1 = echarts.init($('.users .bar')[0]);
-        myechart1.setOption(option_bar);
-        var myechart2 = echarts.init($('.point .pie')[0]);
-        myechart2.setOption(option_pie);
+        //var myechart1 = echarts.init($('.users .bar')[0]);
+        //myechart1.setOption(option_bar);
+        //var myechart2 = echarts.init($('.point .pie')[0]);
+        //myechart2.setOption(option_pie);
 
         document.querySelector('.button-container').style.visibility = 'hidden';
         console.log('Function Type:', function_type); // Debugging line
