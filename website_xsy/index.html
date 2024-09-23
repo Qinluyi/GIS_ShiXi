@@ -17,31 +17,31 @@
             <div class="overview panel">
                 <div class="inner">
                     <div class="item">
-                        <h4>2,190</h4>
+                        <h4>400+</h4>
                         <span>
                             <i class="icon-dot" style="color: #006cff"></i>
-                            设备总数
+                            医联体总数
                         </span>
                     </div>
                     <div class="item">
-                        <h4>190</h4>
+                        <h4>92</h4>
                         <span>
                             <i class="icon-dot" style="color: #6acca3"></i>
-                            季度新增
+                            本年度新增
                         </span>
                     </div>
                     <div class="item">
-                        <h4>3,001</h4>
+                        <h4>102</h4>
                         <span>
                             <i class="icon-dot" style="color: #6acca3"></i>
-                            运营设备
+                            已入库
                         </span>
                     </div>
                     <div class="item">
-                        <h4>108</h4>
+                        <h4>300+</h4>
                         <span>
                             <i class="icon-dot" style="color: #ed3f35"></i>
-                            异常设备
+                            待入库
                         </span>
                     </div>
                 </div>
@@ -205,17 +205,17 @@
                         <div class="pie"></div>
                         <div class="data">
                             <div class="item">
-                                <h4>320,11</h4>
+                                <h4>300,000+</h4>
                                 <span>
                                     <i class="icon-dot" style="color: #ed3f35"></i>
-                                    点位总数
+                                    年交互次数
                                 </span>
                             </div>
                             <div class="item">
-                                <h4>418</h4>
+                                <h4>400+</h4>
                                 <span>
                                     <i class="icon-dot" style="color: #eacf19"></i>
-                                    本月新增
+                                    医联体总数
                                 </span>
                             </div>
                         </div>
@@ -280,9 +280,9 @@
                     <!-- 按钮区域 -->
                     <div class="button-container1">
                         <div class="button-row1">
-                            <button id="btn-fushefanwei" class="custom-btn1">辐射范围</button>
-                            <button id="btn-fushenengli" class="custom-btn1">辐射能力</button>
-                            <button id="btn-jiaohuqiangdu" class="custom-btn1">交互强度</button>
+                            <button id="btn-fushefanwei" class="custom-btn1">医联体辐射范围</button>
+                            <button id="btn-fushenengli" class="custom-btn1">医联体辐射能力</button>
+                            
                         </div>
                         <div class="button-row1">
                             <button id="btn-jiaohurelitu" class="custom-btn1">交互强度热力图</button>
@@ -323,36 +323,36 @@
             <div class="wrap">
                 <div class="channel panel">
                     <div class="inner">
-                        <h3>渠道分布</h3>
+                        <h3>交互类型分布</h3>
                         <div class="data">
                             <div class="item">
-                                <h4>39 <small>%</small></h4>
+                                <h4>100 <small>%</small></h4>
                                 <span>
                                     <i class="icon-plane"></i>
-                                    机场
+                                    总和
                                 </span>
                             </div>
                             <div class="item">
-                                <h4>28 <small>%</small></h4>
+                                <h4>42 <small>%</small></h4>
                                 <span>
                                     <i class="icon-bag"></i>
-                                    商场
+                                    合作
                                 </span>
                             </div>
                         </div>
                         <div class="data">
                             <div class="item">
-                                <h4>20 <small>%</small></h4>
+                                <h4>34 <small>%</small></h4>
                                 <span>
                                     <i class="icon-train"></i>
-                                    地铁
+                                    沟通
                                 </span>
                             </div>
                             <div class="item">
-                                <h4>13 <small>%</small></h4>
+                                <h4>24 <small>%</small></h4>
                                 <span>
                                     <i class="icon-bus"></i>
-                                    火车站
+                                    技术
                                 </span>
                             </div>
                         </div>
@@ -360,7 +360,7 @@
                 </div>
                 <div class="quarter panel">
                     <div class="inner">
-                        <h3>一季度销售进度</h3>
+                        <h3>数据收集进度</h3>
                         <div class="chart">
                             <div class="box">
                                 <div class="gauge"></div>
@@ -368,14 +368,14 @@
                             </div>
                             <div class="data">
                                 <div class="item">
-                                    <h4>1,321</h4>
+                                    <h4>20,751</h4>
                                     <span>
                                         <i class="icon-dot" style="color: #6acca3"></i>
-                                        销售额(万元)
+                                        2024交互次数
                                     </span>
                                 </div>
                                 <div class="item">
-                                    <h4>150%</h4>
+                                    <h4>50%</h4>
                                     <span>
                                         <i class="icon-dot" style="color: #ed3f35"></i>
                                         同比增长
@@ -456,6 +456,26 @@
     var geoCoordMap = {};
     var currentInteractionType = '文章数量'; // 初始交互类型为文章数量
     // var function_type = '数量热力图';
+    
+    function processHospital(hospitalNames) {
+        return hospitalNames.map(name => name.substring(0, 2) + '...');
+    }
+
+    function processValues(hospitalValues) {
+        return hospitalValues.map(value => Math.floor(Math.exp(value)));
+    }
+
+    
+    function transformValues(top5Hospital) {
+        return top5Hospital.map(item => {
+            // 将value替换为e的该值次方并取整
+            return {
+                ...item,  // 保留原对象的其他属性
+                value: Math.round(Math.exp(item.value))  // e的次方并取整
+            };
+        });
+    }
+
     // 函数：更新选中的医院
     function updateSelectedHospitals_jiaohu() {
         // 获取所有被选中的复选框
@@ -471,6 +491,14 @@
             data = [];
             geoCoordMap = {};
             myecharts.setOption(option1, true); // 更新地图
+            option_bar1.xAxis[0].data = []; // Update the x-axis with top 10 city names
+            option_bar1.series[0].data = []; // Update the series with corresponding city values
+            option_pie.series[0].data = []; // Update the series with corresponding city values
+
+            var myechart3 = echarts.init($('.users .bar')[0]);
+            myechart3.setOption(option_bar1);
+            var myechart2 = echarts.init($('.point .pie')[0]);
+            myechart2.setOption(option_pie);
 
             console.log('Updated data:', data);
             console.log('Updated geoCoordMap:', geoCoordMap);
@@ -482,7 +510,7 @@
             .then(response => response.json())
             .then(hospitalData  => {
                 console.log('Selected hospital data:', data);
-                
+               
                 // 清空之前的数据
                 data = [];
                 geoCoordMap = {};
@@ -501,6 +529,31 @@
                         geoCoordMap[hospitalName] = [parseFloat(item['经度']), parseFloat(item['纬度'])];
                     }
                 });
+
+                var top10Hospital = data.sort(function(a, b) {
+                    return b.value - a.value;
+                }).slice(0, 10);
+
+                var top5Hospital = data.sort(function(a, b) {
+                    return b.value - a.value;
+                }).slice(0, 5);
+
+                // Extract city names and values for the bar chart
+                hospitalNames = top10Hospital.map(item => item.name);
+                var hopitalValues = top10Hospital.map(item => item.value);
+                var processedNames = processHospital(hospitalNames);
+                var processedValues = processValues(hopitalValues);
+
+                // Update the bar chart data
+                option_bar1.xAxis[0].data = processedNames; // Update the x-axis with top 10 city names
+                option_bar1.series[0].data = processedValues; // Update the series with corresponding city values
+                transformedTop5Hospital = transformValues(top5Hospital);
+                option_pie.series[0].data = transformedTop5Hospital; // Update the series with corresponding city values
+
+                var myechart3 = echarts.init($('.users .bar')[0]);
+                myechart3.setOption(option_bar1);
+                var myechart2 = echarts.init($('.point .pie')[0]);
+                myechart2.setOption(option_pie);
 
                 var newConvertedData = convertData(data);
 
@@ -546,9 +599,12 @@
             myecharts.setOption(option1, true); // 更新地图
             option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
             option_bar.series[0].data = []; // Update the series with corresponding city values
+            option_pie.series[0].data = []; // Update the series with corresponding city values
 
             var myechart1 = echarts.init($('.users .bar')[0]);
             myechart1.setOption(option_bar);
+            var myechart2 = echarts.init($('.point .pie')[0]);
+            myechart2.setOption(option_pie);
 
             console.log('Updated data:', data);
             console.log('Updated geoCoordMap:', geoCoordMap);
@@ -565,18 +621,26 @@
                 var top10Cities = cityData.sort(function(a, b) {
                     return b.value - a.value;
                 }).slice(0, 10);
+                var top5Cities = cityData.sort(function(a, b) {
+                    return b.value - a.value;
+                }).slice(0, 5);
 
                 // Extract city names and values for the bar chart
-                var cityNames = top10Cities.map(item => item.name);
+                cityNames = top10Cities.map(item => item.name);
                 var cityValues = top10Cities.map(item => item.value);
 
-                cityNames_new=processCityNames(cityNames)
+
+                var cityNames_new=processCityNames(cityNames)
                 // Update the bar chart data
                 option_bar.xAxis[0].data = cityNames_new; // Update the x-axis with top 10 city names
                 option_bar.series[0].data = cityValues; // Update the series with corresponding city values
+                
+                option_pie.series[0].data = top5Cities; // Update the series with corresponding city values
 
                 var myechart1 = echarts.init($('.users .bar')[0]);
                 myechart1.setOption(option_bar);
+                var myechart2 = echarts.init($('.point .pie')[0]);
+                myechart2.setOption(option_pie);
 
 
                 // Clear previous data
@@ -624,12 +688,15 @@ function setupButtonListeners() {
     document.getElementById('btn-fushefanwei').addEventListener('click', function() {
         function_type = '辐射范围';
         myecharts.setOption(option1, true); // 更新地图
-        option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
-        option_bar.series[0].data = []; // Update the series with corresponding city values
+       // option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
+       // option_bar.series[0].data = []; // Update the series with corresponding city values
+       // option_pie.series[0].data = []; // Update the series with corresponding city values
 
-        var myechart1 = echarts.init($('.users .bar')[0]);
-        myechart1.setOption(option_bar);
-
+        //var myechart1 = echarts.init($('.users .bar')[0]);
+        //myechart1.setOption(option_bar);
+        //var myechart2 = echarts.init($('.point .pie')[0]);
+        //myechart2.setOption(option_pie);
+        
         document.querySelector('.button-container').style.visibility = 'hidden';
         console.log('Function Type:', function_type); // Debugging line
     });
@@ -637,37 +704,27 @@ function setupButtonListeners() {
     document.getElementById('btn-fushenengli').addEventListener('click', function() {
         function_type = '辐射能力';
         myecharts.setOption(option1, true); // 更新地图
-        option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
-        option_bar.series[0].data = []; // Update the series with corresponding city values
+        //option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
+        //option_bar.series[0].data = []; // Update the series with corresponding city values
+        //option_pie.series[0].data = []; // Update the series with corresponding city values
 
-        var myechart1 = echarts.init($('.users .bar')[0]);
-        myechart1.setOption(option_bar);
-
-        document.querySelector('.button-container').style.visibility = 'hidden';
-        console.log('Function Type:', function_type); // Debugging line
-    });
-
-    document.getElementById('btn-jiaohuqiangdu').addEventListener('click', function() {
-        function_type = '交互强度';
-        myecharts.setOption(option1, true); // 更新地图
-        option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
-        option_bar.series[0].data = []; // Update the series with corresponding city values
-
-        var myechart1 = echarts.init($('.users .bar')[0]);
-        myechart1.setOption(option_bar);
+        //var myechart1 = echarts.init($('.users .bar')[0]);
+        //myechart1.setOption(option_bar);
+        //var myechart2 = echarts.init($('.point .pie')[0]);
+        //myechart2.setOption(option_pie);
 
         document.querySelector('.button-container').style.visibility = 'hidden';
         console.log('Function Type:', function_type); // Debugging line
     });
+
 
     document.getElementById('btn-jiaohurelitu').addEventListener('click', function() {
         function_type = '交互热力图';
          // 显示按钮容器
-        option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
-        option_bar.series[0].data = []; // Update the series with corresponding city values
+        option_bar1.xAxis[0].data = []; // Update the x-axis with top 10 city names
+        option_bar1.series[0].data = []; // Update the series with corresponding city values
 
-        var myechart1 = echarts.init($('.users .bar')[0]);
-        myechart1.setOption(option_bar);
+
         // 显示按钮
         document.querySelector('.button-container').style.visibility = 'visible';
         document.querySelector('.map h3').innerHTML = `
@@ -675,13 +732,18 @@ function setupButtonListeners() {
         交互数量分布热力图
         `;
         // 修改标题内容
-        document.querySelector('.users.panel h3').innerText = '各省医院数量柱状图（前10）';
+        document.querySelector('.users.panel h3').innerText = '各医院交互数量柱状图（前10）';
+        // 修改标题内容
+        document.querySelector('.point.panel h3').innerText = '各医院交互数量饼图（前5）';
         console.log('Function Type:', function_type); // Debugging line
         updateSelectedHospitals_jiaohu(); // Ensure the update function is called here
     });
 
     document.getElementById('btn-shuliangrelitu').addEventListener('click', function() {
         function_type = '数量热力图';
+        option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
+        option_bar.series[0].data = []; // Update the series with corresponding city values
+
         document.querySelector('.button-container').style.visibility = 'hidden';
         // 修改地图标题
         document.querySelector('.map h3').innerHTML = `
@@ -690,6 +752,8 @@ function setupButtonListeners() {
         `;
         // 修改标题内容
         document.querySelector('.users.panel h3').innerText = '各省医院数量柱状图（前10）';
+         // 修改标题内容
+         document.querySelector('.point.panel h3').innerText = '各省医院数量饼图（前5）';
         console.log('Function Type:', function_type); // Debugging line
         updateSelectedHospitals_shuliang(); // Ensure the update function is called here
     });

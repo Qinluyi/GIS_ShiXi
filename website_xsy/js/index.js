@@ -48,7 +48,7 @@
 })();
 (function () {
     var myechart = echarts.init($('.pie')[0]);
-    option = {
+    option_pie = {
         // 控制提示
         tooltip: {
             // 非轴图形，使用item的意思是放到数据对应图形上触发提示
@@ -72,16 +72,17 @@
                 // 半径模式，另外一种是 area 面积模式
                 roseType: 'radius',
                 // 数据集 value 数据的值 name 数据的名称
-                data: [
-                    { value: 20, name: '云南' },
-                    { value: 5, name: '北京' },
-                    { value: 15, name: '山东' },
-                    { value: 25, name: '河北' },
-                    { value: 20, name: '江苏' },
-                    { value: 35, name: '浙江' },
-                    { value: 30, name: '四川' },
-                    { value: 40, name: '湖北' }
-                ],
+                // data: [
+                //     { value: 20, name: '云南' },
+                //     { value: 5, name: '北京' },
+                //     { value: 15, name: '山东' },
+                //     { value: 25, name: '河北' },
+                //     { value: 20, name: '江苏' },
+                //     { value: 35, name: '浙江' },
+                //     { value: 30, name: '四川' },
+                //     { value: 40, name: '湖北' }
+                // ],
+                data:[],
                 //文字调整
                 label: {
                     fontSize: 10
@@ -95,7 +96,7 @@
         ],
         color: ['#006cff', '#60cda0', '#ed8884', '#ff9f7f', '#0096ff', '#9fe6b8', '#32c5e9', '#1d9dff']
     };
-    myechart.setOption(option);
+    myechart.setOption(option_pie);
     myechart.on('click',  function(param) {
         alert("更多模板，关注公众号【DreamCoders】\n回复'BigDataView'即可获取\n或前往Gitee下载 https://gitee.com/iGaoWei/big-data-view")
         setTimeout(function(){
@@ -118,6 +119,8 @@ function processCityNames(data) {
         }
     });
 }
+hospitalNames=[];
+cityNames=[];
 
 (function () {
     // 中间省略的数据  准备三项
@@ -144,6 +147,11 @@ function processCityNames(data) {
         tooltip: {
             // 触发类型  经过轴触发axis  经过轴触发item
             trigger: 'item',
+            formatter: function(params) {
+                // params.name 是 xAxis.data 中对应的值，可以通过索引获取 hospitalNames 对应值
+                var index = params.dataIndex;
+                return cityNames[index] + ': ' + params.value;  // 显示医院名称和对应的值
+            },
             // 轴触发提示才有效
             axisPointer: {
                 // 默认为直线，可选为：'line' 线效果 | 'shadow' 阴影效果       
@@ -236,6 +244,88 @@ function processCityNames(data) {
                 barWidth: '60%',
                 // 数据
                 data: []
+            }
+        ]
+    };
+
+    option_bar1 = {
+        // 工具提示
+        tooltip: {
+            // 触发类型  经过轴触发axis  经过轴触发item
+            trigger: 'item',
+            // 自定义提示框内容
+            formatter: function(params) {
+                // params.name 是 xAxis.data 中对应的值，可以通过索引获取 hospitalNames 对应值
+                var index = params.dataIndex;
+                return hospitalNames[index] + ': ' + params.value;  // 显示医院名称和对应的值
+            },
+            axisPointer: {
+                // 默认为直线，可选为：'line' 线效果 | 'shadow' 阴影效果
+                type: 'shadow'
+            }
+        },
+        // 图表边界控制
+        grid: {
+            left: '0',
+            right: '3%',
+            bottom: '3%',
+            top: '5%',
+            containLabel: true,
+            show: true,
+            borderColor: 'rgba(0, 240, 255, 0.3)'
+        },
+        // 控制x轴
+        xAxis: [
+            {
+                type: 'category',
+                data: [],  // 将你希望在x轴上显示的数据填入此处
+                axisTick: {
+                    alignWithLabel: true,
+                    show: true
+                },
+                axisLabel: {
+                    color: '#4c9bfd',
+                    rotate: 45,
+                    margin: 10,
+                    align: 'right',
+                    verticalAlign: 'middle'
+                }
+            }
+        ],
+        // 控制y轴
+        yAxis: [
+            {
+                type: 'value',
+                axisTick: {
+                    alignWithLabel: false,
+                    show: false
+                },
+                axisLabel: {
+                    color: '#4c9bfd'
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: 'rgba(0, 240, 255, 0.3)'
+                    }
+                }
+            }
+        ],
+        // 控制series
+        series: [
+            {
+                itemStyle: {
+                    color: new echarts.graphic.LinearGradient(
+                        0, 0, 0, 1,
+                        [
+                            { offset: 0, color: '#00fffb' },
+                            { offset: 1, color: '#0061ce' }
+                        ]
+                    )
+                },
+                name: '用户统计',
+                type: 'bar',
+                barWidth: '60%',
+                data: []  // 将你希望在柱状图中显示的数据填入此处
             }
         ]
     };

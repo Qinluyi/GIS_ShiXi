@@ -785,7 +785,7 @@ var option = {
         //         },
         //         {
         //             offset: 0.5,
-        //             color: '#111111'
+        //             color: '#0b1c2d'
         //         },
         //         {
         //             offset: 1,
@@ -935,13 +935,13 @@ var option = {
             },
             */
             itemStyle: {
-                areaColor: '#333333',
-                borderColor: '#000',
+                areaColor: '#142957',
+                borderColor: '#0692a4',
             },
 
             emphasis: {
                 itemStyle: {
-                    areaColor: '#123555',
+                    areaColor: '#0b1c2d',
                     shadowColor: '#000',
                     shadowBlur: 10
                 },
@@ -957,7 +957,7 @@ var option = {
                 },
                 emphasis: {
                     itemStyle: {
-                        areaColor: '#111111',
+                        areaColor: '#0b1c2d',
                         shadowColor: '#000',
                         shadowBlur: 10
                     },
@@ -1174,8 +1174,8 @@ var option1 = {
 
             map: 'china',
             itemStyle: {
-                areaColor: '#333333',
-                borderColor: '#000',
+                areaColor: '#142957',
+                borderColor: '#0692a4',
             },
 
             emphasis: {
@@ -1196,7 +1196,7 @@ var option1 = {
                 },
                 emphasis: {
                     itemStyle: {
-                        areaColor: '#111111',
+                        areaColor: '#0b1c2d',
                         shadowColor: '#000',
                         shadowBlur: 10
                     }
@@ -1339,8 +1339,8 @@ var option2 = {
             },
             */
             itemStyle: {
-                areaColor: '#333333',
-                borderColor: '#000',
+                areaColor: '#142957',
+                borderColor: '#0692a4',
             },
 
             emphasis: {
@@ -1361,7 +1361,7 @@ var option2 = {
                 },
                 emphasis: {
                     itemStyle: {
-                        areaColor: '#111111',
+                        areaColor: '#0b1c2d',
                         shadowColor: '#000',
                         shadowBlur: 10
                     },
