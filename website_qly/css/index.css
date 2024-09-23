@@ -119,17 +119,17 @@ a{
 	line-height: 1.05;
   }
   .monitor .col:nth-child(1) {
-	width: 3.2rem;
+	width: 5.4rem;
   }
   .monitor .col:nth-child(2) {
-	width: 8.4rem;
+	width: 7.3rem;
 	/* 不换行  一行省略*/
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
   }
   .monitor .col:nth-child(3) {
-	width: 3.2rem;
+	width: 4.2rem;
   }
   .monitor .marquee-view{
   position: absolute;
@@ -199,13 +199,13 @@ a{
   }
 }
 /* 调用动画 */
-/* .monitor .marquee {
+.monitor .marquee {
   animation: row  10s linear infinite;
-} */
+}
 /*鼠标划入 停止动画  */
-/* .monitor .marquee:hover {
+.monitor .marquee:hover {
   animation-play-state: paused;
-} */
+}
 /* 点位 */
 .point {
   height: 14.167rem;
@@ -622,3 +622,33 @@ a{
   flex-direction: column; /* 每个列内的复选框垂直排列 */
   width: 45%; /* 左右两列宽度为45% */
 }
+
+.mymonitor{
+	height: 11.75rem;
+  }
+
+.my_col1{
+  width: 4.4rem;
+}
+
+.my_col2{
+  width: 6.3rem;
+}
+
+.my_col3{
+  width: 4.2rem;
+}
+
+.monitor .mycol:nth-child(1) {
+	width: 1.4rem;
+  }
+  .monitor .mycol:nth-child(2) {
+	width: 9.3rem;
+	/* 不换行  一行省略*/
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+  }
+  .monitor .mycol:nth-child(3) {
+	width: 4.2rem;
+  }

@@ -62,23 +62,49 @@ app.get('/search_hospitals', function (req, res, next) {
         });
 });
 
+//查询医联体信息
+app.get('/search_yiyuan_info', function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
 
-//查询语句 单个商品信息查询
-app.get('/search_id', function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin','*');
-    var object_id=req.query.object_id;
-    
-    client.query('SELECT * FROM xiupin1 where objectid  = $1;', [object_id],function (err, result) {      
+    client.query('SELECT * FROM 医联体医院坐标表 ORDER BY RANDOM() LIMIT 20;', function (err, result) {      
         if (err) {
             console.log(err);
             return res.status(400).send(err);
         }
-        // res.status(200).send(result.rows); 
         // 将查询结果存储在变量中
-        const item_Data = result.rows;
-        console.log("yes1");
+        const Data = result.rows;
         // 以 JSON 格式返回数据给前端
-        res.status(200).json(item_Data);
+        res.status(200).json(Data);
+    });
+});
+
+//查询阻尼系数排行
+app.get('/search_zuni_info', function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    client.query(`SELECT * FROM 医联体阻尼系数;`, function (err, result) {      
+        if (err) {
+            console.log(err);
+            return res.status(400).send(err);
+        }
+        // 将查询结果存储在变量中
+        const Data = result.rows;
+        // 以 JSON 格式返回数据给前端
+        res.status(200).json(Data);
+    });
+});
+
+//查询辐射范围排行
+app.get('/search_fushe_info', function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    client.query(`SELECT * FROM 医联体辐射范围排行榜v2;`, function (err, result) {      
+        if (err) {
+            console.log(err);
+            return res.status(400).send(err);
+        }
+        // 将查询结果存储在变量中
+        const Data = result.rows;
+        // 以 JSON 格式返回数据给前端
+        res.status(200).json(Data);
     });
 });
 

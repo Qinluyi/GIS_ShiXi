@@ -339,3 +339,140 @@ document.querySelectorAll('input[name="hospital"]').forEach(function(checkbox) {
         }
     });
 });
+
+function show_yiyuan_info() {
+    $.ajax({
+        url: `http://localhost:${port}/search_yiyuan_info`,
+        type: 'get',
+        dataType: 'json',
+        success: function(data) {
+            // 获取第一个 class 为 monitor 的元素中的 marquee-view
+            const marqueeView = $('.monitor').first().find('.marquee');
+            
+            // 清空之前的内容
+            marqueeView.empty();
+
+            // 遍历返回的数据
+            data.forEach(item => {
+                // 创建新的 row 元素
+                address = item.所在省 + item.所在市 + item.所在区县;
+                const row = `
+                    <div class="row">
+                        <span class="col">${item.医院名称}</span>
+                        <span class="col">${address}</span>
+                        <span class="col">${item.所属医联体}</span>
+                        <span class="icon-dot"></span>
+                    </div>
+                `;
+                // 将新创建的 row 插入到 marquee-view 中
+                marqueeView.append(row);
+            });
+        },
+        error: function(err) {
+            console.error('Error fetching data:', err);
+        }
+    });
+}
+
+
+
+function show_fanwei_order(){
+    $.ajax({
+        url: `http://localhost:${port}/search_fushe_info`,
+        type: 'get',
+        dataType: 'json',
+        success: function(data) {
+            const marqueeView = $('.monitor').eq(1).find('.marquee').first();
+            // 清空之前的内容
+            marqueeView.empty();
+
+            const sortedData = data.sort((a, b) => b.辐射范围 - a.辐射范围);
+            // 遍历返回的数据
+            i = 1
+            sortedData.forEach(item => {
+                // 创建新的 row 元素
+                const row = `
+                    <div class="row">
+                        <span class="mycol">${i}</span>
+                        <span class="mycol">${item.医联体}</span>
+                        <span class="mycol">${item.三甲医院数}</span>
+                        <span class="icon-dot"></span>
+                    </div>
+                `;
+                i++;
+                // 将新创建的 row 插入到 marquee-view 中
+                marqueeView.append(row);
+            });
+        }
+    }); 
+}
+
+
+function show_fanwei_order(){
+    $.ajax({
+        url: `http://localhost:${port}/search_fushe_info`,
+        type: 'get',
+        dataType: 'json',
+        success: function(data) {
+            const marqueeView = $('.monitor').eq(1).find('.marquee').first();
+            // 清空之前的内容
+            marqueeView.empty();
+
+            const sortedData = data.sort((a, b) => b.辐射范围 - a.辐射范围);
+            // 遍历返回的数据
+            i = 1
+            sortedData.forEach(item => {
+                // 创建新的 row 元素
+                const row = `
+                    <div class="row">
+                        <span class="mycol">${i}</span>
+                        <span class="mycol">${item.医联体}</span>
+                        <span class="mycol">${item.三甲医院数}</span>
+                        <span class="icon-dot"></span>
+                    </div>
+                `;
+                i++;
+                // 将新创建的 row 插入到 marquee-view 中
+                marqueeView.append(row);
+            });
+        }
+    }); 
+}
+
+function show_jiaohu_order(){
+    $.ajax({
+        url: `http://localhost:${port}/search_zuni_info`,
+        type: 'get',
+        dataType: 'json',
+        success: function(data) {
+            const marqueeView = $('.monitor').eq(1).find('.marquee').eq(1);
+            // 清空之前的内容
+            marqueeView.empty();
+
+            const sortedData = data.sort((a, b) => b.平均阻尼系数 - a.平均阻尼系数);
+            // 遍历返回的数据
+            i = 1
+            sortedData.forEach(item => {
+                // 创建新的 row 元素
+                const row = `
+                    <div class="row">
+                        <span class="mycol">${i}</span>
+                        <span class="mycol">${item.医联体名称}</span>
+                        <span class="mycol"></span>
+                        <span class="icon-dot"></span>
+                    </div>
+                `;
+                i++;
+                // 将新创建的 row 插入到 marquee-view 中
+                marqueeView.append(row);
+            });
+        }
+    }); 
+}
+
+
+$(document).ready(function() {
+    show_yiyuan_info();
+    show_fanwei_order();
+    show_jiaohu_order();
+});
