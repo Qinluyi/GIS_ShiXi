@@ -233,7 +233,18 @@
                 <div class="chart">
                     <div class="geo"></div>
                 </div>
+            <!-- 时间轴 -->
+            <!-- 时间轴 -->
+            <div class="timeline">
+                <div class="year-labels"></div>
+                <div class="draggable" id="start-point" style="left: 0;"></div>
+                <div class="year-display" id="start-year">2010</div>
+                <div class="draggable" id="end-point" style="left: 100%"></div>
+                <div class="year-display" style="left: 100%" id="end-year">2024</div>
+                <input type="range" id="year-range" min="2010" max="2024" value="2010" style="display: none;" />
+            </div>
 
+                
             <!-- 添加按钮 -->
             <div class="button-container">
                 <button id="btn-total-intensity" class="btn">总强度</button>

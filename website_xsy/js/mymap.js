@@ -1471,3 +1471,71 @@ var option2 = {
 var myecharts = echarts.init($('.map .geo')[0])
 myecharts.hideLoading();
 myecharts.setOption(option1)
+
+
+
+
+
+
+
+
+
+
+
+const startPoint = document.getElementById('start-point');
+const endPoint = document.getElementById('end-point');
+const startYearDisplay = document.getElementById('start-year');
+const endYearDisplay = document.getElementById('end-year');
+const timeline = document.querySelector('.timeline');
+
+// 初始化时间轴的点和年份显示
+startPoint.style.left = '0'; // 开始点在左边
+endPoint.style.left = 'calc(100% - 20px)'; // 结束点在右边
+
+// 设置年份显示的位置
+startYearDisplay.style.left = `${parseFloat(startPoint.style.left) + 10}px`;
+endYearDisplay.style.left = `${parseFloat(endPoint.style.left) + 10}px`;
+
+// 更新年份显示
+startYearDisplay.innerText = 2010; // 开始年份
+endYearDisplay.innerText = 2024; // 结束年份
+
+let isDraggingStart = false;
+let isDraggingEnd = false;
+
+startPoint.addEventListener('mousedown', () => { isDraggingStart = true; });
+endPoint.addEventListener('mousedown', () => { isDraggingEnd = true; });
+
+document.addEventListener('mousemove', (event) => {
+    const rect = timeline.getBoundingClientRect();
+    const timelineWidth = rect.width;
+
+    if (isDraggingStart) {
+        let newLeft = event.clientX - rect.left;
+        if (newLeft < 0) newLeft = 0;
+        if (newLeft > (parseFloat(endPoint.style.left) - 20)) newLeft = (parseFloat(endPoint.style.left) - 20);
+        startPoint.style.left = `${newLeft}px`;
+
+        // 计算并显示开始年份
+        const startYear = Math.round((newLeft / (timelineWidth - 20)) * (2024 - 2010) + 2010);
+        startYearDisplay.innerText = startYear;
+        startYearDisplay.style.left = `${newLeft + 10}px`; // 调整年份标签的位置
+    }
+
+    if (isDraggingEnd) {
+        let newLeft = event.clientX - rect.left;
+        if (newLeft > timelineWidth - 20) newLeft = timelineWidth - 20;
+        if (newLeft < (parseFloat(startPoint.style.left) + 20)) newLeft = (parseFloat(startPoint.style.left) + 20);
+        endPoint.style.left = `${newLeft}px`;
+
+        // 计算并显示结束年份
+        const endYear = Math.round((newLeft / (timelineWidth - 20)) * (2024 - 2010) + 2010);
+        endYearDisplay.innerText = endYear;
+        endYearDisplay.style.left = `${newLeft + 10}px`; // 调整年份标签的位置
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    isDraggingStart = false;
+    isDraggingEnd = false;
+});

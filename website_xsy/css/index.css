@@ -303,6 +303,87 @@ a{
 }
 
 
+.timeline {
+  position: absolute; /* 绝对定位 */
+  bottom: 20px; /* 悬浮在地图下方 */
+  left: 40%; /* 水平居中 */
+  transform: translateX(-50%); /* 使其在水平上居中 */
+  z-index: 100000; /* 确保时间轴在地图之上 */
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  width: 30%; /* 时间轴宽度为地图的三分之一 */
+  color: white; /* 字体颜色 */
+}
+
+input[type="range"] {
+  appearance: none; /* 标准属性 */
+  -webkit-appearance: none; /* WebKit 浏览器 */
+  width: 100%; /* 调整宽度 */
+  height: 10px;
+  border-radius: 5px;
+  outline: none;
+  background: transparent; /* 去掉背景 */
+  position: relative; /* 相对定位，方便子元素定位 */
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background: #123555; /* 中轴颜色 */
+  height: 10px; /* 中轴高度 */
+  border-radius: 5px; /* 圆角 */
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* WebKit 浏览器 */
+  appearance: none; /* 标准属性 */
+  width: 20px;
+  height: 20px;
+  background: #0692a4; /* 拖动点颜色 */
+  border-radius: 50%; /* 圆形 */
+  cursor: pointer;
+}
+
+.draggable {
+  width: 20px; /* 可拖动点的宽度 */
+  height: 20px; /* 可拖动点的高度 */
+  background: #0692a4; /* 拖动点颜色 */
+  border-radius: 50%; /* 圆形 */
+  cursor: pointer; /* 鼠标指针 */
+  position: absolute; /* 绝对定位 */
+  top: 0; /* 调整位置，使其居中 */
+  z-index: 20; /* 确保在时间轴之上 */
+}
+
+.year-display {
+  position: absolute;
+  color: white;
+  font-size: 14px;
+  top: -25px; /* 调整位置，使其在圆点上方 */
+  text-align: center;
+  width: 50px; /* 控制年份显示的宽度 */
+  transform: translateX(-50%); /* 使年份标签在水平上居中 */
+}
+.year-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%; /* 使标签宽度与时间轴相同 */
+  background-color: transparent; /* 去掉背景 */
+  position: relative; /* 使其在时间轴上方 */
+  z-index: 10; /* 确保标签在时间轴上方 */
+  color: white; /* 标签文字颜色 */
+}
+
+.year-labels::before,
+.year-labels::after {
+  content: ''; /* 空内容用于显示 */
+  flex: 1; /* 平分空白区域 */
+  height: 10px; /* 与时间轴相同高度 */
+  background-color: #123555; /* 中轴颜色 */
+}
+
+
+
+
+
 
 
 
