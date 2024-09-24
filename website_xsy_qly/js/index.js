@@ -32,7 +32,8 @@
         //获取一一对应的下标 
         var index = $(this).index();
         //选取content 然后狗日对应下标的 显示   当前的兄弟.content隐藏
-        $('.content').eq(index).show().siblings('.content').hide();
+        // $('.content').eq(index).show().siblings('.content').hide();
+        $(this).closest('.monitor').find('.content').eq(index).show().siblings('.content').hide();
     });
     //滚动
     //原理：把marquee下面的子盒子都复制一遍 加入到marquee中

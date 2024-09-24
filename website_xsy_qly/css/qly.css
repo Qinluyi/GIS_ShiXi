@@ -1,0 +1,13 @@
+.custom-btn2 {
+    background-color: #101129;
+    color: #fff;
+    border: none;
+    padding: 2px 15px; /* Reduces padding */
+    cursor: pointer;
+    flex: 1;
+    margin: 0 2px; /* Reduces margin */
+    font-size: 10px; /* Reduces font size slightly */
+    transition: background-color 0.3s;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 添加阴影 */
+  }

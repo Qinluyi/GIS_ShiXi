@@ -6,6 +6,7 @@ body{
     background-repeat: no-repeat;
     background-position: 0 0 / cover;
     background-color: #101129;
+    /* background-color: #36be90; */
 }
 *{
     margin: 0;
@@ -45,6 +46,7 @@ a{
     position: relative;
     margin-bottom: 0.833rem;
 }
+
 .panel .inner {
     /* 装内容 */
     /* height: 60px; */
@@ -275,6 +277,7 @@ a{
 
 /* 按钮容器样式 */
 .button-container {
+  visibility: hidden;
   position: absolute;
   bottom: 20px; /* 按钮距离地图底部的距离 */
   right: 20px; /* 按钮距离地图右边的距离 */
@@ -344,7 +347,7 @@ a{
 }
 /* 订单 */
 .order {
-  height: 6.4rem;
+  height: 8.4rem;
 }
 .order .filter {
   display: flex;
