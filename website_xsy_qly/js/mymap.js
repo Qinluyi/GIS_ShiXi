@@ -637,6 +637,20 @@ var convertData = function(data) {
     return res;
 };
 
+var convertData_china = function(data) {
+    var res = [];
+    for (var i = 0; i < data.length; i++) {
+        var geoCoord = geoCoordMap_china[data[i].name];
+        if (geoCoord) {
+            res.push({
+                name: data[i].name,
+                value: geoCoord.concat(data[i].value)
+            });
+        }
+    }
+    return res;
+};
+
 
 
 var convertedData = [
@@ -1506,7 +1520,7 @@ document.addEventListener('mousemove', (event) => {
     if (isDraggingStart) {
         let newLeft = event.clientX - rect.left;
         if (newLeft < 0) newLeft = 0;
-        if (newLeft > (parseFloat(endPoint.style.left) - 20)) newLeft = (parseFloat(endPoint.style.left) - 20);
+        if (newLeft > (parseFloat(endPoint.style.left))) newLeft = (parseFloat(endPoint.style.left));
         startPoint.style.left = `${newLeft}px`;
 
         // 计算并显示开始年份
@@ -1518,7 +1532,7 @@ document.addEventListener('mousemove', (event) => {
     if (isDraggingEnd) {
         let newLeft = event.clientX - rect.left;
         if (newLeft > timelineWidth - 20) newLeft = timelineWidth - 20;
-        if (newLeft < (parseFloat(startPoint.style.left) + 20)) newLeft = (parseFloat(startPoint.style.left) + 20);
+        if (newLeft < (parseFloat(startPoint.style.left))) newLeft = (parseFloat(startPoint.style.left) );
         endPoint.style.left = `${newLeft}px`;
 
         // 计算并显示结束年份
@@ -1531,4 +1545,5 @@ document.addEventListener('mousemove', (event) => {
 document.addEventListener('mouseup', () => {
     isDraggingStart = false;
     isDraggingEnd = false;
+    updateSelectedHospitals_jiaohu();
 });

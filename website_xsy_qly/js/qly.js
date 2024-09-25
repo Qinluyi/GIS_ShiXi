@@ -570,7 +570,23 @@ $(document).ready(function() {
     var geoCoordMap = {};
     var currentInteractionType = '文章数量'; // 初始交互类型为文章数量
     // var function_type = '数量热力图';
-    
+    geoCoordMap = {};
+    fetch('http://localhost:5500/get_coordinate_map')
+    .then(response => response.json())
+    .then(hospitalData => {
+        hospitalData.forEach(item => {
+            const hospitalName = item['医院名称'];
+            if (hospitalName) {
+                // 更新 geoCoordMap
+                geoCoordMap[hospitalName] = [parseFloat(item['经度']), parseFloat(item['纬度'])];
+            }
+        });
+    })
+    .catch(error => console.error('Error fetching coordinate map:', error));
+
+
+
+
     function processHospital(hospitalNames) {
         return hospitalNames.map(name => name.substring(0, 2) + '...');
     }
@@ -603,7 +619,7 @@ $(document).ready(function() {
 
         if (selectedHospitals.length === 0) {
             data = [];
-            geoCoordMap = {};
+            // geoCoordMap = {};
             myecharts.setOption(option1, true); // 更新地图
             option_bar1.xAxis[0].data = []; // Update the x-axis with top 10 city names
             option_bar1.series[0].data = []; // Update the series with corresponding city values
@@ -619,66 +635,140 @@ $(document).ready(function() {
         }
         else
         {
-            // 将选中的医院传递到后端
-            fetch('http://localhost:5500/get_hospital_count?hospitals=' + encodeURIComponent(selectedHospitals.join(',')))
-            .then(response => response.json())
-            .then(hospitalData  => {
-                console.log('Selected hospital data:', data);
-               
-                // 清空之前的数据
-                data = [];
-                geoCoordMap = {};
+            const startYearValue = document.getElementById('start-year').innerText;
+            console.log(startYearValue); // 输出: 2017
+            const endYearValue = document.getElementById('end-year').innerText;
+            console.log(endYearValue); // 输出: 2017
+            if(startYearValue=='2010'&&endYearValue=='2024')
+            {
+                // 将选中的医院传递到后端
+                fetch('http://localhost:5500/get_hospital_count?hospitals=' + encodeURIComponent(selectedHospitals.join(',')))
+                .then(response => response.json())
+                .then(hospitalData  => {
+                    console.log('Selected hospital data:', data);
+                
+                    // 清空之前的数据
+                    data = [];
+                    // geoCoordMap = {};
 
-                hospitalData.forEach(item => {
-                    const hospitalName = item['医院'] || item['医院名称'];
-                    if (hospitalName) {
-                        // 根据当前的交互类型更新 data 的 value
-                        var value = item[currentInteractionType] || 0;
-                        data.push({
-                            name: hospitalName,
-                            value: Math.log(value) // 对数缩放
-                        });
+                    hospitalData.forEach(item => {
+                        const hospitalName = item['医院'] || item['医院名称'];
+                        if (hospitalName) {
+                            // 根据当前的交互类型更新 data 的 value
+                            var value = item[currentInteractionType] || 0;
+                            data.push({
+                                name: hospitalName,
+                                value: Math.log(value) // 对数缩放
+                            });
+                
+                            // // 更新 geoCoordMap
+                            // geoCoordMap[hospitalName] = [parseFloat(item['经度']), parseFloat(item['纬度'])];
+                        }
+                    });
+
+                    var top10Hospital = data.sort(function(a, b) {
+                        return b.value - a.value;
+                    }).slice(0, 10);
+
+                    var top5Hospital = data.sort(function(a, b) {
+                        return b.value - a.value;
+                    }).slice(0, 5);
+
+                    // Extract city names and values for the bar chart
+                    hospitalNames = top10Hospital.map(item => item.name);
+                    var hopitalValues = top10Hospital.map(item => item.value);
+                    var processedNames = processHospital(hospitalNames);
+                    var processedValues = processValues(hopitalValues);
+
+                    // Update the bar chart data
+                    option_bar1.xAxis[0].data = processedNames; // Update the x-axis with top 10 city names
+                    option_bar1.series[0].data = processedValues; // Update the series with corresponding city values
+                    transformedTop5Hospital = transformValues(top5Hospital);
+                    option_pie.series[0].data = transformedTop5Hospital; // Update the series with corresponding city values
+
+                    var myechart3 = echarts.init($('.users .bar')[0]);
+                    myechart3.setOption(option_bar1);
+                    var myechart2 = echarts.init($('.point .pie')[0]);
+                    myechart2.setOption(option_pie);
+
+                    var newConvertedData = convertData(data);
+
+                    // 更新地图数据
+                    option.baseOption.series[0].data = newConvertedData;
+                    myecharts.setOption(option, true); // 更新地图
+
+                    console.log('Updated data:', data);
+                    console.log('Updated geoCoordMap:', geoCoordMap);
+                })
+                .catch(error => console.error('Error:', error));
+            }
+
+            else
+            {
+                // 将选中的医院传递到后端
+                fetch(`http://localhost:5500/get_hospital_detail_count?hospitals=${encodeURIComponent(selectedHospitals.join(','))}&startYear=${startYearValue}&endYear=${endYearValue}`)
+                .then(response => response.json())
+                .then(hospitalData  => {
+                    const { mergedResults, summary } = hospitalData; // 解构获取结果和汇总
+
+                    console.log('Merged results:', mergedResults);
+                    console.log('Summary:', summary);
+
+                
+                    // 清空之前的数据
+                    data = [];
+
+                    // 使用 Object.values() 遍历 summary 对象
+                    Object.values(summary).forEach(item => {
+                        const hospitalName = item['医院名称'];
+                        if (hospitalName) {
+                            // 根据当前的交互类型更新 data 的 value
+                            var value = item[currentInteractionType] || 0;
+                            data.push({
+                                name: hospitalName,
+                                value: Math.log(value) // 对数缩放
+                            });
+                        }
+                    });
+
+
+                    var top10Hospital = data.sort(function(a, b) {
+                        return b.value - a.value;
+                    }).slice(0, 10);
+
+                    var top5Hospital = data.sort(function(a, b) {
+                        return b.value - a.value;
+                    }).slice(0, 5);
+
+                    // Extract city names and values for the bar chart
+                    hospitalNames = top10Hospital.map(item => item.name);
+                    var hopitalValues = top10Hospital.map(item => item.value);
+                    var processedNames = processHospital(hospitalNames);
+                    var processedValues = processValues(hopitalValues);
+
+                    // Update the bar chart data
+                    option_bar1.xAxis[0].data = processedNames; // Update the x-axis with top 10 city names
+                    option_bar1.series[0].data = processedValues; // Update the series with corresponding city values
+                    transformedTop5Hospital = transformValues(top5Hospital);
+                    option_pie.series[0].data = transformedTop5Hospital; // Update the series with corresponding city values
+
+                    var myechart3 = echarts.init($('.users .bar')[0]);
+                    myechart3.setOption(option_bar1);
+                    var myechart2 = echarts.init($('.point .pie')[0]);
+                    myechart2.setOption(option_pie);
+
+                    var newConvertedData = convertData(data);
+
+                    // 更新地图数据
+                    option.baseOption.series[0].data = newConvertedData;
+                    myecharts.setOption(option, true); // 更新地图
+
+                    console.log('Updated data:', data);
+                    console.log('Updated geoCoordMap:', geoCoordMap);
+                })
+                .catch(error => console.error('Error:', error));
+            }
             
-                        // 更新 geoCoordMap
-                        geoCoordMap[hospitalName] = [parseFloat(item['经度']), parseFloat(item['纬度'])];
-                    }
-                });
-
-                var top10Hospital = data.sort(function(a, b) {
-                    return b.value - a.value;
-                }).slice(0, 10);
-
-                var top5Hospital = data.sort(function(a, b) {
-                    return b.value - a.value;
-                }).slice(0, 5);
-
-                // Extract city names and values for the bar chart
-                hospitalNames = top10Hospital.map(item => item.name);
-                var hopitalValues = top10Hospital.map(item => item.value);
-                var processedNames = processHospital(hospitalNames);
-                var processedValues = processValues(hopitalValues);
-
-                // Update the bar chart data
-                option_bar1.xAxis[0].data = processedNames; // Update the x-axis with top 10 city names
-                option_bar1.series[0].data = processedValues; // Update the series with corresponding city values
-                transformedTop5Hospital = transformValues(top5Hospital);
-                option_pie.series[0].data = transformedTop5Hospital; // Update the series with corresponding city values
-
-                var myechart3 = echarts.init($('.users .bar')[0]);
-                myechart3.setOption(option_bar1);
-                var myechart2 = echarts.init($('.point .pie')[0]);
-                myechart2.setOption(option_pie);
-
-                var newConvertedData = convertData(data);
-
-                // 更新地图数据
-                option.baseOption.series[0].data = newConvertedData;
-                myecharts.setOption(option, true); // 更新地图
-
-                console.log('Updated data:', data);
-                console.log('Updated geoCoordMap:', geoCoordMap);
-            })
-            .catch(error => console.error('Error:', error));
         }
         
     }
@@ -708,7 +798,7 @@ $(document).ready(function() {
         
         if (selectedHospitals.length === 0) {
             data = [];
-            geoCoordMap = {};
+            //geoCoordMap = {};
             myecharts.setOption(option1, true); // 更新地图
             option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
             option_bar.series[0].data = []; // Update the series with corresponding city values
@@ -764,8 +854,8 @@ $(document).ready(function() {
                     var cityName = item['name'];
                     var count = item['value'];
                     // Check if city exists in geoCoordMap
-                    geoCoordMap =geoCoordMap_china
-                    if (geoCoordMap[cityName]) {
+                    //geoCoordMap =geoCoordMap_china
+                    if (geoCoordMap_china[cityName]) {
                         data.push({
                             name: cityName,
                             value: count
@@ -775,7 +865,7 @@ $(document).ready(function() {
                     }
                 });
 
-                var newConvertedData = convertData(data);
+                var newConvertedData = convertData_china(data);
 
 
                 console.log('Updated data:', data);

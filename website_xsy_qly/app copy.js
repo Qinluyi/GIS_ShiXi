@@ -1,6 +1,8 @@
 const express = require('express');
 const { Client } = require('pg');    //引入express和pg框架
-const connectionString = 'postgres://postgres:Xxsht123@localhost:5858/ylt1'
+const connectionString = 'postgres://postgres:123456@localhost:5432/ylt';
+//const connectionString = 'postgres://postgres:Xxsht123@localhost:5858/ylt'
+
 const client = new Client({
     connectionString: connectionString
 });
@@ -44,10 +46,10 @@ app.get('/get_hospital_count', function (req, res, next) {
                 tableName = '武汉大学口腔医院交互强度表';
                 break;
             case 'tongji':
-                tableName = '同济医院交互强度表';
+                tableName = '华中科技大学同济医学院附属同济医院交互强';
                 break;
             case 'xiehe':
-                tableName = '协和医院交互强度表';
+                tableName = '华中科技大学同济医学院附属协和医院交互强';
                 break;
             case 'hubei_tcm':
                 tableName = '湖北省中医院交互强度表';
@@ -92,23 +94,19 @@ app.get('/total_hospital_number', function (req, res, next) {
     function getHospitalName(hospital) {
         switch (hospital) {
             case 'wuhan_people':
+                {
                 return '武汉大学人民医院';
-                break;
+                }
             case 'wuhan_zn':
                 return '武汉大学中南医院';
-                break;
             case 'wuhan_dental':
                 return '武汉大学口腔医院';
-                break;
             case 'tongji':
                 return '华中科技大学同济医学院附属同济医院';
-                break;
             case 'xiehe':
                 return '华中科技大学同济医学院附属协和医院';
-                break;
             case 'hubei_tcm':
                 return '湖北省中医院';
-                break;
             default:
                 return null;
         }
@@ -120,27 +118,38 @@ app.get('/total_hospital_number', function (req, res, next) {
     // Filter out any unknown hospital identifiers
     hospitalNames = hospitalNames.filter(name => name !== null);
 
+
+    // Log the hospitalNames to check its value
+    console.log('Selected Hospital Names:', hospitalNames);
+
     if (hospitalNames.length === 0) {
         return res.status(400).send('Invalid hospitals selected');
     }
 
     // Construct query to find all rows where "医院名称" is part of the selected hospital names
+    // Construct query to find all rows where "医院名称" is part of the selected hospital names
     const query = `
-        SELECT "所在市", COUNT(*) as count 
-        FROM "医联体医院坐标表"
-        WHERE "医院名称" = ANY($1::text[])
-        GROUP BY "所在市";
-    `;
+    SELECT "所在市", COUNT(*) as count 
+    FROM "医联体医院坐标表"
+    WHERE "所属医联体" = ANY($1::text[])
+    AND "所在市" NOT IN ('湖北省', '海南省')
+    GROUP BY "所在市";
+`;
 
     // Query the database with the selected hospital names
     client.query(query, [hospitalNames])
         .then(result => {
+
+            // console.log('Database Query Result:', result);
             // Extract city count data from result
             const cityData = result.rows.map(row => ({
                 name: row['所在市'],  // Use 'name' as key
                 value: parseInt(row.count, 10)  // Use 'value' as key
             }));
 
+
+            // // Log the extracted city data
+            // console.log('Extracted City Data:', cityData);           
             // Return the city data
             res.status(200).json(cityData);
         })
