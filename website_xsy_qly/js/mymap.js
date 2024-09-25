@@ -1545,5 +1545,6 @@ document.addEventListener('mousemove', (event) => {
 document.addEventListener('mouseup', () => {
     isDraggingStart = false;
     isDraggingEnd = false;
+    if(function_type == '交互强度')
     updateSelectedHospitals_jiaohu();
 });
