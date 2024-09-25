@@ -109,10 +109,46 @@ app.get('/search_fushe_info', function (req, res, next) {
     });
 });
 
+//查询辐射范围排行
+app.get('/search_zuni_reli', function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    const query1 = client.query(`SELECT * FROM 所有医联体医院阻尼系数;`);
+    // const names = req.query.names; // 假设传入的是一个数组
+    // 获取names，确保是数组
+    const names = Array.isArray(req.query.names) ? req.query.names : []; // 如果不是数组，使用空数组
+
+    // 打印names的值
+    console.log('Names:', names);
+    // 对每个name执行查询
+    const nameQueries = names.map(name => {
+        return client.query('SELECT * FROM 医联体医院坐标表 WHERE 所属医联体 = \$1;', [name])
+            .then(result => result.rows)
+            .catch(err => {
+                console.error(`Error querying for name ${name}:`, err);
+                return []; // 返回空数组以防止Promise.all失败
+            });
+    });
+
+    // 等待query1和所有名称查询完成
+    Promise.all([query1, ...nameQueries])
+        .then(results => {
+            const data = [results[0].rows]; // query1的结果
+            // 将所有名称查询的结果合并到data中
+            data.push(...results.slice(1)); // 添加名称查询的结果
+            res.status(200).json(data);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(400).send(err);
+        });
+});
+
 app.listen(port, function () {
     console.log("Connetct successfully...")
     console.log('Server is running.. on Port ' + port);
 });
+
+
 
 
 

@@ -45,6 +45,15 @@ const nameDict = {
     "hubei_tcm": "湖北省中医院医联体"
 }
 
+const yilianti_dict = {
+    "wuhan_people": "武汉大学人民医院",
+    "wuhan_zn": "武汉大学中南医院",
+    "wuhan_dental": "武汉大学口腔医院",
+    "tongji": "华中科技大学同济医学院附属同济医院",
+    "xiehe": "华中科技大学同济医学院附属协和医院",
+    "hubei_tcm": "湖北省中医院"
+}
+
 let function_type = ''; // Ensure this is defined globally
 
 init_option = {
@@ -456,6 +465,92 @@ function show_jiaohu_order(){
         }
     }); 
 }
+function my_processValues(hospitalValues) {
+    return hospitalValues.map(value => Math.floor(Math.exp(value)));
+}
+// 函数：更新选中的医院
+function update_zuni_reli() {
+    // 获取所有被选中的复选框
+    var checkboxes = document.querySelectorAll('input[name="hospital"]:checked');
+    var selectedHospitals = [];
+    
+    // 获取所有选中的医院的值
+    checkboxes.forEach(function(checkbox) {
+        selectedHospitals.push(yilianti_dict[checkbox.value]);
+    });
+
+    if (selectedHospitals.length == 0){
+        myecharts = echarts.init($('.map .geo')[0])
+        myecharts.setOption(option1,true);
+    }else{
+        $.ajax({
+            url: `http://localhost:${port}/search_zuni_reli`,
+            type: 'get',
+            data: { names: selectedHospitals }, // 将 names 放在 data 中
+            dataType: 'json',
+            success: function(return_data) {
+                // 清空之前的数据
+                data = [];
+                geoCoordMap = {};
+                hospitals = [];
+                name_zuni_dict = {};
+                
+                return_data[0].forEach(item => {
+                    name_zuni_dict[item.医院名称] = item.阻尼系数
+                });
+
+                for (let i = 1; i < return_data.length; i++) {
+                    return_data[i].forEach(item => {
+                        const hospitalName = item['医院名称'];
+                        if (hospitalName) {
+                        //更新 geoCoordMap
+                        geoCoordMap[hospitalName] = [parseFloat(item['经度']), parseFloat(item['纬度'])];
+                        }
+                    });
+                }
+
+                for (const key in geoCoordMap) {
+                    if (geoCoordMap.hasOwnProperty(key)) {
+                        hospitalName = key;
+                        if (hospitalName) {
+                            // 根据当前的交互类型更新 data 的 value
+                            value = 10 - name_zuni_dict[hospitalName];  
+                            data.push({
+                                name: hospitalName,
+                                value: value//Math.log(value) // 对数缩放
+                            });
+                            
+                        }
+                    }
+                }
+
+                var newConvertedData = convertData(data);
+
+                // 更新地图数据
+                option.baseOption.series[0].data = newConvertedData;
+                myecharts.setOption(option, true); // 更新地图
+                // 更新bar
+                var top10Hospital = data.sort(function(a, b) {
+                    return b.value - a.value;
+                }).slice(0, 10);
+                // Extract city names and values for the bar chart
+                hospitalNames = top10Hospital.map(item => item.name);
+                var hopitalValues = top10Hospital.map(item => item.value);
+                var processedNames = processHospital(hospitalNames);
+                var processedValues = hopitalValues;
+                // Update the bar chart data
+                option_bar1.xAxis[0].data = processedNames; // Update the x-axis with top 10 city names
+                option_bar1.series[0].data = processedValues; // Update the series with corresponding city values
+
+                var myechart3 = echarts.init($('.users .bar')[0]);
+                myechart3.setOption(option_bar1);
+
+            }
+        }); 
+    }
+}
+    
+    
 
 
 $(document).ready(function() {
@@ -585,7 +680,6 @@ $(document).ready(function() {
             })
             .catch(error => console.error('Error:', error));
         }
-        
         
     }
     
@@ -722,7 +816,9 @@ function setupButtonListeners() {
         function_type = '辐射能力';
         myecharts.setOption(option1, true); // 更新地图
         
-
+        update_zuni_reli();
+        // 修改标题内容
+        document.querySelector('.users.panel h3').innerText = '各医院交互能力柱状图（前10）';
         document.querySelector('.button-container').style.visibility = 'hidden';
         document.querySelector('.timeline').style.visibility = 'hidden';
 
@@ -741,7 +837,7 @@ function setupButtonListeners() {
 
     document.getElementById('btn-jiaohurelitu').addEventListener('click', function() {
         function_type = '交互热力图';
-        var myecharts = echarts.init($('.map .geo')[0])
+        myecharts = echarts.init($('.map .geo')[0])
         myecharts.setOption(option1)
          // 显示按钮容器
         option_bar1.xAxis[0].data = []; // Update the x-axis with top 10 city names
@@ -765,7 +861,7 @@ function setupButtonListeners() {
 
     document.getElementById('btn-shuliangrelitu').addEventListener('click', function() {
         function_type = '数量热力图';
-        var myecharts = echarts.init($('.map .geo')[0])
+        myecharts = echarts.init($('.map .geo')[0])
         myecharts.setOption(option1)
 
         option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
@@ -830,7 +926,7 @@ document.querySelectorAll('input[name="hospital"]').forEach(function(checkbox) {
             
             show_fanwei();
         } else if (function_type === '辐射能力') {
-            
+            update_zuni_reli();
         }
         if (function_type === '交互热力图') {
             updateSelectedHospitals_jiaohu();

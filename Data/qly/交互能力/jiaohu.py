@@ -40,9 +40,11 @@ def haversine_distance(lat1, lon1, lat2, lon2):
     return R * c
 
 
-def cal_zuni(excel_path,coordinate_path,hospital_name,save_result_path,gama,theta,k):
+def cal_zuni(excel_path,coordinate_path,hospital_name,save_result_path,save_result_path1,gama,theta,k):
     coordinates = {}
     dengji = {}
+    # 初始化一个列表来保存数据
+    data = []
     
     average_beta = dict()
     # 读取医院坐标数据
@@ -77,7 +79,9 @@ def cal_zuni(excel_path,coordinate_path,hospital_name,save_result_path,gama,thet
             current_lat, current_lon = coordinates[current_hospital]
             distance = haversine_distance(target_lat, target_lon, current_lat, current_lon)
             beta = zuni(G,k,gama,theta,distance,Pi,Pj)
-            beta_list.append(beta)
+            beta_list.append(beta)   
+            # 将 current_hospital 和 beta 添加到数据列表
+            data.append({'医院名称': current_hospital, '阻尼系数': beta})
             
         avg_beta = np.array(beta_list).mean()
         average_beta[hospital_name[i]] = avg_beta
@@ -87,6 +91,10 @@ def cal_zuni(excel_path,coordinate_path,hospital_name,save_result_path,gama,thet
     df = pd.DataFrame(sorted_average_beta.items(), columns=['医联体名称', '平均阻尼系数'])
     # 保存为 Excel 文件
     df.to_excel(save_result_path, index=False)
+    # 创建 DataFrame
+    beta_df = pd.DataFrame(data)
+    # 保存为 Excel 文件
+    beta_df.to_excel(save_result_path1, index=False)
         
         
         
@@ -116,6 +124,7 @@ if __name__ == '__main__':
         "湖北省中医院"
     ]
     save_result_path = r'E:\Dasishang\GISshixi\github\456\GIS_ShiXi\Data\qly\阻尼系数.xlsx'
+    save_result_path1 = r'E:\Dasishang\GISshixi\github\456\GIS_ShiXi\Data\qly\所有医联体医院阻尼系数.xlsx'
     # P d 
     coordinate_path = r'E:\Dasishang\GISshixi\github\456\GIS_ShiXi\Data\qly\医联体医院坐标表.xlsx'
-    cal_zuni(jiaohu_path_list,coordinate_path,hospital_names,save_result_path,gama,theta,k)
+    cal_zuni(jiaohu_path_list,coordinate_path,hospital_names,save_result_path,save_result_path1,gama,theta,k)
