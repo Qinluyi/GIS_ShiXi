@@ -714,6 +714,7 @@ function setupButtonListeners() {
         show_fanwei();
         
         document.querySelector('.button-container').style.visibility = 'hidden';
+        document.querySelector('.timeline').style.visibility = 'hidden';
         console.log('Function Type:', function_type); // Debugging line
     });
 
@@ -723,11 +724,16 @@ function setupButtonListeners() {
         
 
         document.querySelector('.button-container').style.visibility = 'hidden';
+        document.querySelector('.timeline').style.visibility = 'hidden';
+
         console.log('Function Type:', function_type); // Debugging line
     });
 
     document.getElementById('jiaohufanwei').addEventListener('click', function() {
         function_type = '交互范围';
+        document.querySelector('.button-container').style.visibility = 'hidden';
+        document.querySelector('.timeline').style.visibility = 'hidden';
+
         update_yy();
         console.log('Function Type:', function_type); // Debugging line
     });
@@ -744,6 +750,7 @@ function setupButtonListeners() {
 
         // 显示按钮
         document.querySelector('.button-container').style.visibility = 'visible';
+        document.querySelector('.timeline').style.visibility = 'visible';
         document.querySelector('.map h3').innerHTML = `
         <span class="icon-cube"></span>
         交互数量分布热力图
@@ -765,6 +772,7 @@ function setupButtonListeners() {
         option_bar.series[0].data = []; // Update the series with corresponding city values
 
         document.querySelector('.button-container').style.visibility = 'hidden';
+        document.querySelector('.timeline').style.visibility = 'hidden';
         // 修改地图标题
         document.querySelector('.map h3').innerHTML = `
         <span class="icon-cube"></span>
