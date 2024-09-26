@@ -20,6 +20,7 @@ const pool1 = new Pool({
   password: '20030509',   // 数据库密码
   port: 5432,             // PostgreSQL 默认端口
 });
+const { exec } = require('child_process');
 const { spawn } = require('child_process');
 // 设置静态文件夹，Express 会自动提供这个文件夹中的静态文件
 app.use(express.static(path.join(__dirname, 'Website')));
@@ -91,6 +92,74 @@ app.get('/api/data_general/:hospitalName', async (req, res) => {
     console.error('数据库查询错误:', err);
     res.status(500).json({ error: '服务器错误' });
   }
+});
+
+// 当接收到 /run-python 请求时，运行Python脚本
+app.get('/run-python', (req, res) => {
+  // 指定Python解释器的路径和Python脚本的路径
+  const pythonExecutable = 'D:\\python\\python3.10.4\\python.exe'; // Python解释器路径
+  const pythonScriptPath = 'run.py'; // Python脚本文件名
+
+  //使用 child_process 来执行 Python 脚本，并指定工作目录为 D:\Spider
+  exec(`${pythonExecutable} ${pythonScriptPath}`, { cwd: 'D:\\大四上\\综合实习\\teamwork1\\Data\\hct\\auto_renew_data', encoding: 'utf8' }, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing Python script: ${error.message}`);
+      res.status(500).json({ error: error.message });
+      return;
+    }
+    if (stderr) {
+      console.error(`Python script stderr: ${stderr}`);
+      res.status(500).json({ error: stderr });
+      return;
+    }
+    console.log(`Python script output: ${stdout}`);
+    res.json({ output: stdout }); // 返回Python脚本的输出
+  });
+});
+
+app.get('/run-python1', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders();
+
+  let progress = 0; // 初始进度为0%
+
+  const progressInterval = setInterval(() => {
+    if (progress < 90) {
+      progress += 10; // 每次增长10%
+      res.write(`data: ${JSON.stringify({ progress: progress + '%' })}\n\n`);
+    } else {
+      // 达到90%后停止增长
+      clearInterval(progressInterval);
+    }
+  }, 1000);
+
+  const pythonExecutable = 'D:\\python\\python3.10.4\\python.exe';
+  const pythonScriptPath = 'run.py';
+
+  const pythonProcess = spawn(pythonExecutable, [pythonScriptPath], { cwd: 'D:\\大四上\\综合实习\\teamwork1\\Data\\hct\\auto_renew_data' });
+
+  pythonProcess.stdout.on('data', (data) => {
+    // 发送标准输出到客户端
+    res.write(`data: ${JSON.stringify({ message: data.toString() })}\n\n`);
+  });
+
+  pythonProcess.stderr.on('data', (data) => {
+    // 发送错误输出到客户端
+    res.write(`data: ${JSON.stringify({ message: data.toString() })}\n\n`);
+  });
+
+  pythonProcess.on('close', (code) => {
+    // 当脚本执行完成时发送完成消息
+    res.write(`data: ${JSON.stringify({ progress: '100%', message: 'Script finished with code ' + code })}\n\n`);
+    res.end();
+  });
+
+  pythonProcess.on('error', (error) => {
+    console.error(`Error launching Python script: ${error.message}`);
+    res.status(500).send(`Error launching Python script: ${error.message}`);
+  });
 });
 
 app.use(express.static(path.join(__dirname, 'Website')));
