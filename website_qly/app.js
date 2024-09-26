@@ -1,12 +1,9 @@
 const express = require('express');
 const { Client } = require('pg');
 const connectionString = 'postgres://postgres:123456@localhost:5432/YiLianTi';
-//const connectionString = 'postgres://postgres:Xxsht123@localhost:5858/ylt'
-
 const client = new Client({
     connectionString: connectionString
 });
-
 client.connect();
 
 var app = express();
