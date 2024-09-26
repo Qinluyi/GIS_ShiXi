@@ -1,8 +1,6 @@
 const express = require('express');
 const { Client } = require('pg');    //引入express和pg框架
-const connectionString = 'postgres://postgres:123456@localhost:5432/ylt';
-//const connectionString = 'postgres://postgres:Xxsht123@localhost:5858/ylt'
-
+const connectionString = 'postgres://postgres:123456@localhost:5432/YiLianTi'
 const client = new Client({
     connectionString: connectionString
 });
@@ -75,7 +73,99 @@ app.get('/get_hospital_count', function (req, res, next) {
         });
 });
 
+app.get('/get_hospital_detail_count', function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
 
+    // 获取被框选的医院
+    var hospitals = req.query.hospitals;
+    if (!hospitals) {
+        return res.status(400).send('No hospitals selected');
+    }
+    var startYear = req.query.startYear;
+    var endYear = req.query.endYear;
+
+    // 将医院值分割成数组
+    var hospitalList = hospitals.split(',');
+
+    // 动态查询每家医院对应的交互强度表
+    let queries = hospitalList.map(hospital => {
+        // 生成医院对应的强度表表名
+        let tableName;
+        switch (hospital) {
+            case 'wuhan_people':
+                tableName = '武汉大学人民医院交互明细';
+                break;
+            case 'wuhan_zn':
+                tableName = '武汉大学中南医院交互明细';
+                break;
+            case 'wuhan_dental':
+                tableName = '武汉大学口腔医院交互明细';
+                break;
+            case 'tongji':
+                tableName = '华中科技大学同济医学院附属同济医院交互明';
+                break;
+            case 'xiehe':
+                tableName = '华中科技大学同济医学院附属协和医院交互明';
+                break;
+            case 'hubei_tcm':
+                tableName = '湖北省中医院交互明细';
+                break;
+            default:
+                return Promise.reject('Unknown hospital: ' + hospital);
+        }
+
+        // 查询该医院的交互强度表
+        return client.query(`SELECT * FROM ${tableName};`);
+    });
+
+    // 执行所有查询
+    Promise.all(queries)
+        .then(results => {
+            // 将查询结果合并并返回
+            let mergedResults = results.reduce((acc, result) => acc.concat(result.rows), []);
+
+            // 统计数据
+            let summary = {};
+
+            mergedResults.forEach(item => {
+                const date = new Date(item['时间']); // 假设 '时间' 字段存在
+                const year = date.getFullYear();
+
+                // 检查年份范围
+                if (year >= startYear && year <= endYear) {
+                    const hospitalName = item['医院'] || item['医院名称'];
+
+                    if (!summary[hospitalName]) {
+                        summary[hospitalName] = { 
+                            医院名称: hospitalName,
+                            文章数量: 0, 
+                            合作: 0, 
+                            沟通: 0, 
+                            技术: 0 
+                        };
+                    }
+
+                    summary[hospitalName].文章数量 += 1;
+
+                    // 更新交互类型统计
+                    if (item['交互类型'] === '合作') {
+                        summary[hospitalName].合作 += 1;
+                    } else if (item['交互类型'] === '沟通') {
+                        summary[hospitalName].沟通 += 1;
+                    } else if (item['交互类型'] === '技术') {
+                        summary[hospitalName].技术 += 1;
+                    }
+                }
+            });
+
+            // 返回 mergedResults 和 summary
+            res.status(200).json({ mergedResults, summary });
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(400).send('Error fetching data: ' + err);
+        });
+});
 
 
 app.get('/total_hospital_number', function (req, res, next) {
@@ -158,6 +248,28 @@ app.get('/total_hospital_number', function (req, res, next) {
             res.status(500).send('Error fetching data');
         });
 });
+
+app.get('/get_coordinate_map', function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    // 查询医联体医院坐标表
+    client.query('SELECT 医院名称, 经度, 纬度 FROM "医联体医院坐标表";')
+        .then(result => {
+            const hospitalData = result.rows.map(row => ({
+                '医院名称': row['医院名称'],
+                '经度': row['经度'],
+                '纬度': row['纬度']
+            }));
+            res.status(200).json(hospitalData);
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).send('Error fetching data: ' + err);
+        });
+});
+
+
+
 
 
 

@@ -467,7 +467,7 @@ function show_jiaohu_order(){
 }
 function my_processValues(hospitalValues) {
     const max = Math.max(...hospitalValues);
-    const min = Math.min(...hospitalValues);
+    const min = Math.min(...hospitalValues)-0.1;
     for (let i = 0;i<hospitalValues.length;i++) {
         hospitalValues[i] = (hospitalValues[i] - min) / (max - min) * 100;
     }
