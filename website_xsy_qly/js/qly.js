@@ -1198,7 +1198,6 @@ function setupButtonListeners() {
         show_fanwei();
         
         document.querySelector('.button-container').style.visibility = 'hidden';
-        document.querySelector('.button-container-yy').style.visibility = 'hidden';
         document.querySelector('.timeline').style.visibility = 'hidden';
         console.log('Function Type:', function_type); // Debugging line
     });
@@ -1211,7 +1210,6 @@ function setupButtonListeners() {
         // 修改标题内容
         document.querySelector('.users.panel h3').innerText = '各医院交互能力柱状图（前10）';
         document.querySelector('.button-container').style.visibility = 'hidden';
-        document.querySelector('.button-container-yy').style.visibility = 'hidden';
         document.querySelector('.timeline').style.visibility = 'hidden';
 
         console.log('Function Type:', function_type); // Debugging line
@@ -1219,33 +1217,10 @@ function setupButtonListeners() {
 
     document.getElementById('jiaohufanwei').addEventListener('click', function() {
         function_type = '交互范围';
-
-        document.querySelector('.button-container-yy').style.visibility = 'visible';
         document.querySelector('.button-container').style.visibility = 'hidden';
         document.querySelector('.timeline').style.visibility = 'hidden';
-
-        document.querySelector('.map h3').innerHTML = `
-        <span class="icon-cube"></span>
-        医联体交互范围图
-        `;
 
         update_yy();
-        console.log('Function Type:', function_type); // Debugging line
-    });
-
-    document.getElementById('jiaohuxiangqing').addEventListener('click', function () {
-        function_type = '交互详情';
-
-        document.querySelector('.button-container-yy').style.visibility = 'hidden';
-        document.querySelector('.button-container').style.visibility = 'hidden';
-        document.querySelector('.timeline').style.visibility = 'hidden';
-
-        document.querySelector('.map h3').innerHTML = `
-        <span class="icon-cube"></span>
-        医联体交互详情图
-        `;
-
-        update_yy2();
         console.log('Function Type:', function_type); // Debugging line
     });
 
@@ -1283,7 +1258,6 @@ function setupButtonListeners() {
         option_bar.series[0].data = []; // Update the series with corresponding city values
 
         document.querySelector('.button-container').style.visibility = 'hidden';
-        document.querySelector('.button-container-yy').style.visibility = 'hidden';
         document.querySelector('.timeline').style.visibility = 'hidden';
         // 修改地图标题
         document.querySelector('.map h3').innerHTML = `
@@ -1332,13 +1306,6 @@ function setupButtonListeners() {
         }      
     });
 
-    document.getElementById('btn-last-level').addEventListener('click', function () {
-        //currentInteractionType = '技术'; // 设置为技术
-        if (function_type == '交互范围') {
-            handleClick(); // 更新图表   
-        }
-    });
-
 
 }
 
@@ -1359,9 +1326,6 @@ document.querySelectorAll('input[name="hospital"]').forEach(function(checkbox) {
 
         if (function_type == "交互范围"){
             update_yy();
-        }
-        if (function_type == "交互详情") {
-            update_yy2();
         }
     });
 });
@@ -1390,7 +1354,7 @@ var selectedHospitals = "武汉大学人民医院";
 
 function drawMap(area, myecharts) {
 
-    var address = '../website_xsy_qly/data/' + area + '.json';
+    var address = '/data/' + area + '.json';
 
     // 加载 GeoJSON 数据
     $.getJSON(address, function (geoJson) {
@@ -1398,9 +1362,10 @@ function drawMap(area, myecharts) {
         // 注册地图
         echarts.registerMap('China', geoJson);
 
+        // 设置地图的中心坐标
+
         // 调用 getAddressInfo 函数获取地址信息
         getAddressInfo().then(function (addressArray) {
-
             // 配置地图选项
             var option = {
                 series: [{
@@ -1411,7 +1376,6 @@ function drawMap(area, myecharts) {
                     label: {
                         show: true
                     },
-                    roam: true,
                     itemStyle: {
                         normal: {
                             areaColor: '#142957',
@@ -1442,55 +1406,18 @@ function drawMap(area, myecharts) {
                 }]
             };
 
-            var pointseries = []; // 将pointseries定义为一个空数组
-
-            coords.forEach(function (item) {
-                // 确保从坐标和到坐标都存在
-                if (item) {
-                    var co = item[0] + '_' + item[1];
-                    var tempinfo = antiGeocode[co];
-                    if (current_level == 'province') {
-                        if (!addressArray.includes(tempinfo[0])) {
-                            return;
-                        }
-                    } else if (current_level == 'city') {
-                        if (!addressArray.includes(tempinfo[2])) {
-                            return;
-                        }
-                    }
-
-                    pointseries.push({
-                        name: tempinfo[3] + ":" + tempinfo[4],
-                        type: 'effectScatter',
-                        coordinateSystem: 'geo',
-                        zlevel: 1000,
-                        rippleEffect: {
-                            brushType: 'stroke'
-                        },
-                        label: {
-                            normal: {
-                                show: true,
-                                position: 'right',
-                                formatter: '{b}'
-                            }
-                        },
-                        symbolSize: (levelValues[tempinfo[4]] || 50)/10, // 根据值设置符号大小
-                        itemStyle: {
-                            normal: {
-                                color: '#ffff80', // 确保颜色循环使用
-                            }
-                        },
-                        data: [item]
-                    });
-                }
-            });
-
-            option.series = option.series.concat(pointseries); // 将pointseries数组添加到option.series中
-
+            // 设置地图选项
             myecharts.clear(); // 清除上一次绘制的图表
-            myecharts.setOption(option, {notMerge:true});
+            myecharts.setOption(option);
+            // setTimeout(function () {
+            //     var geoWidth = $(".map").width();
+            //     var geoHeight = $(".map").height();
 
-
+            //     myChart.resize({
+            //         width: geoWidth,
+            //         height: geoHeight
+            //     });
+            // }, 0);
         }).catch(function (error) {
             console.error(error);
         });
@@ -1501,50 +1428,35 @@ function getAddressInfo() {
     return new Promise(function (resolve, reject) {
         var tempAddressArray = [];
         var promises = [];
-        var resolveOuter, rejectOuter; // 外部的 resolve 和 reject
-
         coords.forEach(function (element) {
-            if (element) {
-                var co = element[0] + '_' + element[1];
-                var promise = new Promise(function (resolve, reject) {
-                    var temp = antiGeocode[co];
-                    if (current_level == 'country') {
-                        if (temp[0].substring(0, 2) == "黑龙") {
-                            tempAddressArray.push("黑龙江");
-                        } else if (temp[0].substring(0, 2) == "内蒙") {
-                            tempAddressArray.push("内蒙古");
-                        } else {
-                            tempAddressArray.push(temp[0].substring(0, 2));
-                        }
-                    } else if (current_level == 'province') {
-                        tempAddressArray.push(temp[1]);
-                    } else if (current_level == 'city') {
-                        tempAddressArray.push(temp[2]);
-                    }
-                    resolve(); // 使用内部的 resolve
-                });
-                promises.push(promise);
-            }
-
+            var co = element[0] + '_' + element[1];
+            var promise = new Promise(function (resolve, reject) {
+                var temp = antiGeocode[co];
+                if (current_level == 'country') {
+                    tempAddressArray.push(temp[0].substring(0, 2));
+                } else if (current_level == 'province') {
+                    tempAddressArray.push(temp[1]);
+                } else if (current_level == 'city') {
+                    tempAddressArray.push(temp[2]);
+                }
+                resolve();
+            });
+            promises.push(promise);
         });
 
         Promise.all(promises).then(function () {
-            resolveOuter(tempAddressArray); // 调用外部的 resolve
+            resolve(tempAddressArray);
         }).catch(function (error) {
-            rejectOuter(error); // 调用外部的 reject
+            reject(error);
         });
-
-        resolveOuter = resolve; // 存储外部的 resolve
-        rejectOuter = reject; // 存储外部的 reject
     });
 }
-
 
 //map1
 var planePath = 'path://M.6,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705';
 function getHospitalLocationData1() {
     return new Promise(function (resolve, reject) {
-        $.getJSON('http://localhost:' + port_yy + '/HospitalsLocation', function (hospitalData) {
+        $.getJSON('http://localhost:'+port_yy+'/HospitalsLocation', function (hospitalData) {
             var geoCoordMap = {};
             antiGeocode = {};
             hospitalData.forEach(function (hospital) {
@@ -1554,9 +1466,8 @@ function getHospitalLocationData1() {
                 var province = hospital.所在省;
                 var city = hospital.所在市;
                 var qu = hospital.所在区县;
-                var level = hospital.医院等级;
-                geoCoordMap[name] = [longitude, latitude,];
-                antiGeocode[longitude + '_' + latitude] = [province, city, qu, name, level];
+                geoCoordMap[name] = [longitude, latitude];
+                antiGeocode[longitude + '_' + latitude] = [province, city, qu];
 
             });
             resolve(geoCoordMap);
@@ -1580,11 +1491,11 @@ function getZhongNanHospitalData1(hospitalJH, types) {
             for (const type of typess) {
                 if (type == "文章数量") {
                     value += hospitalJH.文章数量;
-                } else if (type == "合作") {
+                } else if(type == "合作"){
                     value += hospitalJH.合作;
-                } else if (type == "沟通") {
+                }else if(type == "沟通"){
                     value += hospitalJH.沟通;
-                } else if (type == "技术") {
+                }else if(type == "技术"){
                     value += hospitalJH.技术;
                 }
                 var name1 = hospitalJH.hospital;
@@ -1638,18 +1549,18 @@ function handleClick() {
     // addressArray = [];
 }
 
-function update_yy() {
-    // 获取所有被选中的复选框
-    var checkboxes = document.querySelectorAll('input[name="hospital"]:checked');
-    var selectedHospital = [];
-
-    // 获取所有选中的医院的值
-    checkboxes.forEach(function (checkbox) {
-        selectedHospital.push(checkbox.value);
-    });
-    var selectedHospitals = selectedHospital.join(',');
-    $.ajax({
-        url: 'http://localhost:' + port_yy + '/ZhongNanHospitals',
+function update_yy(){
+     // 获取所有被选中的复选框
+     var checkboxes = document.querySelectorAll('input[name="hospital"]:checked');
+     var selectedHospital = [];
+     
+     // 获取所有选中的医院的值
+     checkboxes.forEach(function(checkbox) {
+         selectedHospital.push(checkbox.value);
+     });
+     var selectedHospitals = selectedHospital.join(',');
+     $.ajax({
+        url: 'http://localhost:'+port_yy+'/ZhongNanHospitals',
         type: 'get',
         dataType: 'json',
         data: {//传进去的值
@@ -1669,7 +1580,6 @@ function update_yy() {
 
                     //var coords = results[0];
                     var ZNhospitals = results[1];
-                    coords = [];
                     ZNhospitals.forEach(function (item) {
                         coords.push(geoCoordMap1[item[1].name]);
                     });
@@ -1677,7 +1587,7 @@ function update_yy() {
                     $(document).ready(function () {
                         // 初始化地图
                         //var myChart = echarts.init(document.getElementById('map2'))
-                        myecharts.on('click', function (params, event) {
+                        myecharts.on('click', function (params) {
                             if (params.componentType === 'series') {
                                 // 判断事件来源是否为地图系列
                                 var clickedRegion = params.data.country_id; // 获取点击的地区名称
@@ -1698,10 +1608,8 @@ function update_yy() {
                                 getAddressInfo();
                                 drawMap(area, myecharts);
                                 // addressArray = [];
-                                event.stopPropagation();
                             }
                         });
-
                         // 绘制地图
                         var area = current_level + '/' + current_area;
                         getAddressInfo();
@@ -1715,172 +1623,4 @@ function update_yy() {
                 });
         }
     });
-}
-
-
-function update_yy2() {
-    // 获取所有被选中的复选框
-    var checkboxes = document.querySelectorAll('input[name="hospital"]:checked');
-    var selectedHospital = [];
-
-    // 获取所有选中的医院的值
-    checkboxes.forEach(function (checkbox) {
-        selectedHospital.push(checkbox.value);
-    });
-    var selectedHospitals = selectedHospital.join(',');
-    $.ajax({
-        url: 'http://localhost:' + port_yy + '/ZhongNanHospitals',
-        type: 'get',
-        dataType: 'json',
-        data: {//传进去的值
-            selectedHospitals: selectedHospitals,
-        }, // Pass the parameter here
-        success: function (data) {//返回结果在data里 数据返回成功之后要干什么
-
-            Promise.all([getHospitalLocationData1(), getZhongNanHospitalData1(data, "文章数量")])
-                .then(function (results) {
-                    var geoCoordMap1 = results[0];
-                    //antiGeocode = results[0];
-
-                    var ZNhospitals = results[1];
-                    drawMapChart(geoCoordMap1, ZNhospitals);
-                });
-        }
-    });
-}
-
-function drawMapChart(geoCoordMap, ZNhospitals) {
-    var color = ['#3ed4ff', '#ffa022', '#a6c84c', '#ffcccc', '#ffd9b3', '#e6f7e0'];
-    var series = [];
-    ZNhospitals.forEach(function (item, i) {
-        var fromCoord = geoCoordMap[item[0].name];
-        var toCoord = geoCoordMap[item[1].name];
-        var colorvalue = 0;
-
-        switch (item[0].name) {
-            case '华中科技大学同济医学院附属协和医院':
-                colorvalue = 0;
-                break;
-            case '华中科技大学同济医学院附属同济医院':
-                colorvalue = 1;
-                break;
-            case '武汉大学中南医院':
-                colorvalue = 2;
-                break;
-            case '武汉大学人民医院':
-                colorvalue = 3;
-                break;
-            case '武汉大学口腔医院':
-                colorvalue = 4;
-                break;
-            case '湖北省中医院':
-                colorvalue = 5;
-                break;
-            default:
-                colorvalue = -1; // 如果没有匹配项，可以选择一个默认值或特殊标识
-        }
-
-        // 确保从坐标和到坐标都存在
-        if (fromCoord && toCoord) {
-            series.push({
-                name: item[0].name + ' to ' + item[1].name + ': ' + item[1].value,
-                value: item[1].value,
-                type: 'lines',
-                zlevel: 1,
-                effect: {
-                    show: true,
-                    period: 6,
-                    trailLength: 0.6,
-                    color: '#fff',
-                    //symbol: planePath,
-                    symbolSize: item[1].value / 4  // 根据值调整符号大小
-                },
-                lineStyle: {
-                    normal: {
-                        color: color[colorvalue], // 确保颜色循环使用
-                        width: item[1].value / 6, // 设置线的粗细
-                        curveness: 0.2,
-                        formatter: '{b}'
-                    }
-                },
-                data: [[fromCoord, toCoord]] // 需要提供数据
-            });
-
-            series.push({
-                name: item[0].name + ' to ' + item[1].name + ': ' + item[1].value,
-                type: 'effectScatter',
-                coordinateSystem: 'geo',
-                zlevel: 2,
-                rippleEffect: {
-                    brushType: 'stroke'
-                },
-                label: {
-                    normal: {
-                        show: true,
-                        position: 'right',
-                        formatter: '{b}'
-                    }
-                },
-                symbolSize: function (val) {
-                    return val[2] / 2; // 根据值设置符号大小
-                },
-                itemStyle: {
-                    normal: {
-                        color: color[colorvalue], // 确保颜色循环使用
-                    }
-                },
-                data: [toCoord.concat(item[1].value)]
-            });
-        }
-    });
-
-    var option_yy = {
-        backgroundColor: '#080a20',
-        title: {
-            left: 'left',
-            textStyle: {
-                color: '#fff'
-            }
-        },
-        tooltip: {
-            trigger: 'item',
-            formatter: function (params) {
-                return params.seriesName + '<br/>' + params.name;
-            }
-        },
-        legend: {
-            orient: 'vertical',
-            top: 'bottom',
-            left: 'right',
-            data: ['北京 Top10', '上海 Top10', '广州 Top10'],
-            textStyle: {
-                color: '#fff'
-            },
-            selectedMode: 'single'
-        },
-        geo: {
-            map: 'china',
-            zoom: 1.2,
-            label: {
-                emphasis: {
-                    show: false
-                }
-            },
-            roam: true,
-            itemStyle: {
-                normal: {
-                    areaColor: '#142957',
-                    borderColor: '#0692a4'
-                },
-                emphasis: {
-                    areaColor: '#0b1c2d'
-                }
-            }
-        },
-        series: series
-    };
-
-    //var myecharts = echarts.init($('.map .geo')[0]);
-    myecharts.clear(); // 清除上一次绘制的图表
-    myecharts.setOption(option_yy,{notMerge:true});
 }
