@@ -466,7 +466,12 @@ function show_jiaohu_order(){
     }); 
 }
 function my_processValues(hospitalValues) {
-    return hospitalValues.map(value => Math.floor(Math.exp(value)));
+    const max = Math.max(...hospitalValues);
+    const min = Math.min(...hospitalValues);
+    for (let i = 0;i<hospitalValues.length;i++) {
+        hospitalValues[i] = (hospitalValues[i] - min) / (max - min) * 100;
+    }
+    return hospitalValues;
 }
 // 函数：更新选中的医院
 function update_zuni_reli() {
@@ -535,9 +540,9 @@ function update_zuni_reli() {
                 }).slice(0, 10);
                 // Extract city names and values for the bar chart
                 hospitalNames = top10Hospital.map(item => item.name);
-                var hopitalValues = top10Hospital.map(item => item.value);
+                var hospitalValues = top10Hospital.map(item => item.value);
                 var processedNames = processHospital(hospitalNames);
-                var processedValues = hopitalValues;
+                var processedValues = my_processValues(hospitalValues);
                 // Update the bar chart data
                 option_bar1.xAxis[0].data = processedNames; // Update the x-axis with top 10 city names
                 option_bar1.series[0].data = processedValues; // Update the series with corresponding city values
