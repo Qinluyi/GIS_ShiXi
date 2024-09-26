@@ -1261,6 +1261,7 @@ function setupButtonListeners() {
 
         // 显示按钮
         document.querySelector('.button-container').style.visibility = 'visible';
+        document.querySelector('.button-container-yy').style.visibility = 'hidden';
         document.querySelector('.timeline').style.visibility = 'visible';
         document.querySelector('.map h3').innerHTML = `
         <span class="icon-cube"></span>
