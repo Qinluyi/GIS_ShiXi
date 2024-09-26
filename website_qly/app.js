@@ -11,7 +11,7 @@ client.connect();
 
 var app = express();
 
-port = 5600
+port = 5601
 app.set('port', process.env.PORT || port);
 
 
@@ -143,10 +143,50 @@ app.get('/search_zuni_reli', function (req, res, next) {
         });
 });
 
+// 处理搜索时间信息的请求
+app.get('/search_time_info', async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    
+    const names = [
+        "武汉大学人民医院交互明细",
+        "武汉大学中南医院交互明细",
+        "武汉大学口腔医院交互明细",
+        "华中科技大学同济医学院附属同济医院交互明",
+        "华中科技大学同济医学院附属协和医院交互明",
+        "湖北省中医院交互明细"
+    ];
+    const years = Array.from({ length: 12 }, (_, i) => (2012 + i).toString()); // 生成 2012 到 2023 的年份
+    const results = {};
+
+    try {
+        for (const name of names) {
+            results[name] = [];
+            for (const year of years) {
+                const query = `
+                    SELECT COUNT(*) AS count
+                    FROM "${name}"
+                    WHERE "时间" LIKE \$1`;
+                
+                const resQuery = await client.query(query, [`${year}-%`]);
+                results[name].push({ year, count: parseInt(resQuery.rows[0].count, 10) });
+            }
+        }
+        res.json(results);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
 app.listen(port, function () {
     console.log("Connetct successfully...")
     console.log('Server is running.. on Port ' + port);
 });
+
+
+
+
 
 
 

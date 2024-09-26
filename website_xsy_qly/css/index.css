@@ -81,7 +81,7 @@ a{
 }
 /* 监控 */
 .monitor{
-	height: 20rem;
+	height: 22rem;
   }
   .monitor .inner{
 	padding: 1rem 0;
@@ -517,7 +517,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 /* 销售区域 */
 .sales {
-  height: 10.333rem;
+  height: 20.333rem;
 }
 .sales .caption {
   display: flex;

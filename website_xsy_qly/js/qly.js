@@ -1,4 +1,4 @@
-port = 5600
+port = 5601
 
 port_yy = 5501
 // 定义字典
@@ -54,6 +54,25 @@ const yilianti_dict = {
     "hubei_tcm": "湖北省中医院"
 }
 
+const table_name_dict = {
+    "武汉大学人民医院交互明细": "武汉大学人民医院",
+    "武汉大学中南医院交互明细": "武汉大学中南医院",
+    "武汉大学口腔医院交互明细": "武汉大学口腔医院",
+    "华中科技大学同济医学院附属同济医院交互明": "华中科技大学同济医学院附属同济医院",
+    "华中科技大学同济医学院附属协和医院交互明": "华中科技大学同济医学院附属协和医院",
+    "湖北省中医院交互明细": "湖北省中医院"
+};
+
+const time_color_dict = {
+    "武汉大学人民医院交互明细": '#e6b3ff',
+    "武汉大学中南医院交互明细": '#99ffbb',
+    "武汉大学口腔医院交互明细": '#66b2ff',
+    "华中科技大学同济医学院附属同济医院交互明": '#c68c53',
+    "华中科技大学同济医学院附属协和医院交互明": '#ffff80',
+    "湖北省中医院交互明细": '#ff4d94'
+};
+
+
 let function_type = ''; // Ensure this is defined globally
 
 init_option = {
@@ -91,6 +110,195 @@ init_option = {
         }
     }
 };
+
+option_bar = {
+    // 工具提示
+    tooltip: {
+        // 触发类型  经过轴触发axis  经过轴触发item
+        trigger: 'item',
+        formatter: function(params) {
+            // params.name 是 xAxis.data 中对应的值，可以通过索引获取 hospitalNames 对应值
+            var index = params.dataIndex;
+            return cityNames[index] + ': ' + params.value;  // 显示医院名称和对应的值
+        },
+        // 轴触发提示才有效
+        axisPointer: {
+            // 默认为直线，可选为：'line' 线效果 | 'shadow' 阴影效果       
+            type: 'shadow'
+        }
+    },
+    // 图表边界控制
+    grid: {
+        // 距离 上右下左 的距离
+        left: '0',
+        right: '3%',
+        bottom: '3%',
+        top: '5%',
+        // 大小是否包含文本【类似于boxsizing】
+        containLabel: true,
+        //显示边框
+        show: true,
+        //边框颜色
+        borderColor: 'rgba(0, 240, 255, 0.3)'
+    },
+    // 控制x轴
+    xAxis: [
+        {
+            // 使用类目，必须有data属性
+            type: 'category',
+            // 使用 data 中的数据设为刻度文字
+            data: [],
+            // 刻度设置
+            axisTick: {
+                // true意思：图形在刻度中间
+                // false意思：图形在刻度之间
+                alignWithLabel: true,  // 确保柱子和标签对齐
+                show: true  // 显示刻度
+            },
+            //文字
+            axisLabel: {
+                color: '#4c9bfd',
+                // 标签旋转 45 度
+                rotate: 45,
+                // 标签位置微调
+                margin: 10,
+                align: 'right',
+                verticalAlign: 'middle'
+            }
+        }
+    ],
+    // 控制y轴
+    yAxis: [
+        {
+            // 使用数据的值设为刻度文字
+            type: 'value',
+            axisTick: {
+                // true意思：图形在刻度中间
+                // false意思：图形在刻度之间
+                alignWithLabel: false,
+                show: false
+            },
+            //文字
+            axisLabel: {
+                color: '#4c9bfd'
+            },
+            splitLine: {
+                lineStyle: {
+                    color: 'rgba(0, 240, 255, 0.3)'
+                }
+            },
+        }
+    ],
+    // 控制x轴
+    series: [
+        {
+            // series配置
+            // 颜色
+            itemStyle: {
+                // 提供的工具函数生成渐变颜色
+                color: new echarts.graphic.LinearGradient(
+                    // (x1,y2) 点到点 (x2,y2) 之间进行渐变
+                    0, 0, 0, 1,
+                    [
+                        { offset: 0, color: '#00fffb' }, // 0 起始颜色
+                        { offset: 1, color: '#0061ce' }  // 1 结束颜色
+                    ]
+                )
+            },
+            // 图表数据名称
+            name: '用户统计',
+            // 图表类型
+            type: 'bar',
+            // 柱子宽度
+            barWidth: '60%',
+            // 数据
+            data: []
+        }
+    ]
+};
+
+option_bar1 = {
+    // 工具提示
+    tooltip: {
+        // 触发类型  经过轴触发axis  经过轴触发item
+        trigger: 'item',
+        // 自定义提示框内容
+        formatter: function(params) {
+            // params.name 是 xAxis.data 中对应的值，可以通过索引获取 hospitalNames 对应值
+            var index = params.dataIndex;
+            return hospitalNames[index] + ': ' + params.value;  // 显示医院名称和对应的值
+        },
+        axisPointer: {
+            // 默认为直线，可选为：'line' 线效果 | 'shadow' 阴影效果
+            type: 'shadow'
+        }
+    },
+    // 图表边界控制
+    grid: {
+        left: '0',
+        right: '3%',
+        bottom: '3%',
+        top: '5%',
+        containLabel: true,
+        show: true,
+        borderColor: 'rgba(0, 240, 255, 0.3)'
+    },
+    // 控制x轴
+    xAxis: [
+        {
+            type: 'category',
+            data: [],  // 将你希望在x轴上显示的数据填入此处
+            axisTick: {
+                alignWithLabel: true,
+                show: true
+            },
+            axisLabel: {
+                color: '#4c9bfd',
+                rotate: 45,
+                margin: 10,
+                align: 'right',
+                verticalAlign: 'middle'
+            }
+        }
+    ],
+    // 控制y轴
+    yAxis: [
+        {
+            type: 'value',
+            axisTick: {
+                alignWithLabel: false,
+                show: false
+            },
+            axisLabel: {
+                color: '#4c9bfd'
+            },
+            splitLine: {
+                lineStyle: {
+                    color: 'rgba(0, 240, 255, 0.3)'
+                }
+            }
+        }
+    ],
+    // 控制series
+    series: [
+        {
+            itemStyle: {
+                color: new echarts.graphic.LinearGradient(
+                    0, 0, 0, 1,
+                    [
+                        { offset: 0, color: '#00fffb' },
+                        { offset: 1, color: '#0061ce' }
+                    ]
+                )
+            },
+            name: '用户统计',
+            type: 'bar',
+            barWidth: '60%',
+            data: []  // 将你希望在柱状图中显示的数据填入此处
+        }
+    ]
+};
+
 
 let fanwei_option = ""
 
@@ -487,6 +695,11 @@ function update_zuni_reli() {
     if (selectedHospitals.length == 0){
         myecharts = echarts.init($('.map .geo')[0])
         myecharts.setOption(option1,true);
+        option_bar1.xAxis[0].data = []; // Update the x-axis with top 10 city names
+        option_bar1.series[0].data = []; // Update the series with corresponding city values
+
+        var myechart3 = echarts.init($('.users .bar')[0]);
+        myechart3.setOption(option_bar1);
     }else{
         $.ajax({
             url: `http://localhost:${port}/search_zuni_reli`,
@@ -555,13 +768,95 @@ function update_zuni_reli() {
     }
 }
     
-    
+//销售
+function show_time_figure(){
+    var option_time = {
+        //鼠标提示工具
+        tooltip: {
+            trigger: 'axis'
+        },
+        xAxis: {
+            // 类目类型                                  
+            type: 'category',
+            // x轴刻度文字                                  
+            data: ['2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023'],
+            axisTick: {
+                show: false//去除刻度线
+            },
+            axisLabel: {
+                color: '#4c9bfd'//文本颜色
+            },
+            axisLine: {
+                show: false//去除轴线  
+            },
+            boundaryGap: false//去除轴内间距
+        },
+        yAxis: {
+            // 数据作为刻度文字                                  
+            type: 'value',
+            axisTick: {
+                show: false//去除刻度线
+            },
+            axisLabel: {
+                color: '#4c9bfd'//文本颜色
+            },
+            axisLine: {
+                show: false//去除轴线  
+            },
+            boundaryGap: false//去除轴内间距
+        },
+        //图例组件
+        
+        // 设置网格样式
+        grid: {
+            show: true,// 显示边框
+            top: '20%',
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            borderColor: '#012f4a',// 边框颜色
+            containLabel: true // 包含刻度文字在内
+        },
+        series: [
+            
+        ]
+    };
+
+    $.ajax({
+        url: `http://localhost:${port}/search_time_info`,
+        type: 'get',
+        dataType: 'json',
+        success: function(data) {
+            //console.log(data);
+            var myechart_1 = echarts.init($('.line')[0]);
+
+            var data1 = {};
+            data1['year'] = [];
+            for (var key in table_name_dict) {
+                yilianti_data = [];
+                yilianti_series = {};
+                yilianti_series['name'] =  table_name_dict[key];
+                yilianti_series['type'] = 'line';
+                yilianti_series['smooth'] = true;
+                yilianti_series['itemStyle'] = {color : time_color_dict[key]};
+                for(var j = 0; j <12;j++){
+                    yilianti_data.push(data[key][j].count);
+                }
+                yilianti_series['data'] = yilianti_data;
+                option_time.series.push(yilianti_series);
+            }
+            myechart_1.setOption(option_time);
+        }
+    }); 
+
+}
 
 
 $(document).ready(function() {
     show_yiyuan_info();
     show_fanwei_order();
     show_jiaohu_order();
+    show_time_figure();
     myecharts.setOption(init_option,true);
 });
 
@@ -628,12 +923,12 @@ $(document).ready(function() {
             myecharts.setOption(option1, true); // 更新地图
             option_bar1.xAxis[0].data = []; // Update the x-axis with top 10 city names
             option_bar1.series[0].data = []; // Update the series with corresponding city values
-            option_pie.series[0].data = []; // Update the series with corresponding city values
+            //option_pie.series[0].data = []; // Update the series with corresponding city values
 
             var myechart3 = echarts.init($('.users .bar')[0]);
             myechart3.setOption(option_bar1);
-            var myechart2 = echarts.init($('.point .pie')[0]);
-            myechart2.setOption(option_pie);
+            //var myechart2 = echarts.init($('.point .pie')[0]);
+            //myechart2.setOption(option_pie);
 
             console.log('Updated data:', data);
             console.log('Updated geoCoordMap:', geoCoordMap);
@@ -689,12 +984,12 @@ $(document).ready(function() {
                     option_bar1.xAxis[0].data = processedNames; // Update the x-axis with top 10 city names
                     option_bar1.series[0].data = processedValues; // Update the series with corresponding city values
                     transformedTop5Hospital = transformValues(top5Hospital);
-                    option_pie.series[0].data = transformedTop5Hospital; // Update the series with corresponding city values
+                    //option_pie.series[0].data = transformedTop5Hospital; // Update the series with corresponding city values
 
                     var myechart3 = echarts.init($('.users .bar')[0]);
                     myechart3.setOption(option_bar1);
-                    var myechart2 = echarts.init($('.point .pie')[0]);
-                    myechart2.setOption(option_pie);
+                    //var myechart2 = echarts.init($('.point .pie')[0]);
+                    //myechart2.setOption(option_pie);
 
                     var newConvertedData = convertData(data);
 
@@ -755,12 +1050,12 @@ $(document).ready(function() {
                     option_bar1.xAxis[0].data = processedNames; // Update the x-axis with top 10 city names
                     option_bar1.series[0].data = processedValues; // Update the series with corresponding city values
                     transformedTop5Hospital = transformValues(top5Hospital);
-                    option_pie.series[0].data = transformedTop5Hospital; // Update the series with corresponding city values
+                    //option_pie.series[0].data = transformedTop5Hospital; // Update the series with corresponding city values
 
                     var myechart3 = echarts.init($('.users .bar')[0]);
                     myechart3.setOption(option_bar1);
-                    var myechart2 = echarts.init($('.point .pie')[0]);
-                    myechart2.setOption(option_pie);
+                    //var myechart2 = echarts.init($('.point .pie')[0]);
+                    //myechart2.setOption(option_pie);
 
                     var newConvertedData = convertData(data);
 
@@ -807,12 +1102,12 @@ $(document).ready(function() {
             myecharts.setOption(option1, true); // 更新地图
             option_bar.xAxis[0].data = []; // Update the x-axis with top 10 city names
             option_bar.series[0].data = []; // Update the series with corresponding city values
-            option_pie.series[0].data = []; // Update the series with corresponding city values
+            //option_pie.series[0].data = []; // Update the series with corresponding city values
 
             var myechart1 = echarts.init($('.users .bar')[0]);
             myechart1.setOption(option_bar);
-            var myechart2 = echarts.init($('.point .pie')[0]);
-            myechart2.setOption(option_pie);
+            //var myechart2 = echarts.init($('.point .pie')[0]);
+            //myechart2.setOption(option_pie);
 
             console.log('Updated data:', data);
             console.log('Updated geoCoordMap:', geoCoordMap);
@@ -843,12 +1138,12 @@ $(document).ready(function() {
                 option_bar.xAxis[0].data = cityNames_new; // Update the x-axis with top 10 city names
                 option_bar.series[0].data = cityValues; // Update the series with corresponding city values
                 
-                option_pie.series[0].data = top5Cities; // Update the series with corresponding city values
+                //option_pie.series[0].data = top5Cities; // Update the series with corresponding city values
 
                 var myechart1 = echarts.init($('.users .bar')[0]);
                 myechart1.setOption(option_bar);
-                var myechart2 = echarts.init($('.point .pie')[0]);
-                myechart2.setOption(option_pie);
+                //var myechart2 = echarts.init($('.point .pie')[0]);
+                //myechart2.setOption(option_pie);
 
 
                 // Clear previous data
@@ -949,7 +1244,7 @@ function setupButtonListeners() {
         // 修改标题内容
         document.querySelector('.users.panel h3').innerText = '各医院交互数量柱状图（前10）';
         // 修改标题内容
-        document.querySelector('.point.panel h3').innerText = '各医院交互数量饼图（前5）';
+        //document.querySelector('.point.panel h3').innerText = '各医院交互数量饼图（前5）';
         console.log('Function Type:', function_type); // Debugging line
         updateSelectedHospitals_jiaohu(); // Ensure the update function is called here
     });
@@ -972,7 +1267,7 @@ function setupButtonListeners() {
         // 修改标题内容
         document.querySelector('.users.panel h3').innerText = '各市医院数量柱状图（前10）';
          // 修改标题内容
-         document.querySelector('.point.panel h3').innerText = '各市医院数量饼图（前5）';
+        //document.querySelector('.point.panel h3').innerText = '各市医院数量饼图（前5）';
         console.log('Function Type:', function_type); // Debugging line
         updateSelectedHospitals_shuliang(); // Ensure the update function is called here
     });
