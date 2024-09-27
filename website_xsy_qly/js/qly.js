@@ -1207,6 +1207,10 @@ function setupButtonListeners() {
         document.querySelector('.button-container-yy').style.visibility = 'hidden';
         document.querySelector('.timeline').style.visibility = 'hidden';
         console.log('Function Type:', function_type); // Debugging line
+        document.querySelector('.map h3').innerHTML = `
+        <span class="icon-cube"></span>
+        医联辐射范围详情图
+        `;
     });
 
     document.getElementById('btn-fushenengli').addEventListener('click', function () {
@@ -1222,6 +1226,10 @@ function setupButtonListeners() {
         document.querySelector('.button-container').style.visibility = 'hidden';
         document.querySelector('.button-container-yy').style.visibility = 'hidden';
         document.querySelector('.timeline').style.visibility = 'hidden';
+        document.querySelector('.map h3').innerHTML = `
+        <span class="icon-cube"></span>
+        医联体辐射能力热力图
+        `;
 
         console.log('Function Type:', function_type); // Debugging line
     });
