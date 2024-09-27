@@ -600,30 +600,37 @@ $(function () {
                         document.getElementById('viewDetails').onclick = function () {
                             // 根据不同医院设置不同的跳转URL
                             var targetUrl = '';
+                            var myVariable = '';
                             switch (hospitalName) {
                                 case '武汉大学人民医院':
                                     //targetUrl = 'wuhandaxue_renmin.html'; // 替换为实际页面路径
                                     targetUrl = 'http://localhost:5601';
+                                    myVariable = '武汉大学人民医院';
                                     break;
                                 case '武汉大学口腔医院':
                                     //targetUrl = 'wuhandaxue_kouqiang.html'; // 替换为实际页面路径
                                     targetUrl = 'http://localhost:5601';
+                                    myVariable = '武汉大学口腔医院';
                                     break;
                                 case '武汉大学中南医院':
                                     //targetUrl = 'wuhandaxue_zhongnan.html'; // 替换为实际页面路径
                                     targetUrl = 'http://localhost:5601';
+                                    myVariable = '武汉大学中南医院';
                                     break;
                                 case '武汉协和医院':
                                     //targetUrl = '../website_xsy_qly/index.html'; // 替换为实际页面路径
                                     targetUrl = 'http://localhost:5601';
+                                    myVariable = '武汉协和医院';
                                     break;
                                 case '武汉同济医院':
                                     //targetUrl = '../website_xsy_qly/index.html'; // 替换为实际页面路径
                                     targetUrl = 'http://localhost:5601';
+                                    myVariable = '武汉同济医院';
                                     break;
                                 case '湖北省中医院':
                                     //targetUrl = '../website_xsy_qly/index.html'; // 替换为实际页面路径
                                     targetUrl = 'http://localhost:5601';
+                                    myVariable = '湖北省中医院';
                                     break;
                                 default:
                                     targetUrl = '#'; // 默认路径
@@ -631,8 +638,12 @@ $(function () {
                             }
 
                             // 跳转到相应的页面
-                            if (targetUrl !== '#') {
-                                window.location.href = targetUrl;
+                            // if (targetUrl !== '#') {
+                            //     window.location.href = targetUrl;
+                            // }
+                            if (myVariable !== '#') {
+                                sessionStorage.setItem('myVariable', myVariable);
+                                window.location.href = 'http://localhost:5601';
                             }
                         };
                     }

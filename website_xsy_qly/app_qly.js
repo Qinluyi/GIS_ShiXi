@@ -180,6 +180,7 @@ app.get('/search_time_info', async (req, res) => {
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.use('/js', express.static(path.join(__dirname, 'js')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/data', express.static(path.join(__dirname, 'data')));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html')); // 更新路径

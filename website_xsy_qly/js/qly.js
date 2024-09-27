@@ -1,6 +1,6 @@
 port = 5601
 
-port_yy = 5600
+port_yy = 5602
 // 定义字典
 const levelValues = {
     '一级甲等': 70,
@@ -299,6 +299,13 @@ option_bar1 = {
     ]
 };
 
+document.addEventListener('DOMContentLoaded', () => {
+    const yilianti_name = sessionStorage.getItem('myVariable');
+    if (yilianti_name === null){
+        console.log('no_data!');
+    }
+    console.log(yilianti_name);
+});
 
 let fanwei_option = ""
 
@@ -1400,7 +1407,8 @@ var selectedHospitals = "武汉大学人民医院";
 
 function drawMap(area, myecharts) {
 
-    var address = '../website_xsy_qly/data/' + area + '.json';
+    //var address = '../website_xsy_qly/data/' + area + '.json';
+    var address = '/data/' + area + '.json';
 
     // 加载 GeoJSON 数据
     $.getJSON(address, function (geoJson) {

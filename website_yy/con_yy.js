@@ -3,7 +3,7 @@ const { Pool } = require('pg');
 const path = require('path'); // 引入 path 模块，用于处理文件路径
 
 const app = express();
-const port = 5600;
+const port = 5602;
 
 
 
