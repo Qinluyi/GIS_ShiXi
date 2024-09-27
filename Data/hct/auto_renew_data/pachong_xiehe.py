@@ -12,7 +12,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 import requests
 import psycopg2
-import schedule
+import os
+# import schedule
 import time
 
 # Function to encode the hospital name in Base64
@@ -25,11 +26,18 @@ def search_keywords_in_urls(articles_info, keywords):
     urls_with_keywords = {keyword: set() for keyword in keywords}
     keyword_occurrences = {keyword: 0 for keyword in keywords}  # 记录每个关键词的出现次数
 
+    print('当前工作目录是:',os.getcwd())
+    chrome_driver_path = r'..\..\datadriver\chromedriver.exe'
+    # 检查文件是否存在
+    if not os.path.isfile(chrome_driver_path):
+        print(f"File does not exist: {chrome_driver_path}. Please check the path.")
+        return
+    
     try:
-        chrome_service = Service(r'C:\Users\85892\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe')
+        chrome_service = Service(chrome_driver_path)
     except Exception as e:
         print(f"Error occurred: {e}. Switching to backup path.")
-        chrome_service = Service('C:\Users\85892\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe')
+        chrome_service = Service(chrome_driver_path)
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")

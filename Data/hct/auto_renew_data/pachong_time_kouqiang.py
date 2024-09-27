@@ -14,6 +14,7 @@ import time
 import pandas as pd
 # from webdriver_manager.chrome import ChromeDriverManager
 import psycopg2
+import os
 
 
 
@@ -68,11 +69,17 @@ def clean_date(date):
 
 
 def search_hospital_articles_v4(hospital_name):
+    chrome_driver_path = r'..\..\datadriver\chromedriver.exe'
+    # 检查文件是否存在
+    if not os.path.isfile(chrome_driver_path):
+        print(f"File does not exist: {chrome_driver_path}. Please check the path.")
+        return
+    
     try:
-        chrome_service = Service(r'C:\Users\85892\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe')
+        chrome_service = Service(chrome_driver_path)
     except Exception as e:
         print(f"Error occurred: {e}. Switching to backup path.")
-        chrome_service = Service(r'C:\Users\85892\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe')    
+        chrome_service = Service(chrome_driver_path)    
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")

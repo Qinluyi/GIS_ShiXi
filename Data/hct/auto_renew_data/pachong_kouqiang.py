@@ -11,6 +11,7 @@ import time
 import pandas as pd
 # from webdriver_manager.chrome import ChromeDriverManager
 import psycopg2
+import os
 
 
 
@@ -65,11 +66,18 @@ def search_keywords_in_urls(url_list, keywords, keywords_count, driver):
 
 def search_hospital_articles_v4(hospital_name):
     # 设置 ChromeDriver 的路径
+    print('当前工作目录是:',os.getcwd())
+    chrome_driver_path = r'..\..\datadriver\chromedriver.exe'
+    # 检查文件是否存在
+    if not os.path.isfile(chrome_driver_path):
+        print(f"File does not exist: {chrome_driver_path}. Please check the path.")
+        return
+    
     try:
-        chrome_service = Service(r'C:\Users\85892\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe')
+        chrome_service = Service(chrome_driver_path)
     except Exception as e:
         print(f"Error occurred: {e}. Switching to backup path.")
-        chrome_service = Service(r'C:\Users\85892\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe')    
+        chrome_service = Service(chrome_driver_path)    
     # 设置 ChromeOptions
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # 无头模式，不弹出浏览器窗口

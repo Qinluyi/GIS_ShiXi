@@ -97,11 +97,11 @@ app.get('/api/data_general/:hospitalName', async (req, res) => {
 // 当接收到 /run-python 请求时，运行Python脚本
 app.get('/run-python', (req, res) => {
   // 指定Python解释器的路径和Python脚本的路径
-  const pythonExecutable = 'D:\\python\\python3.10.4\\python.exe'; // Python解释器路径
+  const pythonExecutable = 'D:\\Anaconda\\envs\\DL\\python.exe'; // Python解释器路径
   const pythonScriptPath = 'run.py'; // Python脚本文件名
 
   //使用 child_process 来执行 Python 脚本，并指定工作目录为 D:\Spider
-  exec(`${pythonExecutable} ${pythonScriptPath}`, { cwd: 'D:\\大四上\\综合实习\\teamwork1\\Data\\hct\\auto_renew_data', encoding: 'utf8' }, (error, stdout, stderr) => {
+  exec(`${pythonExecutable} ${pythonScriptPath}`, { cwd: 'E:\\Dasishang\\GISshixi\\github\\99\\GIS_ShiXi\\Data\\hct\\auto_renew_data', encoding: 'utf8' }, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error executing Python script: ${error.message}`);
       res.status(500).json({ error: error.message });
@@ -135,10 +135,10 @@ app.get('/run-python1', (req, res) => {
     }
   }, 1000);
 
-  const pythonExecutable = 'D:\\python\\python3.10.4\\python.exe';
+  const pythonExecutable = 'D:\\Anaconda\\envs\\DL\\python.exe';
   const pythonScriptPath = 'run.py';
 
-  const pythonProcess = spawn(pythonExecutable, [pythonScriptPath], { cwd: 'D:\\大四上\\综合实习\\teamwork1\\Data\\hct\\auto_renew_data' });
+  const pythonProcess = spawn(pythonExecutable, [pythonScriptPath], { cwd: 'E:\\Dasishang\\GISshixi\\github\\99\\GIS_ShiXi\\Data\\hct\\auto_renew_data' });
 
   pythonProcess.stdout.on('data', (data) => {
     // 发送标准输出到客户端
