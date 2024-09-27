@@ -1452,45 +1452,15 @@ function drawMap(area, myecharts) {
                         };
                     })
                 },
-                series: [
-                    // {
-                    //     name: '中国地图',
-                    //     type: 'map',
-                    //     map: 'China',
-                    //     //center:mapCenter,
-                    //     label: {
-                    //         show: true
-                    //     },
-                    //     roam: true,
-                    //     itemStyle: {
-                    //         normal: {
-                    //             areaColor: '#142957',
-                    //             borderColor: '#0692a4'
-                    //         },
-                    //         emphasis: {
-                    //             areaColor: '#0b1c2d'
-                    //         }
-                    //     },
-                    //     data: geoJson.features.map(function (feature) {
-                    //         var name = String(feature.properties.name);
-                    //         var country_id = feature.properties.id;
-                    //         var value = addressArray.includes(name) ? 1 : 0;
 
-                    //         return {
-                    //             name: name,
-                    //             country_id: country_id,
-                    //             value: value,
-                    //             itemStyle: {
-                    //                 normal: {
-                    //                     areaColor: colors[value],
-                    //                     borderWidth: value * 4, //设置外层边框
-                    //                     borderColor: '#3366FF',
-                    //                 }
-                    //             }
-                    //         };
-                    //     }),
-                    // }
-                ]
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function (params) {
+                       return params.seriesName + '\n' + params.name;
+                      // return '123';
+                    }
+                },
+                series: []
             };
 
             var pointseries = []; // 将pointseries定义为一个空数组
@@ -1498,9 +1468,9 @@ function drawMap(area, myecharts) {
             var add = [];
             geoJson.features.forEach(function (feature) {
                 add.push(feature.properties.name);
-              });
-              
-            
+            });
+
+
 
             coords.forEach(function (item) {
                 // 确保从坐标和到坐标都存在
@@ -1509,10 +1479,10 @@ function drawMap(area, myecharts) {
                     var tempinfo = antiGeocode[co];
                     if (current_level == 'country') {
                         pointseries.push({
-                            name: tempinfo[3] + ":" + tempinfo[4],
+                            name: tempinfo[3] + '<br/>'+ '结算等级: ' + tempinfo[4],
                             type: 'effectScatter',
                             coordinateSystem: 'geo',
-                            zlevel: 1000,
+                            zlevel: 1001,
                             rippleEffect: {
                                 brushType: 'stroke'
                             },
@@ -1521,6 +1491,7 @@ function drawMap(area, myecharts) {
                                     show: true,
                                     position: 'right',
                                     formatter: '{b}'
+
                                 }
                             },
                             symbolSize: (levelValues[tempinfo[4]] || 50) / 10, // 根据值设置符号大小
@@ -1535,10 +1506,10 @@ function drawMap(area, myecharts) {
                     else if (current_level == 'province') {
                         if (add.includes(tempinfo[1])) {
                             pointseries.push({
-                                name: tempinfo[3] + ":" + tempinfo[4],
+                                name: tempinfo[3] + '<br/>'+ '结算等级: ' + tempinfo[4],
                                 type: 'effectScatter',
                                 coordinateSystem: 'geo',
-                                zlevel: 1000,
+                                zlevel: 1001,
                                 rippleEffect: {
                                     brushType: 'stroke'
                                 },
@@ -1561,10 +1532,10 @@ function drawMap(area, myecharts) {
                     } else if (current_level == 'city') {
                         if (add.includes(tempinfo[2])) {
                             pointseries.push({
-                                name: tempinfo[3] + ":" + tempinfo[4],
+                                name: tempinfo[3] + '<br/>'+ '结算等级: ' + tempinfo[4],
                                 type: 'effectScatter',
                                 coordinateSystem: 'geo',
-                                zlevel: 1000,
+                                zlevel: 1001,
                                 rippleEffect: {
                                     brushType: 'stroke'
                                 },
