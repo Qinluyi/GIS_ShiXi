@@ -399,39 +399,39 @@ function put_scatter(key,data){
         }
         );
     sanjia = get_sanjia(data);
-    if (sanjia.length > 0){
-        current_option['series'].push(
-            {   
-                id: key+"1",
-                name: nameDict[key],
-                type: 'effectScatter',
-                coordinateSystem: 'geo',
-                data: convertData_1(sanjia),
-                encode: {
-                    value: 2
-                },
-                symbolSize: function (val) {
-                    return val[2] / 10;
-                },
-                showEffectOn: 'emphasis',
-                rippleEffect: {
-                    brushType: 'stroke'
-                },
-                hoverAnimation: true,
-                label: {
-                    formatter: '{b}',
-                    position: 'right',
-                    show: true
-                },
-                itemStyle: {
-                    color: colorDict[key],
-                    shadowBlur: 10,
-                    shadowColor: '#333'
-                },
-                zlevel: 1
-            }
-        )
-    }
+    // if (sanjia.length > 0){
+    //     current_option['series'].push(
+    //         {   
+    //             id: key+"1",
+    //             name: nameDict[key],
+    //             type: 'effectScatter',
+    //             coordinateSystem: 'geo',
+    //             data: convertData_1(sanjia),
+    //             encode: {
+    //                 value: 2
+    //             },
+    //             symbolSize: function (val) {
+    //                 return val[2] / 10;
+    //             },
+    //             showEffectOn: 'emphasis',
+    //             rippleEffect: {
+    //                 brushType: 'stroke'
+    //             },
+    //             hoverAnimation: true,
+    //             label: {
+    //                 formatter: '{b}',
+    //                 position: 'right',
+    //                 show: true
+    //             },
+    //             itemStyle: {
+    //                 color: colorDict[key],
+    //                 shadowBlur: 10,
+    //                 shadowColor: '#333'
+    //             },
+    //             zlevel: 1
+    //         }
+    //     )
+    // }
 
         // 初始化图例
     if (first_legend) {
@@ -1189,6 +1189,9 @@ $(document).ready(function() {
 // 添加按钮点击事件
 function setupButtonListeners() {
     document.getElementById('btn-fushefanwei').addEventListener('click', function() {
+        if (function_type === "交互详情"){
+            remove_jiaohu_info();
+        }
         function_type = '辐射范围';
         // current_option = myecharts.getOption();
         // current_option['series'] = [];
@@ -1204,6 +1207,9 @@ function setupButtonListeners() {
     });
 
     document.getElementById('btn-fushenengli').addEventListener('click', function() {
+        if (function_type === "交互详情"){
+            remove_jiaohu_info();
+        }
         function_type = '辐射能力';
         myecharts.setOption(option1, true); // 更新地图
         
@@ -1218,6 +1224,9 @@ function setupButtonListeners() {
     });
 
     document.getElementById('jiaohufanwei').addEventListener('click', function() {
+        if (function_type === "交互详情"){
+            remove_jiaohu_info();
+        }
         function_type = '交互范围';
         document.querySelector('.button-container').style.visibility = 'hidden';
         document.querySelector('.button-container-yy').style.visibility = 'visible';
@@ -1232,6 +1241,9 @@ function setupButtonListeners() {
     });
 
     document.getElementById('jiaohuxiangqing').addEventListener('click', function () {
+        if (function_type === "交互详情"){
+            remove_jiaohu_info();
+        }
         function_type = '交互详情';
 
         document.querySelector('.button-container-yy').style.visibility = 'hidden';
@@ -1250,6 +1262,9 @@ function setupButtonListeners() {
 
 
     document.getElementById('btn-jiaohurelitu').addEventListener('click', function() {
+        if (function_type === "交互详情"){
+            remove_jiaohu_info();
+        }
         function_type = '交互热力图';
         myecharts = echarts.init($('.map .geo')[0])
         myecharts.setOption(option1)
@@ -1275,6 +1290,9 @@ function setupButtonListeners() {
     });
 
     document.getElementById('btn-shuliangrelitu').addEventListener('click', function() {
+        if (function_type === "交互详情"){
+            remove_jiaohu_info();
+        }
         function_type = '数量热力图';
         myecharts = echarts.init($('.map .geo')[0])
         myecharts.setOption(option1)
@@ -1403,14 +1421,14 @@ function drawMap(area, myecharts) {
         // 调用 getAddressInfo 函数获取地址信息
         getAddressInfo().then(function (addressArray) {
             // 配置地图选项
-            var option = {
-                series: [{
-                    name: '中国地图',
-                    type: 'map',
-                    map: 'China',
-                    //center:mapCenter,
+            var option_yy = {
+                geo: {
+                    map: 'china',
+                    zoom: 1.2,
                     label: {
-                        show: true
+                        emphasis: {
+                            show: false
+                        }
                     },
                     roam: true,
                     itemStyle: {
@@ -1422,7 +1440,7 @@ function drawMap(area, myecharts) {
                             areaColor: '#0b1c2d'
                         }
                     },
-                    data: geoJson.features.map(function (feature) {
+                    regions:geoJson.features.map(function (feature) {
                         var name = String(feature.properties.name);
                         var country_id = feature.properties.id;
                         var value = addressArray.includes(name) ? 1 : 0;
@@ -1439,8 +1457,47 @@ function drawMap(area, myecharts) {
                                 }
                             }
                         };
-                    }),
-                }]
+                    })
+                },
+                series: [
+                // {
+                //     name: '中国地图',
+                //     type: 'map',
+                //     map: 'China',
+                //     //center:mapCenter,
+                //     label: {
+                //         show: true
+                //     },
+                //     roam: true,
+                //     itemStyle: {
+                //         normal: {
+                //             areaColor: '#142957',
+                //             borderColor: '#0692a4'
+                //         },
+                //         emphasis: {
+                //             areaColor: '#0b1c2d'
+                //         }
+                //     },
+                //     data: geoJson.features.map(function (feature) {
+                //         var name = String(feature.properties.name);
+                //         var country_id = feature.properties.id;
+                //         var value = addressArray.includes(name) ? 1 : 0;
+
+                //         return {
+                //             name: name,
+                //             country_id: country_id,
+                //             value: value,
+                //             itemStyle: {
+                //                 normal: {
+                //                     areaColor: colors[value],
+                //                     borderWidth: value * 4, //设置外层边框
+                //                     borderColor: '#3366FF',
+                //                 }
+                //             }
+                //         };
+                //     }),
+                // }
+            ]
             };
 
             var pointseries = []; // 将pointseries定义为一个空数组
@@ -1486,11 +1543,12 @@ function drawMap(area, myecharts) {
                 }
             });
 
-            option.series = option.series.concat(pointseries); // 将pointseries数组添加到option.series中
+            option_yy.series = option_yy.series.concat(pointseries); // 将pointseries数组添加到option.series中
 
             // 设置地图选项
             myecharts.clear(); // 清除上一次绘制的图表
-            myecharts.setOption(option, {notMerge:true});
+            myecharts.setOption(option_yy, {notMerge:true});
+            console.log('sss');
         }).catch(function (error) {
             console.error(error);
         });
@@ -1679,9 +1737,9 @@ function update_yy() {
                         // 初始化地图
                         //var myChart = echarts.init(document.getElementById('map2'))
                         myecharts.on('click', function (params, event) { {
-                            if (params.componentType === 'series') {
+                            if (params.componentType === 'geo') {
                                 // 判断事件来源是否为地图系列
-                                var clickedRegion = params.data.country_id; // 获取点击的地区名称
+                                var clickedRegion = params.region.country_id; // 获取点击的地区名称
 
                                 // 在这里可以根据点击的地区执行相应的操作
 
@@ -1717,6 +1775,23 @@ function update_yy() {
     });
 }
 
+function remove_jiaohu_info(){
+    var geoCoordMap1 = {
+        '医院1':[0,0],
+        '医院2':[0,0]
+    };
+                //antiGeocode = results[0];
+
+    var ZNhospitals =[ 
+        [{
+            name: '医院1'
+        }, {
+            name: '医院2',
+            value: 0
+        }]
+    ];
+    drawMapChart(geoCoordMap1, ZNhospitals);
+}
 
 function update_yy2() {
     // 获取所有被选中的复选框
@@ -1727,6 +1802,13 @@ function update_yy2() {
     checkboxes.forEach(function (checkbox) {
         selectedHospital.push(checkbox.value);
     });
+
+    if (selectedHospital.length == 0) {
+        //myecharts.setOption(init_option,true);
+        remove_jiaohu_info();
+        return;
+    }
+
     var selectedHospitals = selectedHospital.join(',');
     $.ajax({
         url: 'http://localhost:' + port_yy + '/ZhongNanHospitals',
@@ -1879,6 +1961,8 @@ function drawMapChart(geoCoordMap, ZNhospitals) {
         },
         series: series
     };
+
+
 
     //var myecharts = echarts.init($('.map .geo')[0]);
     myecharts.clear(); // 清除上一次绘制的图表

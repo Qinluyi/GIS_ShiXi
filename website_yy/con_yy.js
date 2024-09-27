@@ -58,8 +58,8 @@ app.get('/ZhongNanHospitals', async (req, res) => {
         case 'hubei_tcm':
           hospital = '湖北省中医院';
           break;
-        default:
-          hospital = '武汉大学人民医院';
+        // default:
+        //   hospital = '武汉大学人民医院';
           // return Promise.reject('Unknown hospital: ' + hospital);
       }
 
