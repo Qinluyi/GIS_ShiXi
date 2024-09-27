@@ -1,0 +1,42 @@
+.guide{
+    font-size: 20px;
+    display: flex; /* 使用 Flexbox 来对齐 */
+}
+
+.guide .aa{
+    margin-left: 1%;
+    margin-top: 1%;
+    color: #fff;
+    display: inline; /* 可以改成 inline-block，如果需要设置宽度和高度 */
+    margin-right: 10px; /* 可选：设置链接与文本之间的间距 */
+}
+
+.guide a:hover {
+    color:#4c9bfd;
+}
+
+.guide p{
+    margin-top: 2%;
+    margin-left: 15%;
+    color:#fff;
+    font-size: 25px;
+    display: inline; /* 可以改成 inline-block */
+    
+}
+
+.href_color {
+    color:#4c9bfd;
+    margin-left: 1%;
+    margin-top: 1%;
+    display: inline; /* 可以改成 inline-block，如果需要设置宽度和高度 */
+    margin-right: 10px; /* 可选：设置链接与文本之间的间距 */
+}
+
+.guide .p_index{
+    margin-top: 1%;
+    margin-left: 15%;
+    color:#fff;
+    font-size: 25px;
+    display: inline; /* 可以改成 inline-block */
+    
+}
