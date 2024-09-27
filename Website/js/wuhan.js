@@ -266,17 +266,53 @@ $(function () {
                 // 默认显示“武汉大学人民医院”的信息
                 var defaultHospital = hospitalData.find(hospital => hospital.医院名称 === '武汉大学人民医院');
                 if (defaultHospital) {
-                    var defaultInfoContent = `
+            //         var defaultInfoContent = `
+            //  <div">
+            //     <h3 style="color: white; font-size: 18px; font-weight: bold;margin-bottom: 8px;">${defaultHospital.医院名称}</h3>
+            //     <p><strong style="color: white;margin-bottom: 6px">医院地址:</strong> <span style="color: white;">${defaultHospital.医院地址 || 'N/A'}</span></p>
+            //     <p><strong style="color: white;margin-bottom: 6px">联系电话:</strong> <span style="color: white;">${defaultHospital.联系电话 || 'N/A'}</span></p>
+            //     <p><strong style="color: white;margin-bottom: 6px">医院等级:</strong> <span style="color: white;">${defaultHospital.医院等级 || 'N/A'}</span></p>
+            //     <p><strong style="color: white;margin-bottom: 6px">重点科室:</strong> <span style="color: white;">${defaultHospital.重点科室 || 'N/A'}</span></p>
+            //     <p><strong style="color: white;margin-bottom: 6px">经营方式:</strong> <span style="color: white;">${defaultHospital.经营方式 || 'N/A'}</span></p>
+            //     <p><strong style="color: white;margin-bottom: 6px">传真号码:</strong> <span style="color: white;">${defaultHospital.传真号码 || 'N/A'}</span></p>
+            //     <p><strong style="color: white;margin-bottom: 6px">电子邮箱:</strong> <span style="color: white;">${defaultHospital.电子邮箱 || 'N/A'}</span></p>
+            //     <p><strong style="color: white;margin-bottom: 6px">医院网站:</strong> <a href="${defaultHospital.医院网站}" target="_blank">${defaultHospital.医院网站}</a></p>
+            //  `;
+            var defaultInfoContent = `
              <div">
                 <h3 style="color: white; font-size: 18px; font-weight: bold;margin-bottom: 8px;">${defaultHospital.医院名称}</h3>
-                <p><strong style="color: white;margin-bottom: 6px">医院地址:</strong> <span style="color: white;">${defaultHospital.医院地址 || 'N/A'}</span></p>
-                <p><strong style="color: white;margin-bottom: 6px">联系电话:</strong> <span style="color: white;">${defaultHospital.联系电话 || 'N/A'}</span></p>
-                <p><strong style="color: white;margin-bottom: 6px">医院等级:</strong> <span style="color: white;">${defaultHospital.医院等级 || 'N/A'}</span></p>
-                <p><strong style="color: white;margin-bottom: 6px">重点科室:</strong> <span style="color: white;">${defaultHospital.重点科室 || 'N/A'}</span></p>
-                <p><strong style="color: white;margin-bottom: 6px">经营方式:</strong> <span style="color: white;">${defaultHospital.经营方式 || 'N/A'}</span></p>
-                <p><strong style="color: white;margin-bottom: 6px">传真号码:</strong> <span style="color: white;">${defaultHospital.传真号码 || 'N/A'}</span></p>
-                <p><strong style="color: white;margin-bottom: 6px">电子邮箱:</strong> <span style="color: white;">${defaultHospital.电子邮箱 || 'N/A'}</span></p>
-                <p><strong style="color: white;margin-bottom: 6px">医院网站:</strong> <a href="${defaultHospital.医院网站}" target="_blank">${defaultHospital.医院网站}</a></p>
+                <p class="hospital-info">
+                    <strong class="hospital-label">医院地址:</strong> 
+                    <span class="hospital-value">${defaultHospital.医院地址 || 'N/A'}</span>
+                </p>
+                <p class="hospital-info">
+                    <strong class="hospital-label">联系电话:</strong> 
+                    <span class="hospital-value">${defaultHospital.联系电话 || 'N/A'}</span>
+                </p>
+                <p class="hospital-info">
+                    <strong class="hospital-label">医院等级:</strong> 
+                    <span class="hospital-value">${defaultHospital.医院等级 || 'N/A'}</span>
+                </p>
+                <p class="hospital-info">
+                    <strong class="hospital-label">重点科室:</strong> 
+                    <span class="hospital-value">${defaultHospital.重点科室 || 'N/A'}</span>
+                </p>
+                <p class="hospital-info">
+                    <strong class="hospital-label">经营方式:</strong> 
+                    <span class="hospital-value">${defaultHospital.经营方式 || 'N/A'}</span>
+                </p>
+                <p class="hospital-info">
+                    <strong class="hospital-label">传真号码:</strong> 
+                    <span class="hospital-value">${defaultHospital.传真号码 || 'N/A'}</span>
+                </p>
+                <p class="hospital-info">
+                    <strong class="hospital-label">电子邮箱:</strong> 
+                    <span class="hospital-value">${defaultHospital.电子邮箱 || 'N/A'}</span>
+                </p>
+                <p class="hospital-info">
+                    <strong class="hospital-label">医院网站:</strong> 
+                    <a class="hospital-link" href="${defaultHospital.医院网站}" target="_blank">${defaultHospital.医院网站}</a>
+                </p>
              `;
                     // 仅当点击特定的医院时，才显示“查看详细信息”按钮
                     defaultInfoContent += `
@@ -494,17 +530,53 @@ $(function () {
                 var info = hospitalData.find(hospital => hospital.医院名称 === hospitalName);
 
                 if (info) {
-                    var infoContent = `
+                //     var infoContent = `
+                //  <div">
+                //     <h3 style="color: white; font-size: 18px; font-weight: bold;margin-bottom: 8px;">${info.医院名称}</h3>
+                //     <p><strong style="color: white;margin-bottom: 6px">医院地址:</strong> <span style="color: white;">${info.医院地址 || 'N/A'}</span></p>
+                //     <p><strong style="color: white;margin-bottom: 6px">联系电话:</strong> <span style="color: white;">${info.联系电话 || 'N/A'}</span></p>
+                //     <p><strong style="color: white;margin-bottom: 6px">医院等级:</strong> <span style="color: white;">${info.医院等级 || 'N/A'}</span></p>
+                //     <p><strong style="color: white;margin-bottom: 6px">重点科室:</strong> <span style="color: white;">${info.重点科室 || 'N/A'}</span></p>
+                //     <p><strong style="color: white;margin-bottom: 6px">经营方式:</strong> <span style="color: white;">${info.经营方式 || 'N/A'}</span></p>
+                //     <p><strong style="color: white;margin-bottom: 6px">传真号码:</strong> <span style="color: white;">${info.传真号码 || 'N/A'}</span></p>
+                //     <p><strong style="color: white;margin-bottom: 6px">电子邮箱:</strong> <span style="color: white;">${info.电子邮箱 || 'N/A'}</span></p>
+                //     <p><strong style="color: white;margin-bottom: 6px">医院网站:</strong> <a href="${info.医院网站}" target="_blank">${info.医院网站}</a></p>
+                //  `;
+                var infoContent = `
                  <div">
                     <h3 style="color: white; font-size: 18px; font-weight: bold;margin-bottom: 8px;">${info.医院名称}</h3>
-                    <p><strong style="color: white;margin-bottom: 6px">医院地址:</strong> <span style="color: white;">${info.医院地址 || 'N/A'}</span></p>
-                    <p><strong style="color: white;margin-bottom: 6px">联系电话:</strong> <span style="color: white;">${info.联系电话 || 'N/A'}</span></p>
-                    <p><strong style="color: white;margin-bottom: 6px">医院等级:</strong> <span style="color: white;">${info.医院等级 || 'N/A'}</span></p>
-                    <p><strong style="color: white;margin-bottom: 6px">重点科室:</strong> <span style="color: white;">${info.重点科室 || 'N/A'}</span></p>
-                    <p><strong style="color: white;margin-bottom: 6px">经营方式:</strong> <span style="color: white;">${info.经营方式 || 'N/A'}</span></p>
-                    <p><strong style="color: white;margin-bottom: 6px">传真号码:</strong> <span style="color: white;">${info.传真号码 || 'N/A'}</span></p>
-                    <p><strong style="color: white;margin-bottom: 6px">电子邮箱:</strong> <span style="color: white;">${info.电子邮箱 || 'N/A'}</span></p>
-                    <p><strong style="color: white;margin-bottom: 6px">医院网站:</strong> <a href="${info.医院网站}" target="_blank">${info.医院网站}</a></p>
+                    <p class="hospital-info">
+                        <strong class="hospital-label">医院地址:</strong> 
+                        <span class="hospital-value">${info.医院地址 || 'N/A'}</span>
+                    </p>
+                    <p class="hospital-info">
+                        <strong class="hospital-label">联系电话:</strong> 
+                        <span class="hospital-value">${info.联系电话 || 'N/A'}</span>
+                    </p>
+                    <p class="hospital-info">
+                        <strong class="hospital-label">医院等级:</strong> 
+                        <span class="hospital-value">${info.医院等级 || 'N/A'}</span>
+                    </p>
+                    <p class="hospital-info">
+                        <strong class="hospital-label">重点科室:</strong> 
+                        <span class="hospital-value">${info.重点科室 || 'N/A'}</span>
+                    </p>
+                    <p class="hospital-info">
+                        <strong class="hospital-label">经营方式:</strong> 
+                        <span class="hospital-value">${info.经营方式 || 'N/A'}</span>
+                    </p>
+                    <p class="hospital-info">
+                        <strong class="hospital-label">传真号码:</strong> 
+                        <span class="hospital-value">${info.传真号码 || 'N/A'}</span>
+                    </p>
+                    <p class="hospital-info">
+                        <strong class="hospital-label">电子邮箱:</strong> 
+                        <span class="hospital-value">${info.电子邮箱 || 'N/A'}</span>
+                    </p>
+                    <p class="hospital-info">
+                        <strong class="hospital-label">医院网站:</strong> 
+                        <a class="hospital-link" href="${info.医院网站}" target="_blank">${info.医院网站}</a>
+                    </p>
                  `;
                     // 仅当点击特定的医院时，才显示“查看详细信息”按钮
                     if (['武汉大学人民医院', '武汉大学口腔医院', '武汉大学中南医院', '武汉协和医院', '武汉同济医院', '湖北省中医院'].includes(hospitalName)) {

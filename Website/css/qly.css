@@ -40,3 +40,27 @@
     display: inline; /* 可以改成 inline-block */
     
 }
+
+.hospital-info {
+    color: white; /* 设置文本颜色为白色 */
+    margin-bottom: 6px; /* 设置段落的底部边距 */
+    font-size: 135%;
+}
+
+.hospital-label {
+    font-weight: bold; /* 设置加粗 */
+    color: white; /* 确保加粗文本也是白色 */
+}
+
+.hospital-value {
+    color: white; /* 确保值也是白色 */
+}
+
+.hospital-link {
+    color: white; /* 链接颜色 */
+    text-decoration: none; /* 去掉链接下划线 */
+}
+
+.hospital-link:hover {
+    text-decoration: underline; /* 鼠标悬停时显示下划线 */
+}
