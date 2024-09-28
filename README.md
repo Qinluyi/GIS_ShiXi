@@ -27,3 +27,7 @@
 数据下载模块的更新请更改app_wft.js的run-python1路由里定义的python解释器路径和Data/hct/auto_renew_data的路径为自己的本地路径，然后便可一键更新。
 
 如果有报错请查看是否是driver版本的问题，如果是请看driver文件夹下的readme.txt下载自己对应浏览器版本的driver
+
+# The End
+
+大学的最后一个实习结束了!非常感谢大家一起完成了这么多工作，完结撒花！
